@@ -39,9 +39,19 @@ class EliteFourBadges(Range):
 
 class RedBadges(Range):
     """
-    Number of badges required to open Silver Cave
+    Number of badges required to battle Red
     """
     display_name = "Red Badges"
+    default = 16
+    range_start = 1
+    range_end = 16
+
+
+class MtSilverBadges(Range):
+    """
+    Number of badges required to access Mt. Silver and Silver Cave
+    """
+    display_name = "Mt. Silver Badges"
     default = 16
     range_start = 1
     range_end = 16
@@ -470,6 +480,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     johto_only: JohtoOnly
     elite_four_badges: EliteFourBadges
     red_badges: RedBadges
+    mt_silver_badges: MtSilverBadges
     radio_tower_badges: RadioTowerBadges
     randomize_badges: RandomizeBadges
     randomize_hidden_items: RandomizeHiddenItems
