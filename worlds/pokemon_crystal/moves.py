@@ -17,7 +17,7 @@ def randomize_learnset(world: "PokemonCrystalWorld", pkmn_name):
         elif world.options.randomize_learnsets == RandomizeLearnsets.option_start_with_four_moves:
             learn_levels.insert(0, 1)
 
-    new_learnset = [LearnsetData(level, get_random_move(world.random)) for level in learn_levels]
+    new_learnset = [LearnsetData(level, get_random_move(world)) for level in learn_levels]
 
     # All moves available at Lv.1 that do damage (and don't faint the user)
     start_attacking = [learnset for learnset in new_learnset if
@@ -26,12 +26,12 @@ def randomize_learnset(world: "PokemonCrystalWorld", pkmn_name):
                        and learnset.level == 1]
 
     if not len(start_attacking):  # if there are no attacking moves at Lv.1, add one
-        new_learnset[0] = LearnsetData(1, get_random_move(world.random, attacking=True))
+        new_learnset[0] = LearnsetData(1, get_random_move(world, attacking=True))
 
     return new_learnset
 
 
-def get_random_move(random, move_type=None, attacking=None):
+def get_random_move(world: "PokemonCrystalWorld", move_type=None, attacking=None):
     # exclude beat up as it can softlock the game if an enemy trainer uses it
     if move_type is None:
         move_pool = [move_name for move_name, move_data in crystal_data.moves.items() if
@@ -40,10 +40,13 @@ def get_random_move(random, move_type=None, attacking=None):
         move_pool = [move_name for move_name, move_data in crystal_data.moves.items() if
                      not move_data.is_hm and move_data.type == move_type
                      and move_name not in ["STRUGGLE", "BEAT_UP", "NO_MOVE", "STRUGGLE"]]
+    
+    #remove every move from move_pool that is in the blacklist
+    move_pool = [move_name for move_name in move_pool if move_name not in world.options.move_blacklist]
+    
     if attacking is not None:
         move_pool = [move_name for move_name in move_pool if crystal_data.moves[move_name].power > 0]
-
-    return random.choice(move_pool)
+    return world.random.choice(move_pool)
 
 
 def get_tmhm_compatibility(world: "PokemonCrystalWorld", pkmn_name):
