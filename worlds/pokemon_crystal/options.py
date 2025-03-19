@@ -466,7 +466,7 @@ class EnableMischief(Toggle):
 
 class MoveBlacklist(OptionSet):
     """
-    Prevents species from learning these moves via learnsets, movesets, TM's, or Bill's father.
+    Pokemon won't learn these moves via learnsets, movesets, or TM's.
     
     """
     display_name = "Move Blacklist"
