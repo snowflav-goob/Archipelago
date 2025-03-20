@@ -29,7 +29,7 @@ def randomize_learnset(world: "PokemonCrystalWorld", pkmn_name):
             else: #chooses one of the types other than the pokemons to give to move generation function
                 rem_types=[type for type in data_types if type not in pkmn_types]
                 move_type=random.choice(rem_types)
-        new_learnset.append(LearnsetData(level, get_random_move(world.random, move_type)))
+        new_learnset.append(LearnsetData(level, get_random_move(world.random, move_type=move_type, cur_learnset=new_learnset)))
 
     # All moves available at Lv.1 that do damage (and don't faint the user)
     start_attacking = [learnset for learnset in new_learnset if
@@ -43,19 +43,27 @@ def randomize_learnset(world: "PokemonCrystalWorld", pkmn_name):
     return new_learnset
 
 
-def get_random_move(random, move_type=None, attacking=None):
+def get_random_move(random, move_type=None, attacking=None, cur_learnset=[]):
     # exclude beat up as it can softlock the game if an enemy trainer uses it
+    existing_moves= []
+    for move in cur_learnset: #pulls the names of all the moves in current learnset
+        existing_moves.append(move.move)
     if move_type is None:
         move_pool = [move_name for move_name, move_data in crystal_data.moves.items() if
-                     not move_data.is_hm and move_name not in ["STRUGGLE", "BEAT_UP", "NO_MOVE", "STRUGGLE"]]
+                     not move_data.is_hm and move_name not in ["STRUGGLE", "BEAT_UP", "NO_MOVE", "STRUGGLE"]
+                     and move_name not in existing_moves]
     else:
         move_pool = [move_name for move_name, move_data in crystal_data.moves.items() if
                      not move_data.is_hm and move_data.type == move_type
-                     and move_name not in ["STRUGGLE", "BEAT_UP", "NO_MOVE", "STRUGGLE"]]
+                     and move_name not in ["STRUGGLE", "BEAT_UP", "NO_MOVE", "STRUGGLE"]
+                     and move_name not in existing_moves]
     if attacking is not None:
-        move_pool = [move_name for move_name in move_pool if crystal_data.moves[move_name].power > 0]
-
-    return random.choice(move_pool)
+        move_pool = [move_name for move_name in move_pool if crystal_data.moves[move_name].power > 0
+        and move_name not in existing_moves]
+    if len(move_pool)>0:
+        return random.choice(move_pool)
+    else:
+        return get_random_move(random,move_type=None,attacking=attacking, cur_learnset=cur_learnset)
 
 
 def get_tmhm_compatibility(world: "PokemonCrystalWorld", pkmn_name):
