@@ -1,8 +1,9 @@
 import copy
+import random
 from typing import TYPE_CHECKING
 
 from .data import data as crystal_data, LearnsetData, TMHMData
-from .options import RandomizeLearnsets
+from .options import RandomizeLearnsets, LearnsetTypeBias, StartingMovesTypeBias
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
@@ -11,18 +12,28 @@ if TYPE_CHECKING:
 def randomize_learnset(world: "PokemonCrystalWorld", pkmn_name):
     pkmn_data = world.generated_pokemon[pkmn_name]
     learn_levels = []
+    move_type=None
+    pkmn_types=[]
+    new_learnset[]
     for move in pkmn_data.learnset:
         if move.move != "NO_MOVE":
             learn_levels.append(move.level)
         elif world.options.randomize_learnsets == RandomizeLearnsets.option_start_with_four_moves:
             learn_levels.insert(0, 1)
-
-    new_learnset = [LearnsetData(level, get_random_move(world.random)) for level in learn_levels]
+    for level in learn_levels:
+        if world.options.learnset_type_bias>0: #checks if user put an option for Move Type bias (default is 0)
+            pkmn_types=pkmn_data.types
+            if random.randint(0,100)<=world.options.learnset_type_bias: #rolls for the chance
+                move_type=random.choice(pkmn_types) #chooses one of the pokemons types to give to move generation function
+            else: #chooses one of the types other than the pokemons to give to move generation function
+                rem_types=[type for type in crystal_data.types.items() if type not in pkmn_types]
+                move_type=random.choice(rem_types)
+        new_learnset.append(LearnsetData(level, get_random_move(world.random, move_type)))
 
     # All moves available at Lv.1 that do damage (and don't faint the user)
     start_attacking = [learnset for learnset in new_learnset if
                        crystal_data.moves[learnset.move].power > 0
-                       and learnset.move not in ["EXPLOSION", "SELFDESTRUCT", "STRUGGLE"]
+                       and learnset.move not in ["EXPLOSION", "SELFDESTRUCT", "STRUGGLE", "SNORE"]
                        and learnset.level == 1]
 
     if not len(start_attacking):  # if there are no attacking moves at Lv.1, add one
