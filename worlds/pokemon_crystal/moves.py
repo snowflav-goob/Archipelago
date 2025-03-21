@@ -11,8 +11,6 @@ if TYPE_CHECKING:
 def randomize_learnset(world: "PokemonCrystalWorld", pkmn_name):
     pkmn_data = world.generated_pokemon[pkmn_name]
     learn_levels = []
-    move_type=None
-    pkmn_types=[]
     new_learnset=[]
     data_types = copy.deepcopy(crystal_data.types)
     for move in pkmn_data.learnset:
@@ -22,6 +20,9 @@ def randomize_learnset(world: "PokemonCrystalWorld", pkmn_name):
             learn_levels.insert(0, 1)
 
     for level in learn_levels:
+        move_type=None
+        pkmn_types=[]
+        
         if world.options.learnset_type_bias>-1: #checks if user put an option for Move Type bias (default is -1)
             pkmn_types=pkmn_data.types
             if world.random.randint(1,100)<=world.options.learnset_type_bias: #rolls for the chance
@@ -70,7 +71,7 @@ def get_random_move(world: "PokemonCrystalWorld", move_type=None, attacking=None
     if world.options.move_blocklist:
         move_pool = [move_name for move_name in move_pool if move_name not in [move.replace(" ", "_").upper() for move in world.options.move_blocklist]]
 
-    if len(move_pool)>0:
+    if move_pool:
         return world.random.choice(move_pool)
     else:
         return get_random_move(world,move_type=None,attacking=attacking, cur_learnset=cur_learnset)
