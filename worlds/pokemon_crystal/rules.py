@@ -90,6 +90,9 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     def can_rocksmash(state: CollectionState):
         return state.has("TM08 Rock Smash", world.player)
 
+    def has_tea(state: CollectionState):
+        return state.has("Tea", world.player)
+
     if world.options.randomize_badges.value == 0:
         badge_items = {"zephyr": "EVENT_ZEPHYR_BADGE_FROM_FALKNER",
                        "hive": "EVENT_HIVE_BADGE_FROM_BUGSY",
@@ -685,6 +688,22 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
         set_rule(get_entrance("REGION_SAFFRON_MAGNET_TRAIN_STATION -> REGION_GOLDENROD_MAGNET_TRAIN_STATION"),
                  lambda state: state.has("Pass", world.player))
+
+        if "North" in world.options.saffron_gatehouse_tea.value:
+            set_rule(get_entrance("REGION_SAFFRON_CITY -> REGION_ROUTE_5_SAFFRON_GATE"), has_tea)
+            set_rule(get_entrance("REGION_ROUTE_5_SAFFRON_GATE -> REGION_SAFFRON_CITY"), has_tea)
+
+        if "East" in world.options.saffron_gatehouse_tea.value:
+            set_rule(get_entrance("REGION_SAFFRON_CITY -> REGION_ROUTE_7_SAFFRON_GATE"), has_tea)
+            set_rule(get_entrance("REGION_ROUTE_7_SAFFRON_GATE -> REGION_SAFFRON_CITY"), has_tea)
+
+        if "South" in world.options.saffron_gatehouse_tea.value:
+            set_rule(get_entrance("REGION_SAFFRON_CITY -> REGION_ROUTE_6_SAFFRON_GATE"), has_tea)
+            set_rule(get_entrance("REGION_ROUTE_6_SAFFRON_GATE -> REGION_SAFFRON_CITY"), has_tea)
+
+        if "West" in world.options.saffron_gatehouse_tea.value:
+            set_rule(get_entrance("REGION_SAFFRON_CITY -> REGION_ROUTE_8_SAFFRON_GATE"), has_tea)
+            set_rule(get_entrance("REGION_ROUTE_8_SAFFRON_GATE -> REGION_SAFFRON_CITY"), has_tea)
 
         # Underground Path
         set_rule(get_entrance("REGION_ROUTE_5 -> REGION_ROUTE_5_UNDERGROUND_PATH_ENTRANCE"),

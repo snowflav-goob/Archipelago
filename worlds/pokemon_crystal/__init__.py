@@ -302,6 +302,10 @@ class PokemonCrystalWorld(World):
         slot_data["apworld_version"] = self.apworld_version
         slot_data["free_fly_location"] = 0
         slot_data["map_card_fly_location"] = 0
+        slot_data["tea_north"] = 1 if "North" in self.options.saffron_gatehouse_tea.value else 0
+        slot_data["tea_east"] = 1 if "East" in self.options.saffron_gatehouse_tea.value else 0
+        slot_data["tea_south"] = 1 if "South" in self.options.saffron_gatehouse_tea.value else 0
+        slot_data["tea_west"] = 1 if "West" in self.options.saffron_gatehouse_tea.value else 0
         if self.options.free_fly_location:
             slot_data["free_fly_location"] = self.free_fly_location
             if self.options.free_fly_location > 1:

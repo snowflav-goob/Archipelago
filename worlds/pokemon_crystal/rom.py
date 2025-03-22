@@ -417,6 +417,18 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
     write_bytes(patch, route_32_badge, data.rom_addresses["AP_Setting_Route32RequiresBadge"] + 1)
     write_bytes(patch, route_32_egg, data.rom_addresses["AP_Setting_Route32RequiresEgg"] + 1)
 
+    if "North" in world.options.saffron_gatehouse_tea.value:
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_SaffronRoute5Blocked"] + 1)
+    if "East" in world.options.saffron_gatehouse_tea.value:
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_SaffronRoute8Blocked"] + 1)
+    if "South" in world.options.saffron_gatehouse_tea.value:
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_SaffronRoute6Blocked"] + 1)
+    if "West" in world.options.saffron_gatehouse_tea.value:
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_SaffronRoute7Blocked"] + 1)
+
+    if world.options.saffron_gatehouse_tea.value:
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_TeaEnabled"] + 1)
+
     # Set slot name
     for i, byte in enumerate(world.player_name.encode("utf-8")):
         write_bytes(patch, [byte], data.rom_addresses["AP_Seed_Name"] + i)
