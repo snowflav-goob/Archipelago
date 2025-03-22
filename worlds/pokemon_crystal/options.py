@@ -347,6 +347,14 @@ class HMBadgeRequirements(Choice):
     option_add_kanto = 2
 
 
+class RemoveBadgeRequirement(OptionSet):
+    """
+    Specify which HMs do not require a badge to use. This overrides the HM Badge Requirements setting.
+    """
+    display_name = "HM Badge Exclusions"
+    valid_keys = ["Cut", "Fly", "Surf", "Strength", "Flash", "Whirlpool", "Waterfall"]
+
+
 class RemoveIlexCutTree(DefaultOnToggle):
     """
     Removes the Cut tree in Ilex Forest
@@ -545,6 +553,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     free_fly_location: FreeFlyLocation
     early_fly: EarlyFly
     hm_badge_requirements: HMBadgeRequirements
+    remove_badge_requirement: RemoveBadgeRequirement
     remove_ilex_cut_tree: RemoveIlexCutTree
     saffron_gatehouse_tea: SaffronGatehouseTea
     reusable_tms: ReusableTMs

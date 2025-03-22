@@ -335,8 +335,11 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
                 write_bytes(patch, better_mart_bytes, mart_address)
             mart_address += 2
 
-    hmbadges_address = data.rom_addresses["AP_Setting_HMBadges"] + 1
-    write_bytes(patch, [world.options.hm_badge_requirements.value], hmbadges_address)
+    for hm in world.options.remove_badge_requirement.valid_keys:
+        hm_address = data.rom_addresses["AP_Setting_HMBadges_" + hm] + 1
+        requirement = [1] if hm in world.options.remove_badge_requirement else [
+            world.options.hm_badge_requirements.value]
+        write_bytes(patch, requirement, hm_address)
 
     exp_modifier_address = data.rom_addresses["AP_Setting_ExpModifier"] + 1
     write_bytes(patch, [world.options.experience_modifier], exp_modifier_address)

@@ -87,6 +87,34 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
             return state.has("HM07 Waterfall", world.player) and (
                     has_badge(state, "rising") or has_badge(state, "earth")) and can_surf(state)
 
+    if "Cut" in world.options.remove_badge_requirement:
+        def can_cut(state: CollectionState):
+            return state.has("HM01 Cut", world.player)
+
+    if "Fly" in world.options.remove_badge_requirement:
+        def can_fly(state: CollectionState):
+            return state.has("HM02 Fly", world.player)
+
+    if "Surf" in world.options.remove_badge_requirement:
+        def can_surf(state: CollectionState):
+            return state.has("HM03 Surf", world.player)
+
+    if "Strength" in world.options.remove_badge_requirement:
+        def can_strength(state: CollectionState):
+            return state.has("HM04 Strength", world.player)
+
+    if "Flash" in world.options.remove_badge_requirement:
+        def can_flash(state: CollectionState):
+            return state.has("HM05 Flash", world.player)
+
+    if "Whirlpool" in world.options.remove_badge_requirement:
+        def can_whirlpool(state: CollectionState):
+            return state.has("HM06 Whirlpool", world.player)
+
+    if "Waterfall" in world.options.remove_badge_requirement:
+        def can_waterfall(state: CollectionState):
+            return state.has("HM07 Waterfall", world.player)
+
     def can_rocksmash(state: CollectionState):
         return state.has("TM08 Rock Smash", world.player)
 
