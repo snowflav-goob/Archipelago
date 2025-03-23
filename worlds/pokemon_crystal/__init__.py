@@ -90,6 +90,7 @@ class PokemonCrystalWorld(World):
         if self.options.early_fly:
             self.multiworld.local_early_items[self.player]["HM02 Fly"] = 1
             if (self.options.hm_badge_requirements.value != HMBadgeRequirements.option_no_badges
+                    and "Fly" not in self.options.remove_badge_requirement.value
                     and self.options.randomize_badges == RandomizeBadges.option_completely_random):
                 self.multiworld.local_early_items[self.player]["Storm Badge"] = 1
 
@@ -123,11 +124,17 @@ class PokemonCrystalWorld(World):
                         "Pokemon Crystal: Elite Four Badges >8 incompatible with Johto Only "
                         "if badges are not completely random. Changing Elite Four Badges to 8 for player %s.",
                         self.multiworld.get_player_name(self.player))
-                if self.options.radio_tower_badges > 8:
+                if self.options.radio_tower_badges.value > 8:
                     self.options.radio_tower_badges.value = 8
                     logging.warning(
                         "Pokemon Crystal: Radio Tower Badges >8 incompatible with Johto Only "
                         "if badges are not completely random. Changing Radio Tower Badges to 8 for player %s.",
+                        self.multiworld.get_player_name(self.player))
+                if self.options.mt_silver_badges.value > 8:
+                    self.options.mt_silver_badges.value = 8
+                    logging.warning(
+                        "Pokemon Crystal: Mt. Silver Badges >8 incompatible with Johto Only "
+                        "if badges are not completely random. Changing Mt. Silver Badges to 8 for player %s.",
                         self.multiworld.get_player_name(self.player))
 
     def create_regions(self) -> None:
@@ -148,7 +155,8 @@ class PokemonCrystalWorld(World):
         if self.options.randomize_badges.value == RandomizeBadges.option_shuffle:
             item_locations = [location for location in item_locations if "Badge" not in location.tags]
 
-        total_badges = max(self.options.elite_four_badges.value, self.options.red_badges.value)
+        total_badges = max(self.options.elite_four_badges.value, self.options.red_badges.value,
+                           self.options.mt_silver_badges.value)
         add_badges = []
         # Extra badges to add to the pool in johto only
         if self.options.johto_only and total_badges > 8:
@@ -202,7 +210,7 @@ class PokemonCrystalWorld(World):
         if self.options.randomize_badges.value == RandomizeBadges.option_shuffle:
             badge_locs = [loc for loc in self.multiworld.get_locations(self.player) if "Badge" in loc.tags]
             badge_items = [self.create_item_by_code(loc.default_item_code) for loc in badge_locs]
-            if self.options.early_fly:
+            if self.options.early_fly and "Fly" not in self.options.remove_badge_requirement.value:
                 # take one of the early badge locations, set it to storm badge
                 if self.options.route_32_condition.value == Route32Condition.option_any_badge:
                     early_badge_tag = "EarlyBadge_Route32RequiresBadge"
@@ -289,11 +297,21 @@ class PokemonCrystalWorld(World):
             "randomize_berry_trees",
             "remove_ilex_cut_tree",
             "radio_tower_badges",
-            "route_32_condition"
+            "route_32_condition",
+            "mt_silver_badges"
         )
         slot_data["apworld_version"] = self.apworld_version
+        slot_data["tea_north"] = 1 if "North" in self.options.saffron_gatehouse_tea.value else 0
+        slot_data["tea_east"] = 1 if "East" in self.options.saffron_gatehouse_tea.value else 0
+        slot_data["tea_south"] = 1 if "South" in self.options.saffron_gatehouse_tea.value else 0
+        slot_data["tea_west"] = 1 if "West" in self.options.saffron_gatehouse_tea.value else 0
+
+        for hm in self.options.remove_badge_requirement.valid_keys:
+            slot_data["free_" + hm.lower()] = 1 if hm in self.options.remove_badge_requirement.value else 0
+
         slot_data["free_fly_location"] = 0
         slot_data["map_card_fly_location"] = 0
+
         if self.options.free_fly_location:
             slot_data["free_fly_location"] = self.free_fly_location
             if self.options.free_fly_location > 1:
@@ -315,7 +333,9 @@ class PokemonCrystalWorld(World):
                                   21: "Olivine City",
                                   19: "Cianwood City",
                                   23: "Mahogany Town",
+                                  24: "Lake of Rage",
                                   25: "Blackthorn City",
+                                  2: "Pallet Town",
                                   3: "Viridian City",
                                   4: "Pewter City",
                                   5: "Cerulean City",
@@ -323,13 +343,17 @@ class PokemonCrystalWorld(World):
                                   8: "Lavender Town",
                                   10: "Celadon City",
                                   9: "Saffron City",
+                                  12: "Cinnabar Island",
                                   11: "Fuchsia City",
                                   18: "Azalea Town",
-                                  20: "Goldenrod City"}
-            spoiler_handle.write(f"\n\nFree Fly Location ({self.multiworld.player_name[self.player]}): "
+                                  20: "Goldenrod City",
+                                  26: "Mt. Silver"
+                                  }
+            spoiler_handle.write(f"\n\n")
+            spoiler_handle.write(f"Free Fly Location ({self.multiworld.player_name[self.player]}): "
                                  f"{free_fly_locations[self.free_fly_location]}\n")
             if self.options.free_fly_location > 1:
-                spoiler_handle.write(f"\n\nMap Card Fly Location ({self.multiworld.player_name[self.player]}): "
+                spoiler_handle.write(f"Map Card Fly Location ({self.multiworld.player_name[self.player]}): "
                                      f"{free_fly_locations[self.map_card_fly_location]}\n")
 
         if self.options.enable_mischief:

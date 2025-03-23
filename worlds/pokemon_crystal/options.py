@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-from Options import Toggle, Choice, DefaultOnToggle, Range, PerGameCommonOptions, NamedRange
+from Options import Toggle, Choice, DefaultOnToggle, Range, PerGameCommonOptions, NamedRange, OptionSet
+from .data import data
 
 
 class Goal(Choice):
@@ -39,9 +40,19 @@ class EliteFourBadges(Range):
 
 class RedBadges(Range):
     """
-    Number of badges required to open Silver Cave
+    Number of badges required to battle Red
     """
     display_name = "Red Badges"
+    default = 16
+    range_start = 1
+    range_end = 16
+
+
+class MtSilverBadges(Range):
+    """
+    Number of badges required to access Mt. Silver and Silver Cave
+    """
+    display_name = "Mt. Silver Badges"
     default = 16
     range_start = 1
     range_end = 16
@@ -199,6 +210,21 @@ class RandomizeLearnsets(Choice):
     option_start_with_four_moves = 2
 
 
+class LearnsetTypeBias(Range):
+    """
+    This option will have an effect only if Randomize Learnset option is ENABLED.
+
+    Percent chance of each move in a Pokemon's learnset to match its type.
+    Default value is -1. This means there will be no check in logic for type matches.
+    The lowest possible type matching (most evil value) is 0. There will be no STAB moves in a Pokemon's Move Pool
+    If set to 100 all moves that a Pokemon will learn by leveling up will match one of its types
+    """
+    display_name = "Move Learnset Type Bias"
+    default = -1
+    range_start = -1
+    range_end = 100
+
+
 class RandomizeTMMoves(Toggle):
     """
     Randomizes the moves available as TMs
@@ -321,11 +347,29 @@ class HMBadgeRequirements(Choice):
     option_add_kanto = 2
 
 
+class RemoveBadgeRequirement(OptionSet):
+    """
+    Specify which HMs do not require a badge to use. This overrides the HM Badge Requirements setting.
+    """
+    display_name = "HM Badge Exclusions"
+    valid_keys = ["Cut", "Fly", "Surf", "Strength", "Flash", "Whirlpool", "Waterfall"]
+
+
 class RemoveIlexCutTree(DefaultOnToggle):
     """
     Removes the Cut tree in Ilex Forest
     """
     display_name = "Remove Ilex Forest Cut Tree"
+
+
+class SaffronGatehouseTea(OptionSet):
+    """
+    Sets which Saffron City gatehouses require Tea to pass. Obtaining the Tea will unlock them all.
+    If any gatehouses are enabled, adds a new location in Celadon Mansion 1F and adds Tea to the item pool.
+    Valid options are: North, East, South and West in any combination.
+    """
+    display_name = "Saffron Gatehouse Tea"
+    valid_keys = ["North", "East", "South", "West"]
 
 
 class ReusableTMs(Toggle):
@@ -464,12 +508,22 @@ class EnableMischief(Toggle):
     display_name = "Enable Mischief"
 
 
+class MoveBlocklist(OptionSet):
+    """
+    Pokemon won't learn these moves via learnsets or TM's.
+    Moves should be provided in the form: ICE_BEAM
+    """
+    display_name = "Move Blocklist"
+    valid_keys = sorted(set(data.moves.keys()))
+
+
 @dataclass
 class PokemonCrystalOptions(PerGameCommonOptions):
     goal: Goal
     johto_only: JohtoOnly
     elite_four_badges: EliteFourBadges
     red_badges: RedBadges
+    mt_silver_badges: MtSilverBadges
     radio_tower_badges: RadioTowerBadges
     randomize_badges: RandomizeBadges
     randomize_hidden_items: RandomizeHiddenItems
@@ -486,6 +540,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     randomize_static_pokemon: RandomizeStaticPokemon
     randomize_trainer_parties: RandomizeTrainerParties
     randomize_learnsets: RandomizeLearnsets
+    learnset_type_bias: LearnsetTypeBias
     randomize_tm_moves: RandomizeTMMoves
     tm_compatibility: TMCompatibility
     hm_compatibility: HMCompatibility
@@ -494,10 +549,13 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     randomize_palettes: RandomizePalettes
     randomize_music: RandomizeMusic
     # randomize_sfx: RandomizeSFX
+    move_blocklist: MoveBlocklist
     free_fly_location: FreeFlyLocation
     early_fly: EarlyFly
     hm_badge_requirements: HMBadgeRequirements
+    remove_badge_requirement: RemoveBadgeRequirement
     remove_ilex_cut_tree: RemoveIlexCutTree
+    saffron_gatehouse_tea: SaffronGatehouseTea
     reusable_tms: ReusableTMs
     guaranteed_catch: GuaranteedCatch
     minimum_catch_rate: MinimumCatchRate
