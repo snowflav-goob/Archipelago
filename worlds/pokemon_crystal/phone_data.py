@@ -485,7 +485,7 @@ team_rocket_call = PhoneScript(caller_withheld, [
     ScriptLine([cont_cmd, "devestation!"]),
     ScriptLine([para_cmd, "To unite all"]),
     ScriptLine([line_cmd, "peoples within our"]),
-    ScriptLine([cont_cmd, "nation!"]),    
+    ScriptLine([cont_cmd, "nation!"]),
     ScriptLine([para_cmd, "To denounce the"]),
     ScriptLine([line_cmd, "evils of truth"]),
     ScriptLine([cont_cmd, "and love!"]),
@@ -517,6 +517,31 @@ happy_birthday = PhoneScript(caller_mom, [
     ScriptLine([done_cmd])
 ])
 
+lance_cape = PhoneScript(caller_withheld, [
+    ScriptLine([text_cmd, "Hello? LANCE?"]),
+    ScriptLine([para_cmd, "I wanted to let you"]),
+    ScriptLine([line_cmd, "know that your new"]),
+    ScriptLine([para_cmd, "champion outfit"]),
+    ScriptLine([line_cmd, "can't include a"]),
+    ScriptLine([cont_cmd, "cape, dahling."]),
+    ScriptLine([para_cmd, "Not convinced?"]),
+    ScriptLine([line_cmd, "LEON! His cape"]),
+    ScriptLine([para_cmd, "gets so dirty, he"]),
+    ScriptLine([line_cmd, "has to clean it"]),
+    ScriptLine([para_cmd, "every day! CLAIR!"]),
+    ScriptLine([line_cmd, "Her DRAGONAIR"]),
+    ScriptLine([para_cmd, "sets it on fire"]),
+    ScriptLine([line_cmd, "all the time!"]),
+    ScriptLine([para_cmd, "And don't get me"]),
+    ScriptLine([line_cmd, "started on"]),
+    ScriptLine([para_cmd, "WALLACE! His"]),
+    ScriptLine([line_cmd, "gets soaked and"]),
+    ScriptLine([cont_cmd, "drags him down!"]),
+    ScriptLine([para_cmd, "…Huh? Oh!"]),
+    ScriptLine([line_cmd, "Wrong number!"]),
+    ScriptLine([done_cmd])
+])
+
 phone_scripts = [
     ffxiv,
     brock_oven,
@@ -538,4 +563,5 @@ phone_scripts = [
     bank_of_mom_2,
     happy_birthday,
     team_rocket_call,
+    lance_cape,
 ]
