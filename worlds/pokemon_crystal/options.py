@@ -372,6 +372,25 @@ class SaffronGatehouseTea(OptionSet):
     valid_keys = ["North", "East", "South", "West"]
 
 
+class EastWestUnderground(Toggle):
+    """
+    Adds an Underground Pass between Route 7 and Route 8 in Kanto.
+    """
+    display_name = "East - West Underground"
+
+
+class UndergroundsRequirePower(Choice):
+    """
+    Specifies which of the Kanto Underground Passes require the Machine Part to be returned to access.
+    """
+    display_name = "Undergrounds Require Power"
+    default = 0
+    option_both = 0
+    option_north_south = 1
+    option_east_west = 2
+    option_neither = 3
+
+
 class ReusableTMs(Toggle):
     """
     TMs can be used an infinite number of times
@@ -556,6 +575,8 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     remove_badge_requirement: RemoveBadgeRequirement
     remove_ilex_cut_tree: RemoveIlexCutTree
     saffron_gatehouse_tea: SaffronGatehouseTea
+    east_west_underground: EastWestUnderground
+    undergrounds_require_power: UndergroundsRequirePower
     reusable_tms: ReusableTMs
     guaranteed_catch: GuaranteedCatch
     minimum_catch_rate: MinimumCatchRate
