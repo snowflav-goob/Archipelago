@@ -73,7 +73,7 @@ def template_call_remote(location: Location, world):
     # split into lines with cont
     location_cmd = split_location(location.name.upper())
 
-    game_name = location.game.upper()
+    game_name = location.item.game
     game_name = (game_name[:15] + "…") if len(game_name) > 16 else game_name
 
     player_name = world.multiworld.player_name[player].upper()
