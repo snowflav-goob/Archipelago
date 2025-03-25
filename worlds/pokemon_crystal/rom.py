@@ -306,6 +306,8 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         write_bytes(patch, [1], address)
         address = data.rom_addresses["AP_Misc_Amphy"] + 1
         write_bytes(patch, [1], address)
+        address = data.rom_addresses["AP_Misc_SecretSwitch"] + 1
+        write_bytes(patch, [1], address)
 
     if world.options.blind_trainers:
         address = data.rom_addresses["AP_Setting_Blind_Trainers"]
