@@ -502,6 +502,17 @@ class ExpModifier(Range):
     default = 20
     range_start = 1
     range_end = 255
+    special_range_names = {
+        "half": default // 2,
+        "normal": default,
+        "double": default * 2,
+        "triple": default * 3,
+        "quadruple": default * 4,
+        "quintuple": default * 5,
+        "sextuple": default * 6,
+        "septuple": default * 7,
+        "octuple": default * 8,
+    }
 
 
 class PhoneTrapWeight(Range):
