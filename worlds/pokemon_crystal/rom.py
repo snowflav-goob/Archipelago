@@ -190,12 +190,12 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
     if world.options.randomize_berry_trees:
         # 0xC9 = ret
         write_bytes(patch, [0xC9], data.rom_addresses["AP_Setting_FruitTreesReset"])
-    
+
     if world.options.randomize_move_values or world.options.randomize_move_types:
         for move_name, move in world.generated_moves.items():  # effect modification is also possible but not included
             if move_name in ["NO_MOVE", "CURSE"]:
                 continue
-            if world.options.randomize_move_types: 
+            if world.options.randomize_move_types:
                 address = data.rom_addresses["AP_MoveData_Type_" + move_name]
                 move_type_id = [data.type_ids[move.type]]
                 write_bytes(patch, move_type_id, address)  # uses same type id conversion that pkmn type randomizer
@@ -206,7 +206,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
                 write_bytes(patch, [move.pp], address)  # 5-40 PP
                 if world.options.randomize_move_values == 3:
                     address = data.rom_addresses["AP_MoveData_Accuracy_" + move_name]
-                    acc=int(move.accuracy*255/100)
+                    acc = int(move.accuracy * 255 / 100)
                     write_bytes(patch, [acc], address)  # accuracy 30-100
 
     for pkmn_name, pkmn_data in world.generated_pokemon.items():
@@ -413,11 +413,11 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
 
     if world.options.free_fly_location:
         free_fly_write = [0, 0, 0, 0]
-        free_fly_write[int(world.free_fly_location / 8)] = 1 << (world.free_fly_location % 8)
+        free_fly_write[int(world.free_fly_location.id / 8)] = 1 << (world.free_fly_location.id % 8)
         write_bytes(patch, free_fly_write, data.rom_addresses["AP_Setting_FreeFly"])
         if world.options.free_fly_location > 1:
-            map_fly_offset = int(world.map_card_fly_location / 8).to_bytes(2, "little")
-            map_fly_byte = 1 << (world.map_card_fly_location % 8)
+            map_fly_offset = int(world.map_card_fly_location.id / 8).to_bytes(2, "little")
+            map_fly_byte = 1 << (world.map_card_fly_location.id % 8)
             write_bytes(patch, [map_fly_byte], data.rom_addresses["AP_Setting_MapCardFreeFly_Byte"] + 1)
             write_bytes(patch, map_fly_offset, data.rom_addresses["AP_Setting_MapCardFreeFly_Offset"] + 1)
 

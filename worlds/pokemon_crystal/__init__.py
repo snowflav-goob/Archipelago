@@ -10,7 +10,7 @@ from Options import Toggle
 from worlds.AutoWorld import World, WebWorld
 from .client import PokemonCrystalClient
 from .data import PokemonData, TrainerData, MiscData, TMHMData, data as crystal_data, \
-    WildData, StaticPokemon, MusicData, MoveData
+    WildData, StaticPokemon, MusicData, MoveData, FlyRegion
 from .items import PokemonCrystalItem, create_item_label_to_code_map, get_item_classification, \
     ITEM_GROUPS, item_const_name_to_id, item_const_name_to_label
 from .locations import create_locations, PokemonCrystalLocation, create_location_label_to_id_map
@@ -71,8 +71,8 @@ class PokemonCrystalWorld(World):
     location_name_to_id = create_location_label_to_id_map()
     item_name_groups = ITEM_GROUPS  # item_groups
 
-    free_fly_location: int
-    map_card_fly_location: int
+    free_fly_location: FlyRegion
+    map_card_fly_location: FlyRegion
     generated_moves = Dict[str, MoveData]
     generated_pokemon: Dict[str, PokemonData]
     generated_starters: Tuple[List[str], List[str], List[str]]
@@ -349,32 +349,12 @@ class PokemonCrystalWorld(World):
                 spoiler_handle.write(f"{evo[0]} ({types_0}) -> {evo[1]} ({types_1}) -> {evo[2]} ({types_2})\n")
 
         if self.options.free_fly_location:
-            free_fly_locations = {22: "Ecruteak City",
-                                  21: "Olivine City",
-                                  19: "Cianwood City",
-                                  23: "Mahogany Town",
-                                  24: "Lake of Rage",
-                                  25: "Blackthorn City",
-                                  2: "Pallet Town",
-                                  3: "Viridian City",
-                                  4: "Pewter City",
-                                  5: "Cerulean City",
-                                  7: "Vermilion City",
-                                  8: "Lavender Town",
-                                  10: "Celadon City",
-                                  9: "Saffron City",
-                                  12: "Cinnabar Island",
-                                  11: "Fuchsia City",
-                                  18: "Azalea Town",
-                                  20: "Goldenrod City",
-                                  26: "Mt. Silver"
-                                  }
             spoiler_handle.write(f"\n\n")
             spoiler_handle.write(f"Free Fly Location ({self.multiworld.player_name[self.player]}): "
-                                 f"{free_fly_locations[self.free_fly_location]}\n")
+                                 f"{self.free_fly_location.name}\n")
             if self.options.free_fly_location > 1:
                 spoiler_handle.write(f"Map Card Fly Location ({self.multiworld.player_name[self.player]}): "
-                                     f"{free_fly_locations[self.map_card_fly_location]}\n")
+                                     f"{self.map_card_fly_location.name}\n")
 
         if self.options.enable_mischief:
             spoiler_handle.write(f"\n\nMischief ({self.multiworld.player_name[self.player]}):\n\n")

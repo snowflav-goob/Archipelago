@@ -157,6 +157,12 @@ class StaticPokemon(NamedTuple):
     addresses: List[str]
 
 
+class FlyRegion(NamedTuple):
+    id: int
+    name: str
+    region_id: str
+
+
 class PokemonCrystalData:
     rom_version: int
     rom_version_11: int
@@ -177,6 +183,7 @@ class PokemonCrystalData:
     misc: MiscData
     music: MusicData
     static: Dict[str, StaticPokemon]
+    fly_regions: List[FlyRegion]
 
     def __init__(self) -> None:
         self.rom_addresses = {}
@@ -214,7 +221,6 @@ def _init() -> None:
     type_data = data_json["types"]
     fuchsia_data = data_json["misc"]["fuchsia_gym_trainers"]
     saffron_data = data_json["misc"]["saffron_gym_warps"]
-    ecruteak_data = data_json["misc"]["ecruteak_gym_warps"]
     tmhm_data = data_json["tmhm"]
 
     data.rom_version = data_json["rom_version"]
@@ -449,6 +455,29 @@ def _init() -> None:
     data.static = {}
     for static_name, static_data in data_json["static"].items():
         data.static[static_name] = StaticPokemon(static_data["pokemon"], static_data["addresses"])
+
+    data.fly_regions = [
+        FlyRegion(2, "Pallet Town", "REGION_PALLET_TOWN"),
+        FlyRegion(3, "Viridian City", "REGION_VIRIDIAN_CITY"),
+        FlyRegion(4, "Pewter City", "REGION_PEWTER_CITY"),
+        FlyRegion(5, "Cerulean City", "REGION_CERULEAN_CITY"),
+        FlyRegion(7, "Vermilion City", "REGION_VERMILION_CITY"),
+        FlyRegion(8, "Lavender Town", "REGION_LAVENDER_TOWN"),
+        FlyRegion(9, "Saffron City", "REGION_SAFFRON_CITY"),
+        FlyRegion(10, "Celadon City", "REGION_CELADON_CITY"),
+        FlyRegion(11, "Fuchsia City", "REGION_FUCHSIA_CITY"),
+        FlyRegion(12, "Cinnabar Island", "REGION_CINNABAR_ISLAND"),
+
+        FlyRegion(18, "Azalea Town", "REGION_AZALEA_TOWN"),
+        FlyRegion(19, "Cianwood City", "REGION_CIANWOOD_CITY"),
+        FlyRegion(20, "Goldenrod City", "REGION_GOLDENROD_CITY"),
+        FlyRegion(21, "Olivine City", "REGION_OLIVINE_CITY"),
+        FlyRegion(22, "Ecruteak City", "REGION_ECRUTEAK_CITY"),
+        FlyRegion(23, "Mahogany Town", "REGION_MAHOGANY_TOWN"),
+        FlyRegion(24, "Lake of Rage", "REGION_LAKE_OF_RAGE"),
+        FlyRegion(25, "Blackthorn City", "REGION_BLACKTHORN_CITY"),
+        FlyRegion(26, "Silver Cave", "REGION_SILVER_CAVE_OUTSIDE")
+    ]
 
 
 _init()
