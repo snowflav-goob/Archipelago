@@ -264,7 +264,7 @@ class RandomizeLearnsets(Choice):
     option_start_with_four_moves = 2
 
 
-class LearnsetTypeBias(Range):
+class LearnsetTypeBias(NamedRange):
     """
     This option will have an effect only if Randomize Learnset option is ENABLED.
 
@@ -277,6 +277,9 @@ class LearnsetTypeBias(Range):
     default = -1
     range_start = -1
     range_end = 100
+    special_range_names = {
+        "vanilla": -1
+    }
 
 
 class RandomizeMoveValues(Choice):
@@ -521,7 +524,7 @@ class BetterMarts(Toggle):
     display_name = "Better Marts"
 
 
-class ExpModifier(Range):
+class ExpModifier(NamedRange):
     """
     Scale the amount of Experience Points given in battle
     Default is 20, for double set to 40, for half set to 10, etc
