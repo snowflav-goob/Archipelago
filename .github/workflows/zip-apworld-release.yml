@@ -15,7 +15,8 @@ jobs:
         uses: thedoctor0/zip-release@0.7.6
         with:
           type: 'zip'
-          path: 'worlds/pokemon_crystal'
+          directory: 'worlds'
+          path: 'pokemon_crystal'
           filename: 'pokemon_crystal.apworld'
           exclusions: '*.git* *__pycache__**'
 
