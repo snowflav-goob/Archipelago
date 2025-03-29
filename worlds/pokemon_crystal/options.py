@@ -308,9 +308,6 @@ class RandomizeMoveTypes(Toggle):
     Randomizes each move's Type
     """
     display_name = "Randomize Move Types"
-    default = 0
-    option_vanilla = 0
-    option_random_types = 1
 
 
 class RandomizeTMMoves(Toggle):
