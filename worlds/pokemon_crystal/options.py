@@ -18,7 +18,7 @@ class Goal(Choice):
 
 class JohtoOnly(Choice):
     """
-    Excludes all of Kanto, disables early Kanto access
+    Excludes all of Kanto, disables Kanto access
     Forces Goal to Elite Four unless Silver Cave is included
     Goal badges will be limited to 8 if badges are shuffled or vanilla
     """
@@ -228,8 +228,8 @@ class RandomizeTrainerParties(Choice):
 class BoostTrainerPokemonLevels(Choice):
     """
     Boost levels of every trainer's Pokemon. There are 2 different boost modes:
-    Percentage Boost: increases every trainer Pokemons level by the boost percentage.
-    Set Min Level: Sets the boost value as the level of every trainer Pokemon lower than the boost value.
+    Percentage Boost: Increases every trainer Pokemon's level by the boost percentage.
+    Set Min Level: Trainer Pokemon will be the specified level or higher.
     """
     display_name = "Boost Trainer Pokemon Levels"
     default = 0
@@ -241,9 +241,10 @@ class BoostTrainerPokemonLevels(Choice):
 class TrainerLevelBoostValue(Range):
     """
     This Value only works if Boost Trainer Pokemon Levels is being used.
-    Meaning of this value is depended on Trainer Boost Mode.
-    Percentage Boost: This value represent the boost amount percentage
-    Set Min Level: This value is the LEVEL the trainer Pokemon will have if they have a lower level in vanilla
+    The meaning of this value depends on Trainer Boost Mode.
+
+    Percentage Boost: This value represents the boost amount percentage
+    Set Min Level: Trainer Pokemon will never be lower than this level
     """
     display_name = "Trainer Level Boost Value"
     default = 1
@@ -253,9 +254,9 @@ class TrainerLevelBoostValue(Range):
 
 class RandomizeLearnsets(Choice):
     """
-    Vanilla: Vanilla movesets
-    Randomize: Random movesets
-    Start With Four Moves: Random movesets with 4 starting moves
+    Vanilla: Vanilla learnsets
+    Randomize: Random learnsets
+    Start With Four Moves: Random learnsets with 4 starting moves
     """
     display_name = "Randomize Learnsets"
     default = 0
@@ -270,7 +271,7 @@ class LearnsetTypeBias(NamedRange):
 
     Percent chance of each move in a Pokemon's learnset to match its type.
     Default value is -1. This means there will be no check in logic for type matches.
-    The lowest possible type matching (most evil value) is 0. There will be no STAB moves in a Pokemon's Move Pool
+    The lowest possible type matching value is 0. There will be no STAB moves in a Pokemon's learnset
     If set to 100 all moves that a Pokemon will learn by leveling up will match one of its types
     """
     display_name = "Move Learnset Type Bias"
@@ -284,16 +285,16 @@ class LearnsetTypeBias(NamedRange):
 
 class RandomizeMoveValues(Choice):
     """
-    Restricted: Generates values based on vanilla
-    multiplies Power of each move with a random number between 0,5 to 1,5 and
+    Restricted: Generates values based on vanilla move values
+    Multiplies the power of each move with a random number between 0.5 and 1.5
     Adds or subtracts 0, 5 or 10 from original PP | Min 5, Max 40
  
     Full Exclude Accuracy: Fully randomizes move Power and PP
     Randomizes each move's Power [20-150], PP [5-40] linearly. All possible values have the same weight.
      
     Full: Previous + also randomizes accuracy.
-    Accuracy has a flat chance of %70 for being % 100 accurate if not it is again linear distributed between 30-100. 
-    For now, it does not randomize Accuracy of OHKO moves, status moves (e.g. Toxic) and unique damage moves (e.g. Seismic Toss)
+    Accuracy has a flat chance of 70% to be 100%, if not it is linearly distributed between 30-100.
+    Does not randomize accuracy of OHKO moves, status moves (e.g. Toxic) and unique damage moves (e.g. Seismic Toss)
     """
     display_name = "Randomize Move Values"
     default = 0
@@ -402,7 +403,7 @@ class RandomizeMusic(Toggle):
 class FreeFlyLocation(Choice):
     """
     If enabled, unlocks a random fly location for free
-    If Free Fly And Map Card is selected, an extra fly location
+    If Free Fly and Map Card is selected, an extra fly location
     is unlocked when the Pokegear and Map Card are obtained
     """
     display_name = "Free Fly Location"
@@ -415,6 +416,7 @@ class FreeFlyLocation(Choice):
 class EarlyFly(Toggle):
     """
     HM02 Fly will be placed early in the game
+    If this option is enabled, you will be able to Fly before being forced to use an item to progress
     """
     display_name = "Early Fly"
 
@@ -436,7 +438,7 @@ class RemoveBadgeRequirement(OptionSet):
     """
     Specify which HMs do not require a badge to use. This overrides the HM Badge Requirements setting.
     """
-    display_name = "HM Badge Exclusions"
+    display_name = "Remove Badge Requirement"
     valid_keys = ["Cut", "Fly", "Surf", "Strength", "Flash", "Whirlpool", "Waterfall"]
 
 
@@ -637,6 +639,7 @@ class FlyLocationBlocklist(OptionSet):
     """
     These locations won't be given to you as fly locations either as your free one or from receiving the map card.
     Locations should be provided in the format "Ecruteak City"
+    New Bark Town, Cherrygrove City and Indigo Plateau cannot be chosen as free fly locations and are not valid options
     If you blocklist enough locations that there aren't enough locations left for your total number of free fly locations, the blocklist will simply do nothing
     """
     display_name = "Fly Location Blocklist"
