@@ -22,4 +22,4 @@ jobs:
 
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: 'pokemon_crystal.apworld'
+          artifacts: 'worlds/pokemon_crystal.apworld'
