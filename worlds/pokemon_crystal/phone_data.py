@@ -521,7 +521,7 @@ team_rocket_call = PhoneScript(caller_withheld, [
     ScriptLine([para_cmd, "Make it double!"]),
     ScriptLine([para_cmd, "To protect the "]),
     ScriptLine([line_cmd, "world from"]),
-    ScriptLine([cont_cmd, "devestation!"]),
+    ScriptLine([cont_cmd, "devastation!"]),
     ScriptLine([para_cmd, "To unite all"]),
     ScriptLine([line_cmd, "peoples within our"]),
     ScriptLine([cont_cmd, "nation!"]),
@@ -612,7 +612,7 @@ blender_call = PhoneScript(caller_mom, [
     ScriptLine([cont_cmd, "ate it!"]),
     ScriptLine([para_cmd, "It was so good!"]),
     ScriptLine([para_cmd, "Hello?"]),
-    ScriptLine([line_cmd, play_g_cmd, "are you"]),
+    ScriptLine([line_cmd, play_g_cmd, " are you"]),
     ScriptLine([cont_cmd, "there?"]),
     ScriptLine([done_cmd])
 ])
