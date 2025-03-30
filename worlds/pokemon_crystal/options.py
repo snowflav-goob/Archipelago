@@ -225,6 +225,21 @@ class RandomizeTrainerParties(Choice):
     option_completely_random = 2
 
 
+class LevelScaling(Choice):
+    """
+    Sets whether Trainer levels are scaled based on sphere access.
+
+    - Off: Vanilla levels are used.
+    - Spheres: Levels are scaled based on sphere access only.
+    - Spheres and Distance: Levels are scaled based on both sphere access and distance from starting town.
+    """
+    display_name = "Level Scaling"
+    default = 0
+    option_off = 0
+    option_spheres = 1
+    option_spheres_and_distance = 2
+
+
 class BoostTrainerPokemonLevels(Choice):
     """
     Boost levels of every trainer's Pokemon. There are 2 different boost modes:
@@ -288,10 +303,10 @@ class RandomizeMoveValues(Choice):
     Restricted: Generates values based on vanilla move values
     Multiplies the power of each move with a random number between 0.5 and 1.5
     Adds or subtracts 0, 5 or 10 from original PP | Min 5, Max 40
- 
+
     Full Exclude Accuracy: Fully randomizes move Power and PP
     Randomizes each move's Power [20-150], PP [5-40] linearly. All possible values have the same weight.
-     
+
     Full: Previous + also randomizes accuracy.
     Accuracy has a flat chance of 70% to be 100%, if not it is linearly distributed between 30-100.
     Does not randomize accuracy of OHKO moves, status moves (e.g. Toxic) and unique damage moves (e.g. Seismic Toss)
@@ -677,6 +692,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     force_fully_evolved: ForceFullyEvolved
     normalize_encounter_rates: NormalizeEncounterRates
     randomize_static_pokemon: RandomizeStaticPokemon
+    level_scaling: LevelScaling
     randomize_trades: RandomizeTrades
     randomize_trainer_parties: RandomizeTrainerParties
     boost_trainers: BoostTrainerPokemonLevels

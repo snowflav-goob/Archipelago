@@ -30,21 +30,18 @@ class EventData(NamedTuple):
     parent_region: str
 
 
-class RegionData:
-    name: str
-    johto: bool
-    silver_cave: bool
-    exits: List[str]
-    warps: List[str]
-    locations: List[str]
-    events: List[EventData]
+class TrainerPokemon(NamedTuple):
+    level: int
+    pokemon: str
+    item: Union[str, None]
+    moves: List[str]
 
-    def __init__(self, name: str):
-        self.name = name
-        self.exits = []
-        self.warps = []
-        self.locations = []
-        self.events = []
+
+class TrainerData(NamedTuple):
+    name: str
+    trainer_type: str
+    pokemon: List[TrainerPokemon]
+    name_length: int
 
 
 class LearnsetData(NamedTuple):
@@ -86,19 +83,6 @@ class TMHMData(NamedTuple):
     type: str
     is_hm: bool
     move_id: int
-
-
-class TrainerPokemon(NamedTuple):
-    level: int
-    pokemon: str
-    item: Union[str, None]
-    moves: List[str]
-
-
-class TrainerData(NamedTuple):
-    trainer_type: str
-    pokemon: List[TrainerPokemon]
-    name_length: int
 
 
 class MiscWarp(NamedTuple):
@@ -165,6 +149,27 @@ class TradeData(NamedTuple):
     held_item: str
 
 
+class RegionData:
+    name: str
+    johto: bool
+    silver_cave: bool
+    exits: List[str]
+    warps: List[str]
+    trainers: List[TrainerData]
+    statics: List[StaticPokemon]
+    locations: List[str]
+    events: List[EventData]
+
+    def __init__(self, name: str):
+        self.name = name
+        self.exits = []
+        self.warps = []
+        self.trainers = []
+        self.statics = []
+        self.locations = []
+        self.events = []
+
+
 class FlyRegion(NamedTuple):
     id: int
     name: str
@@ -203,6 +208,7 @@ class PokemonCrystalData:
         self.items = {}
         self.trainers = {}
         self.pokemon = {}
+        self.trades = []
         self.moves = {}
 
 
@@ -237,6 +243,28 @@ def _init() -> None:
 
     claimed_locations: Set[str] = set()
 
+    data.trainers = {}
+
+    for trainer_name, trainer_attributes in trainer_data.items():
+        trainer_type = trainer_attributes["trainer_type"]
+        pokemon = []
+        for poke in trainer_attributes["pokemon"]:
+            if trainer_type == "TRAINERTYPE_NORMAL":
+                pokemon.append(TrainerPokemon(int(poke[0]), poke[1], None, []))
+            elif trainer_type == "TRAINERTYPE_ITEM":
+                pokemon.append(TrainerPokemon(int(poke[0]), poke[1], poke[2], []))
+            elif trainer_type == "TRAINERTYPE_MOVES":
+                pokemon.append(TrainerPokemon(int(poke[0]), poke[1], None, poke[2:]))
+            else:
+                pokemon.append(TrainerPokemon(int(poke[0]), poke[1], poke[2], poke[3:]))
+
+        data.trainers[trainer_name] = TrainerData(
+            trainer_name,
+            trainer_type,
+            pokemon,
+            trainer_attributes["name_length"]
+        )
+
     data.regions = {}
 
     for region_name, region_json in regions_json.items():
@@ -265,6 +293,11 @@ def _init() -> None:
         # events
         for event in region_json["events"]:
             new_region.events.append(EventData(event, region_name))
+
+        # trainers
+        if "trainers" in region_json:
+            for trainer in region_json["trainers"]:  #
+                new_region.trainers.append(data.trainers[trainer])
 
         # Exits
         for region_exit in region_json["exits"]:
@@ -357,26 +390,6 @@ def _init() -> None:
             move_attributes["name"],
         )
 
-    data.trainers = {}
-    for trainer_name, trainer_attributes in trainer_data.items():
-        trainer_type = trainer_attributes["trainer_type"]
-        pokemon = []
-        for poke in trainer_attributes["pokemon"]:
-            if trainer_type == "TRAINERTYPE_NORMAL":
-                pokemon.append(TrainerPokemon(int(poke[0]), poke[1], None, []))
-            elif trainer_type == "TRAINERTYPE_ITEM":
-                pokemon.append(TrainerPokemon(int(poke[0]), poke[1], poke[2], []))
-            elif trainer_type == "TRAINERTYPE_MOVES":
-                pokemon.append(TrainerPokemon(int(poke[0]), poke[1], None, poke[2:]))
-            else:
-                pokemon.append(TrainerPokemon(int(poke[0]), poke[1], poke[2], poke[3:]))
-
-        data.trainers[trainer_name] = TrainerData(
-            trainer_type,
-            pokemon,
-            trainer_attributes["name_length"]
-        )
-
     grass_dict = {}
     for grass_name, grass_data in wild_data["grass"].items():
         encounter_list = []
@@ -465,9 +478,9 @@ def _init() -> None:
     for static_name, static_data in data_json["static"].items():
         data.static[static_name] = StaticPokemon(static_data["pokemon"], static_data["addresses"])
 
-    data.trade = []
+    data.trades = []
     for trade_data in data_json["trade"]:
-        data.trade.append(
+        data.trades.append(
             TradeData(trade_data["index"],
                       trade_data["requested_pokemon"],
                       trade_data["received_pokemon"],

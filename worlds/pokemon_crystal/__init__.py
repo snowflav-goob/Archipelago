@@ -1,10 +1,11 @@
 import copy
 import logging
 import pkgutil
+from threading import Event
 from typing import List, ClassVar, Dict, Any, Tuple
 
 import settings
-from BaseClasses import Tutorial, ItemClassification
+from BaseClasses import Tutorial, ItemClassification, MultiWorld
 from Fill import fill_restrictive
 from Options import Toggle
 from worlds.AutoWorld import World, WebWorld
@@ -13,11 +14,13 @@ from .data import PokemonData, TrainerData, MiscData, TMHMData, data as crystal_
     WildData, StaticPokemon, MusicData, MoveData, FlyRegion, TradeData
 from .items import PokemonCrystalItem, create_item_label_to_code_map, get_item_classification, \
     ITEM_GROUPS, item_const_name_to_id, item_const_name_to_label
+from .level_scaling import perform_level_scaling
 from .locations import create_locations, PokemonCrystalLocation, create_location_label_to_id_map
 from .misc import misc_activities, get_misc_spoiler_log
 from .moves import randomize_tms, randomize_move_values, randomize_move_types
 from .music import randomize_music
-from .options import PokemonCrystalOptions, JohtoOnly, RandomizeBadges, Goal, HMBadgeRequirements, Route32Condition
+from .options import PokemonCrystalOptions, JohtoOnly, RandomizeBadges, Goal, HMBadgeRequirements, Route32Condition, \
+    LevelScaling
 from .phone import generate_phone_traps
 from .phone_data import PhoneScript
 from .pokemon import randomize_pokemon, randomize_starters, randomize_traded_pokemon
@@ -88,6 +91,41 @@ class PokemonCrystalWorld(World):
     generated_wooper: str
     generated_static: Dict[str, StaticPokemon]
     generated_trades: List[TradeData]
+    encounter_name_list: List[str]
+    encounter_level_list: List[int]
+    encounter_name_level_dict: Dict[str, int]
+    trainer_name_list: List[str]
+    trainer_level_list: List[int]
+    trainer_name_level_dict: Dict[str, int]
+
+    finished_level_scaling: Event
+
+    def __init__(self, multiworld: MultiWorld, player: int):
+        super().__init__(multiworld, player)
+        self.generated_moves = copy.deepcopy(crystal_data.moves)
+        self.generated_trainers = copy.deepcopy(crystal_data.trainers)
+        self.generated_misc = copy.deepcopy(crystal_data.misc)
+        self.generated_tms = copy.deepcopy(crystal_data.tmhm)
+        self.generated_wild = copy.deepcopy(crystal_data.wild)
+        self.generated_static = copy.deepcopy(crystal_data.static)
+        self.generated_trades = copy.deepcopy(crystal_data.trades)
+        self.generated_music = copy.deepcopy(crystal_data.music)
+        self.generated_pokemon = copy.deepcopy(crystal_data.pokemon)
+        self.generated_starters = (["CYNDAQUIL", "QUILAVA", "TYPHLOSION"],
+                                   ["TOTODILE", "CROCONAW", "FERALIGATR"],
+                                   ["CHIKORITA", "BAYLEEF", "MEGANIUM"])
+        self.generated_starter_helditems = ("BERRY", "BERRY", "BERRY")
+        self.generated_palettes = {}
+        self.generated_phone_traps = []
+        self.generated_phone_indices = []
+        self.generated_wooper = "WOOPER"
+        self.trainer_name_list = []
+        self.trainer_level_list = []
+        self.trainer_name_level_dict = {}
+        self.encounter_name_list = []
+        self.encounter_level_list = []
+        
+        self.finished_level_scaling = Event()
 
     def generate_early(self) -> None:
         if self.options.early_fly:
@@ -240,31 +278,19 @@ class PokemonCrystalWorld(World):
             fill_restrictive(self.multiworld, collection_state, badge_locs, badge_items,
                              single_player_placement=True, lock=True, allow_excluded=True)
 
-    def generate_output(self, output_directory: str) -> None:
+    @classmethod
+    def stage_generate_output(cls, multiworld: MultiWorld, output_directory: str):
+        perform_level_scaling(multiworld)
 
-        self.generated_moves = copy.deepcopy(crystal_data.moves)
-        self.generated_pokemon = copy.deepcopy(crystal_data.pokemon)
-        self.generated_starters = (["CYNDAQUIL", "QUILAVA", "TYPHLOSION"],
-                                   ["TOTODILE", "CROCONAW", "FERALIGATR"],
-                                   ["CHIKORITA", "BAYLEEF", "MEGANIUM"])
-        self.generated_starter_helditems = ("BERRY", "BERRY", "BERRY")
-        self.generated_trainers = copy.deepcopy(crystal_data.trainers)
-        self.generated_misc = copy.deepcopy(crystal_data.misc)
-        self.generated_tms = copy.deepcopy(crystal_data.tmhm)
-        self.generated_wild = copy.deepcopy(crystal_data.wild)
-        self.generated_static = copy.deepcopy(crystal_data.static)
-        self.generated_trades = copy.deepcopy(crystal_data.trade)
-        self.generated_music = copy.deepcopy(crystal_data.music)
-        self.generated_palettes = {}
-        self.generated_phone_traps = []
-        self.generated_phone_indices = []
-        self.generated_wooper = "WOOPER"
+    def generate_output(self, output_directory: str) -> None:
 
         if self.options.randomize_move_values.value:
             randomize_move_values(self)
 
         if self.options.randomize_move_types.value:
             randomize_move_types(self)
+
+        self.finished_level_scaling.wait()
 
         randomize_pokemon(self)
 

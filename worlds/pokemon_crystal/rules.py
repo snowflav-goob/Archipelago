@@ -597,6 +597,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
         set_rule(get_location("EVENT_OPENED_MT_SILVER"), has_mt_silver_badges)
         set_rule(get_location("EVENT_BEAT_RED"), has_red_badges)
+        set_rule(get_location("RED_1"), has_red_badges)
 
         # Route 28
         set_rule(get_location("Route 28 - Steel Wing from Celebrity in House"), can_cut)
