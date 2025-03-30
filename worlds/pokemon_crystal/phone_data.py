@@ -206,7 +206,7 @@ gura_call = PhoneScript(caller_withheld, [
     ScriptLine([para_cmd, "about our lord and"]),
     ScriptLine([line_cmd, "savior LIGHTNING"]),
     ScriptLine([cont_cmd, "MCQUEEN?"]),
-    ScriptLine([para_cmd, "He's he star of"]),
+    ScriptLine([para_cmd, "He's the star of"]),
     ScriptLine([line_cmd, "several feature"]),
     ScriptLine([cont_cmd, "films, such as"]),
     ScriptLine([para_cmd, "CARS, CARS 2,"]),
