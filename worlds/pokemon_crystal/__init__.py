@@ -97,7 +97,7 @@ class PokemonCrystalWorld(World):
     trainer_name_list: List[str]
     trainer_level_list: List[int]
     trainer_name_level_dict: Dict[str, int]
-    
+
     blocklisted_moves: set
 
     finished_level_scaling: Event
@@ -372,7 +372,8 @@ class PokemonCrystalWorld(World):
             "route_32_condition",
             "mt_silver_badges",
             "east_west_underground",
-            "undergrounds_require_power"
+            "undergrounds_require_power",
+            "enable_mischief"
         )
         slot_data["apworld_version"] = self.apworld_version
         slot_data["tea_north"] = 1 if "North" in self.options.saffron_gatehouse_tea.value else 0
