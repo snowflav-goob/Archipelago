@@ -4761,9 +4761,7 @@
     "exits": [
       "REGION_SILVER_CAVE_ROOM_2"
     ],
-    "trainers": [
-      "RED_1"
-    ],
+    "trainers": [],
     "locations": [],
     "events": [
       "EVENT_BEAT_RED"

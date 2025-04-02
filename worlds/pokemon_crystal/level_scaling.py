@@ -1,3 +1,4 @@
+import logging
 from typing import List, Set
 
 from BaseClasses import CollectionState, MultiWorld
@@ -187,8 +188,8 @@ def perform_level_scaling(multiworld: MultiWorld):
         if world.options.level_scaling == LevelScaling.option_off:
             continue
 
-        red_goal_adjustment = 73 / 40  # adjusts for when red is goal, 1.8 times higher level
-        e4_base_level = 40
+        # red_goal_adjustment = 73 / 40  # adjusts for when red is goal, 1.8 times higher level
+        # e4_base_level = 40
 
         for sphere in spheres:
             scaling_locations = [loc for loc in sphere if
@@ -203,10 +204,10 @@ def perform_level_scaling(multiworld: MultiWorld):
                 new_base_level = world.trainer_level_list.pop(0)
                 old_base_level = world.trainer_name_level_dict[trainer_location.name]
 
-                if trainer_location.name in ["WILL_1", "KOGA_1", "BRUNO_1", "KAREN_1", "CHAMPION_1"]:
-                    e4_base_level = new_base_level
-                elif trainer_location.name == "RED_1":
-                    new_base_level = max(new_base_level, round(e4_base_level * red_goal_adjustment))
+                # if trainer_location.name in ["WILL_1", "KOGA_1", "BRUNO_1", "KAREN_1", "CHAMPION_1"]:
+                #     e4_base_level = new_base_level
+                # elif trainer_location.name == "RED_1":
+                #     new_base_level = max(new_base_level, round(e4_base_level * red_goal_adjustment))
 
                 trainer_data = world.generated_trainers[trainer_location.name]
                 new_pokemon = []
@@ -215,6 +216,8 @@ def perform_level_scaling(multiworld: MultiWorld):
                                           (new_base_level + pokemon.level - old_base_level)))
                     new_level = bound(new_level, 1, 100)
                     new_pokemon.append(pokemon._replace(level=new_level))
+                    logging.debug(
+                        f"Setting level {new_level} {pokemon.pokemon} for {trainer_location.name} for {world.player_name}")
                 world.generated_trainers[trainer_location.name] = trainer_data._replace(pokemon=new_pokemon)
 
             # TODO modify static pokemon data so that we can actually patch the levels properly.

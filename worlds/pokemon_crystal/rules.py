@@ -328,10 +328,17 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     set_rule(get_location("Azalea Town - Lure Ball from Kurt"),
              lambda state: state.has("EVENT_CLEARED_SLOWPOKE_WELL", world.player))
 
+    set_rule(get_location("RIVAL_BAYLEEF_1"), lambda state: state.has("EVENT_CLEARED_SLOWPOKE_WELL", world.player))
+    set_rule(get_location("RIVAL_CROCONAW_1"), lambda state: state.has("EVENT_CLEARED_SLOWPOKE_WELL", world.player))
+    set_rule(get_location("RIVAL_QUILAVA_1"), lambda state: state.has("EVENT_CLEARED_SLOWPOKE_WELL", world.player))
+
     # Ilex Forest
     if not remove_ilex_cut_tree():
         set_rule(get_entrance("REGION_ILEX_FOREST:NORTH -> REGION_ILEX_FOREST:SOUTH"), can_cut)
         set_rule(get_entrance("REGION_ILEX_FOREST:SOUTH -> REGION_ILEX_FOREST:NORTH"), can_cut)
+
+    add_rule(get_entrance("REGION_ILEX_FOREST:SOUTH -> REGION_ILEX_FOREST:NORTH"),
+             lambda state: state.has("EVENT_CLEARED_SLOWPOKE_WELL", world.player))
 
     # Route 34
     set_rule(get_entrance("REGION_ROUTE_34 -> REGION_ROUTE_34:WATER"), can_surf)
@@ -597,7 +604,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
         set_rule(get_location("EVENT_OPENED_MT_SILVER"), has_mt_silver_badges)
         set_rule(get_location("EVENT_BEAT_RED"), has_red_badges)
-        set_rule(get_location("RED_1"), has_red_badges)
+        # set_rule(get_location("RED_1"), has_red_badges)
 
         # Route 28
         set_rule(get_location("Route 28 - Steel Wing from Celebrity in House"), can_cut)
