@@ -637,6 +637,22 @@ call_your_mother = PhoneScript(caller_withheld, [
     ScriptLine([done_cmd])
 ])
 
+fuzz_call = PhoneScript(caller_out_of_area, [
+    ScriptLine([text_cmd, "................"]),
+    ScriptLine([line_cmd, "................"]),
+    ScriptLine([cont_cmd, "................"]),
+    ScriptLine([para_cmd, "................"]),
+    ScriptLine([line_cmd, "................"]),
+    ScriptLine([cont_cmd, "................"]),
+    ScriptLine([para_cmd, "..F............."]),
+    ScriptLine([line_cmd, "................"]),
+    ScriptLine([cont_cmd, "................"]),
+    ScriptLine([para_cmd, "................"]),
+    ScriptLine([line_cmd, "................"]),
+    ScriptLine([cont_cmd, "................"]),
+    ScriptLine([done_cmd])
+])
+
 phone_scripts = [
     ffxiv,
     brock_oven,
@@ -663,4 +679,5 @@ phone_scripts = [
     blender_call,
     call_your_mother,
     diglett_call,
+    fuzz_call
 ]
