@@ -204,12 +204,12 @@ class PokemonCrystalClient(BizHawkClient):
                             local_found_key_items[KEY_ITEM_FLAG_MAP[location_id]] = True
 
             if local_checked_locations != self.local_checked_locations:
-                self.local_checked_locations = local_checked_locations
-
                 await ctx.send_msgs([{
                     "cmd": "LocationChecks",
                     "locations": list(local_checked_locations)
                 }])
+
+                self.local_checked_locations = local_checked_locations
 
             # Send game clear
             if not ctx.finished_game and game_clear:
