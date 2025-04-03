@@ -653,6 +653,24 @@ fuzz_call = PhoneScript(caller_out_of_area, [
     ScriptLine([done_cmd])
 ])
 
+daily_wowers_call = PhoneScript(caller_out_of_area, [
+    ScriptLine([text_cmd, "It's time for"]),
+    ScriptLine([line_cmd, "daily WOWers!"]),
+    ScriptLine([para_cmd, "chrisWOW chris-"]),
+    ScriptLine([line_cmd, "WOW chrisWOW"]),
+    ScriptLine([cont_cmd, "chrisWOW"]),
+    ScriptLine([para_cmd, "chrisWOW chris-"]),
+    ScriptLine([line_cmd, "WOW chrisWOW"]),
+    ScriptLine([cont_cmd, "chrisWOW"]),
+    ScriptLine([para_cmd, "WOWOWOWOWOWOW"]),
+    ScriptLine([line_cmd, "OWOWOWOWOWOWO"]),
+    ScriptLine([cont_cmd, "WOWOWOWOWOWOW"]),
+    ScriptLine([para_cmd, "OWOWOWOWOWOWO"]),
+    ScriptLine([line_cmd, "WOWOWOWOWOWOW"]),
+    ScriptLine([cont_cmd, "OWOW x247chWOW"]),
+    ScriptLine([done_cmd])
+])
+
 phone_scripts = [
     ffxiv,
     brock_oven,
@@ -679,5 +697,6 @@ phone_scripts = [
     blender_call,
     call_your_mother,
     diglett_call,
-    fuzz_call
+    fuzz_call,
+    daily_wowers_call,
 ]
