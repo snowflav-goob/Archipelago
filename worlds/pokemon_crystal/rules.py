@@ -283,6 +283,9 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     set_rule(get_location("Violet City - Item 1"), can_surf)
     set_rule(get_location("Violet City - Item 2"), can_surf)
 
+    set_rule(get_location("EVENT_GOT_TOGEPI_EGG_FROM_ELMS_AIDE"),
+             lambda state: state.has("EVENT_BEAT_FALKNER", world.player))
+
     set_rule(get_entrance("REGION_RUINS_OF_ALPH_OUTSIDE:NORTH -> REGION_RUINS_OF_ALPH_OUTSIDE:SOUTH"),
              can_surf)
     set_rule(get_entrance("REGION_RUINS_OF_ALPH_OUTSIDE:SOUTH -> REGION_RUINS_OF_ALPH_OUTSIDE:NORTH"),
