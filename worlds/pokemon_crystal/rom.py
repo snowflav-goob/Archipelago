@@ -474,8 +474,9 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
                                                           UndergroundsRequirePower.option_east_west]:
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_NorthSouthUndergroundOpen"] + 1)
 
-    if world.options.undergrounds_require_power.value in [UndergroundsRequirePower.option_neither,
-                                                          UndergroundsRequirePower.option_north_south]:
+    if (world.options.east_west_underground.value and
+            world.options.undergrounds_require_power.value in [UndergroundsRequirePower.option_neither,
+                                                               UndergroundsRequirePower.option_north_south]):
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_EastWestUndergroundOpen"] + 1)
 
     if world.options.remote_items:
