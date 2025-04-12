@@ -1303,7 +1303,10 @@
       "REGION_GOLDENROD_DEPT_STORE_6F",
       "REGION_GOLDENROD_DEPT_STORE_ELEVATOR"
     ],
-    "locations": [],
+    "locations": [
+      "TM27_RETURN",
+      "TM28_FRUSTRATION"
+    ],
     "events": []
   },
   "REGION_GOLDENROD_DEPT_STORE_6F": {

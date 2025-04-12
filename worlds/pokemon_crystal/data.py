@@ -548,6 +548,7 @@ def _init() -> None:
         "text_frame": PokemonCrystalGameSetting(1, 0, 4, dict([(f"{x + 1}", x) for x in range(8)]), 0),
         "bike_music": PokemonCrystalGameSetting(1, 4, 1, INVERTED_ON_OFF, 1),
         "surf_music": PokemonCrystalGameSetting(1, 5, 1, INVERTED_ON_OFF, 1),
+        
         "skip_nicknames": PokemonCrystalGameSetting(1, 6, 1, ON_OFF, 0),
         "auto_run": PokemonCrystalGameSetting(1, 7, 1, ON_OFF, 0),
 
