@@ -1,4 +1,3 @@
-from math import floor
 from typing import TYPE_CHECKING
 
 from . import MiscOption
@@ -9,13 +8,13 @@ if TYPE_CHECKING:
 
 def misc_activities(world: "PokemonCrystalWorld"):
     # Decide which mischief is active
-    all_mischief = world.generated_misc.selected
-
-    lower_count = len(all_mischief) // 2
-    upper_count = floor(len(all_mischief) * 0.75)
-    mischief_count = world.random.randint(lower_count, upper_count)
-
-    world.generated_misc = world.generated_misc._replace(selected=world.random.sample(all_mischief, mischief_count))
+    # all_mischief = world.generated_misc.selected
+    #
+    # lower_count = len(all_mischief) // 2
+    # upper_count = floor(len(all_mischief) * 0.75)
+    # mischief_count = world.random.randint(lower_count, upper_count)
+    #
+    # world.generated_misc = world.generated_misc._replace(selected=world.random.sample(all_mischief, mischief_count))
 
     if MiscOption.RadioTowerQuestions.value in world.generated_misc.selected:
         # Randomize Yes/No answers for Radio Card quiz
@@ -41,6 +40,9 @@ def misc_activities(world: "PokemonCrystalWorld"):
                 number = int(pair[i].split("_")[1])
                 new_number = shuffled_saffron_warps[direction][number - 1]
                 pair[i] = f"{direction}_{new_number}"
+
+    if MiscOption.RadioChannels.value in world.generated_misc.selected:
+        world.random.shuffle(world.generated_misc.radio_channel_addresses)
 
 
 def get_misc_spoiler_log(world: "PokemonCrystalWorld", write):

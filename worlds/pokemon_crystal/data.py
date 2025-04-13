@@ -96,6 +96,7 @@ class MiscOption(Enum):
     EcruteakGym = 6
     RedGyarados = 7
     OhkoMoves = 8
+    RadioChannels = 9
 
     @staticmethod
     def all():
@@ -116,6 +117,7 @@ class MiscData(NamedTuple):
     fuchsia_gym_trainers: List[List[int]]
     radio_tower_questions: List[str]
     saffron_gym_warps: MiscSaffronWarps
+    radio_channel_addresses: List[int]
     selected: List[MiscOption] = MiscOption.all()
 
 
@@ -281,6 +283,7 @@ def _init() -> None:
     type_data = data_json["types"]
     fuchsia_data = data_json["misc"]["fuchsia_gym_trainers"]
     saffron_data = data_json["misc"]["saffron_gym_warps"]
+    radio_addr_data = data_json["misc"]["radio_channel_addresses"]
     tmhm_data = data_json["tmhm"]
 
     data.rom_version = data_json["rom_version"]
@@ -492,7 +495,8 @@ def _init() -> None:
         saffron_warps[warp_name] = MiscWarp(warp_data["coords"], warp_data["id"])
 
     radio_tower_data = ["Y", "Y", "N", "Y", "N"]
-    data.misc = MiscData(fuchsia_data, radio_tower_data, MiscSaffronWarps(saffron_warps, saffron_data["pairs"]))
+    data.misc = MiscData(fuchsia_data, radio_tower_data, MiscSaffronWarps(saffron_warps, saffron_data["pairs"]),
+                         radio_addr_data)
 
     data.types = type_data["types"]
     data.type_ids = type_data["ids"]

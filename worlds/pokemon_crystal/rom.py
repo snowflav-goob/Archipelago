@@ -351,6 +351,12 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
             address = data.rom_addresses["AP_Misc_RedGyarados"] + 1
             write_bytes(patch, [1], address)
 
+        if MiscOption.RadioChannels.value in world.generated_misc.selected:
+            address = data.rom_addresses["AP_Misc_RadioChannels"]
+            for channel_addr in world.generated_misc.radio_channel_addresses:
+                write_bytes(patch, channel_addr.to_bytes(2, "little"), address + 1)
+                address += 3
+
     if world.options.blind_trainers:
         address = data.rom_addresses["AP_Setting_Blind_Trainers"]
         write_bytes(patch, [0xC9], address)  # 0xC9 = ret
