@@ -49,7 +49,7 @@ def misc_activities(world: "PokemonCrystalWorld"):
 def get_misc_spoiler_log(world: "PokemonCrystalWorld", write):
     write(f"{len(world.generated_misc.selected)} mischief options enabled.")
 
-    if MiscOption.RadioTowerQuestions.value in world.generated_misc.radio_tower_questions:
+    if MiscOption.RadioTowerQuestions.value in world.generated_misc.selected:
         radio_tower_answers = " -> ".join(
             ["YES" if answer == "Y" else "NO" for answer in world.generated_misc.radio_tower_questions])
         write(f"\n\nRadio Tower Quiz Answers:\n\n{radio_tower_answers}\n\n")
