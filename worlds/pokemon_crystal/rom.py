@@ -357,6 +357,11 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
                 write_bytes(patch, channel_addr.to_bytes(2, "little"), address + 1)
                 address += 3
 
+        if MiscOption.MomItems.value in world.generated_misc.selected:
+            address = data.rom_addresses["AP_Misc_MomItems"]
+            for mom_item in world.generated_misc.mom_items:
+                write_bytes(patch, item_const_name_to_id(mom_item.item), address + (8 * mom_item.index) + 7)
+
     if world.options.blind_trainers:
         address = data.rom_addresses["AP_Setting_Blind_Trainers"]
         write_bytes(patch, [0xC9], address)  # 0xC9 = ret
