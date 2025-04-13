@@ -6,7 +6,7 @@ import bsdiff4
 
 from settings import get_settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes, APPatchExtension
-from .data import data
+from .data import data, MiscOption
 from .items import item_const_name_to_id
 from .options import Route32Condition, UndergroundsRequirePower, RequireItemfinder, Goal
 from .utils import convert_to_ingame_text
@@ -284,55 +284,72 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         write_bytes(patch, tm_moves, address)
 
     if world.options.enable_mischief:
-        address = data.rom_addresses["AP_Misc_FuchsiaTrainers"] + 1
-        write_bytes(patch, [0x0a], address + 2)  # spin speed
-        for c in world.generated_misc.fuchsia_gym_trainers:
-            write_coords = [c[1] + 4, c[0] + 4]
-            write_bytes(patch, write_coords, address)
-            address += 13
-        for pair in world.generated_misc.saffron_gym_warps.pairs:
-            addresses = [data.rom_addresses["AP_Misc_SaffronGymWarp_" + warp] + 2 for warp in pair]
-            ids = [world.generated_misc.saffron_gym_warps.warps[warp].id for warp in pair]
-            write_bytes(patch, [ids[1]], addresses[0])  # reverse ids
-            write_bytes(patch, [ids[0]], addresses[1])
-        address = data.rom_addresses["AP_Misc_Ecruteak_Gym_Warp"]
-        write_bytes(patch, [2, 5], address)
-        for move in ["GUILLOTINE", "HORN_DRILL", "FISSURE"]:
-            address = data.rom_addresses["AP_MoveData_Effect_" + move]
-            write_bytes(patch, [0x65], address)  # false swipe effect
-            address = data.rom_addresses["AP_MoveData_Power_" + move]
-            write_bytes(patch, [0xFF], address)  # power 255
-            address = data.rom_addresses["AP_MoveData_Accuracy_" + move]
-            write_bytes(patch, [0xFF], address)  # accuracy 100%
-            address = data.rom_addresses["AP_MoveData_PP_" + move]
-            write_bytes(patch, [0x14], address)  # 20 PP
-        address = data.rom_addresses["AP_Misc_RadioTower_Sfx_N"] + 1
-        # bad pokedex rating jingle
-        write_bytes(patch, [0x9F], address)
-        address = data.rom_addresses["AP_Misc_RadioTower_Sfx_Y2"] + 1
-        # increasing pokedex rating jingles
-        write_bytes(patch, [0xA0], address)
-        address = data.rom_addresses["AP_Misc_RadioTower_Sfx_Y3"] + 1
-        write_bytes(patch, [0xA1], address)
-        address = data.rom_addresses["AP_Misc_RadioTower_Sfx_Y4"] + 1
-        write_bytes(patch, [0xA2], address)
-        address = data.rom_addresses["AP_Misc_RadioTower_Sfx_Y5"] + 1
-        write_bytes(patch, [0xA3], address)
-        for i in range(0, 5):
-            answer = world.generated_misc.radio_tower_questions[i]
-            # # 0x08 is iffalse (.WrongAnswer), 0x09 is iftrue (.WrongAnswer)
-            byte = 0x08 if answer == "Y" else 0x09
-            address = data.rom_addresses["AP_Misc_RadioTower_Q" + str(i + 1)]
-            write_bytes(patch, [byte], address)
-        # gives the chairman a 15/16 chance of repeating the rapidash rant each time
-        address = data.rom_addresses["AP_Misc_Rapidash_Loop"] + 1
-        write_bytes(patch, [1], address)
-        address = data.rom_addresses["AP_Misc_Amphy"] + 1
-        write_bytes(patch, [1], address)
-        address = data.rom_addresses["AP_Misc_SecretSwitch"] + 1
-        write_bytes(patch, [1], address)
-        address = data.rom_addresses["AP_Misc_RedGyarados"] + 1
-        write_bytes(patch, [1], address)
+        if MiscOption.FuchsiaGym.value in world.generated_misc.selected:
+            address = data.rom_addresses["AP_Misc_FuchsiaTrainers"] + 1
+            write_bytes(patch, [0x0a], address + 2)  # spin speed
+            for c in world.generated_misc.fuchsia_gym_trainers:
+                write_coords = [c[1] + 4, c[0] + 4]
+                write_bytes(patch, write_coords, address)
+                address += 13
+
+        if MiscOption.SaffronGym.value in world.generated_misc.selected:
+            for pair in world.generated_misc.saffron_gym_warps.pairs:
+                addresses = [data.rom_addresses["AP_Misc_SaffronGymWarp_" + warp] + 2 for warp in pair]
+                ids = [world.generated_misc.saffron_gym_warps.warps[warp].id for warp in pair]
+                write_bytes(patch, [ids[1]], addresses[0])  # reverse ids
+                write_bytes(patch, [ids[0]], addresses[1])
+
+        if MiscOption.EcruteakGym.value in world.generated_misc.selected:
+            address = data.rom_addresses["AP_Misc_Ecruteak_Gym_Warp"]
+            write_bytes(patch, [2, 5], address)
+
+        if MiscOption.OhkoMoves.value in world.generated_misc.selected:
+            for move in ["GUILLOTINE", "HORN_DRILL", "FISSURE"]:
+                address = data.rom_addresses["AP_MoveData_Effect_" + move]
+                write_bytes(patch, [0x65], address)  # false swipe effect
+                address = data.rom_addresses["AP_MoveData_Power_" + move]
+                write_bytes(patch, [0xFF], address)  # power 255
+                address = data.rom_addresses["AP_MoveData_Accuracy_" + move]
+                write_bytes(patch, [0xFF], address)  # accuracy 100%
+                address = data.rom_addresses["AP_MoveData_PP_" + move]
+                write_bytes(patch, [0x14], address)  # 20 PP
+
+        if MiscOption.RadioTowerQuestions.value in world.generated_misc.selected:
+            address = data.rom_addresses["AP_Misc_RadioTower_Sfx_N"] + 1
+            # bad pokedex rating jingle
+            write_bytes(patch, [0x9F], address)
+            address = data.rom_addresses["AP_Misc_RadioTower_Sfx_Y2"] + 1
+            # increasing pokedex rating jingles
+            write_bytes(patch, [0xA0], address)
+            address = data.rom_addresses["AP_Misc_RadioTower_Sfx_Y3"] + 1
+            write_bytes(patch, [0xA1], address)
+            address = data.rom_addresses["AP_Misc_RadioTower_Sfx_Y4"] + 1
+            write_bytes(patch, [0xA2], address)
+            address = data.rom_addresses["AP_Misc_RadioTower_Sfx_Y5"] + 1
+            write_bytes(patch, [0xA3], address)
+            for i in range(0, 5):
+                answer = world.generated_misc.radio_tower_questions[i]
+                # # 0x08 is iffalse (.WrongAnswer), 0x09 is iftrue (.WrongAnswer)
+                byte = 0x08 if answer == "Y" else 0x09
+                address = data.rom_addresses["AP_Misc_RadioTower_Q" + str(i + 1)]
+                write_bytes(patch, [byte], address)
+
+        if MiscOption.FanClubChairman.value in world.generated_misc.selected:
+            # gives the chairman a 15/16 chance of repeating the rapidash rant each time
+            address = data.rom_addresses["AP_Misc_Rapidash_Loop"] + 1
+            write_bytes(patch, [1], address)
+
+        if MiscOption.Amphy.value in world.generated_misc.selected:
+            address = data.rom_addresses["AP_Misc_Amphy"] + 1
+            write_bytes(patch, [1], address)
+
+        if MiscOption.SecretSwitch.value in world.generated_misc.selected:
+            address = data.rom_addresses["AP_Misc_SecretSwitch"] + 1
+            write_bytes(patch, [1], address)
+
+        if MiscOption.RedGyarados.value in world.generated_misc.selected:
+            address = data.rom_addresses["AP_Misc_RedGyarados"] + 1
+            write_bytes(patch, [1], address)
 
     if world.options.blind_trainers:
         address = data.rom_addresses["AP_Setting_Blind_Trainers"]

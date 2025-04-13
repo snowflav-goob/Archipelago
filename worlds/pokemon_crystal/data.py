@@ -1,4 +1,5 @@
 import pkgutil
+from enum import Enum
 from typing import Dict, List, NamedTuple, Set, FrozenSet, Any, Union, Optional
 
 import orjson
@@ -85,6 +86,22 @@ class TMHMData(NamedTuple):
     move_id: int
 
 
+class MiscOption(Enum):
+    FuchsiaGym = 0
+    SaffronGym = 1
+    RadioTowerQuestions = 2
+    Amphy = 3
+    FanClubChairman = 4
+    SecretSwitch = 5
+    EcruteakGym = 6
+    RedGyarados = 7
+    OhkoMoves = 8
+
+    @staticmethod
+    def all():
+        return list(map(lambda c: c.value, MiscOption))
+
+
 class MiscWarp(NamedTuple):
     coords: List[int]
     id: int
@@ -99,6 +116,7 @@ class MiscData(NamedTuple):
     fuchsia_gym_trainers: List[List[int]]
     radio_tower_questions: List[str]
     saffron_gym_warps: MiscSaffronWarps
+    selected: List[MiscOption] = MiscOption.all()
 
 
 class MusicConst(NamedTuple):
@@ -548,7 +566,7 @@ def _init() -> None:
         "text_frame": PokemonCrystalGameSetting(1, 0, 4, dict([(f"{x + 1}", x) for x in range(8)]), 0),
         "bike_music": PokemonCrystalGameSetting(1, 4, 1, INVERTED_ON_OFF, 1),
         "surf_music": PokemonCrystalGameSetting(1, 5, 1, INVERTED_ON_OFF, 1),
-        
+
         "skip_nicknames": PokemonCrystalGameSetting(1, 6, 1, ON_OFF, 0),
         "auto_run": PokemonCrystalGameSetting(1, 7, 1, ON_OFF, 0),
 

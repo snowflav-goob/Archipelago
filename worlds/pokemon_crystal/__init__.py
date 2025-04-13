@@ -11,7 +11,7 @@ from Options import Toggle
 from worlds.AutoWorld import World, WebWorld
 from .client import PokemonCrystalClient
 from .data import PokemonData, TrainerData, MiscData, TMHMData, data as crystal_data, \
-    WildData, StaticPokemon, MusicData, MoveData, FlyRegion, TradeData
+    WildData, StaticPokemon, MusicData, MoveData, FlyRegion, TradeData, MiscOption
 from .items import PokemonCrystalItem, create_item_label_to_code_map, get_item_classification, \
     ITEM_GROUPS, item_const_name_to_id, item_const_name_to_label
 from .level_scaling import perform_level_scaling
