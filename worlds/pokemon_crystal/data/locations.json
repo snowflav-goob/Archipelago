@@ -2967,6 +2967,26 @@
     "default_item": "TM_ATTRACT",
     "script": "AP_NPC_GoldenrodGym_TM_ATTRACT"
   },
+  "TM27_RETURN": {
+    "label": "Goldenrod Dept. Store 5F - TM27 from Receptionist",
+    "flag": "EVENT_GOT_TM27_RETURN",
+    "type": "giveitem",
+    "tags": [
+      "NPCGift"
+    ],
+    "default_item": "TM_RETURN",
+    "script": "AP_NPC_GoldenrodDeptStore5F_TM_RETURN"
+  },
+  "TM28_FRUSTRATION": {
+    "label": "Goldenrod Dept. Store 5F - TM21 from Receptionist",
+    "flag": "EVENT_GOT_TM21_FRUSTRATION",
+    "type": "giveitem",
+    "tags": [
+      "NPCGift"
+    ],
+    "default_item": "TM_RETURN",
+    "script": "AP_NPC_GoldenrodDeptStore5F_TM_FRUSTRATION"
+  },
   "GS_BALL_FROM_GOLDENROD_POKEMON_CENTER": {
     "label": "Goldenrod City - Post-E4 GS Ball from Trade Corner Receptionist",
     "flag": "EVENT_GOT_GS_BALL_FROM_GOLDENROD_POKEMON_CENTER",

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from Options import Toggle, Choice, DefaultOnToggle, Range, PerGameCommonOptions, NamedRange, OptionSet, \
-    StartInventoryPool
+    StartInventoryPool, OptionDict
 from .data import data
 
 
@@ -90,11 +90,19 @@ class RandomizeHiddenItems(Toggle):
     display_name = "Randomize Hidden Items"
 
 
-class RequireItemfinder(DefaultOnToggle):
+class RequireItemfinder(Choice):
     """
     Hidden items require Itemfinder in logic
+
+    Not Required: Hidden items do not require the Itemfinder at all
+    Logically Required: Hidden items will expect you to have Itemfinder for logic but can be picked up without it
+    Hard Required: Hidden items cannot be picked up without the Itemfinder
     """
     display_name = "Require Itemfinder"
+    default = 1
+    option_not_required = 0
+    option_logically_required = 1
+    option_hard_required = 2
 
 
 class Route32Condition(Choice):
@@ -671,6 +679,36 @@ class RemoteItems(Toggle):
     display_name = "Remote Items"
 
 
+class GameOptions(OptionDict):
+    """
+    Presets in-game options. These can be changed in-game later. Any omitted options will use their default.
+
+    Allowed options and values, with default first:
+
+    text_speed: mid/slow/fast/instant
+    battle_shift: shift/set
+    battle_animations: all/no_scene/no_bars/speedy
+    sound: mono/stereo
+    menu_account: on/off
+    text_frame: 1-8
+    bike_music: on/off
+    surf_music: on/off
+    skip_nicknames: off/on
+    auto_run: off/on
+    spinners: normal/rotators
+    fast_egg_hatch: off/on
+    fast_egg_make: off/on
+    rods_always_work: off/on
+    catch_exp: off/on
+    poison_flicker: on/off
+    turbo_a: off/on
+    low_hp_beep: on/off
+    time_of_day: auto/morn/day/nite
+
+    """
+    display_name = "Game Options"
+
+
 @dataclass
 class PokemonCrystalOptions(PerGameCommonOptions):
     goal: Goal
@@ -735,5 +773,6 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     paralysis_trap_weight: ParalysisTrapWeight
     remote_items: RemoteItems
     item_receive_sound: ItemReceiveSound
+    game_options: GameOptions
     enable_mischief: EnableMischief
     start_inventory_from_pool: StartInventoryPool
