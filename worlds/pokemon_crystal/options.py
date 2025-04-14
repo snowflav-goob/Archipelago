@@ -119,6 +119,20 @@ class Route32Condition(Choice):
     option_none = 2
 
 
+class Route2Access(Choice):
+    """
+    Sets the roadblock to move between the west of route 2 and Diglett's cave
+    Vanilla: Cut is required
+    Ledge: A ledge is added north of Diglett's cave allowing east -> west access without Cut
+    Open: No requirement
+    """
+    display_name = "Route 2 Access"
+    default = 1
+    option_vanilla = 0
+    option_ledge = 1
+    option_open = 2
+
+
 class Trainersanity(Toggle):
     """
     Adds checks for defeating trainers
@@ -721,6 +735,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     randomize_hidden_items: RandomizeHiddenItems
     require_itemfinder: RequireItemfinder
     route_32_condition: Route32Condition
+    route_2_access: Route2Access
     trainersanity: Trainersanity
     trainersanity_alerts: TrainersanityAlerts
     randomize_pokegear: RandomizePokegear

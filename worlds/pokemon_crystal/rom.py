@@ -8,8 +8,8 @@ from settings import get_settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes, APPatchExtension
 from .data import data, MiscOption
 from .items import item_const_name_to_id
-from .options import Route32Condition, UndergroundsRequirePower, RequireItemfinder, Goal
-from .utils import convert_to_ingame_text
+from .options import Route32Condition, UndergroundsRequirePower, RequireItemfinder, Goal, Route2Access
+from .utils import convert_to_ingame_text, map_tile_index
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
@@ -528,6 +528,16 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
 
     if world.options.goal.value != Goal.option_elite_four:
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_SkipE4Credits"] + 1)
+
+    if world.options.route_2_access.value == Route2Access.option_open:
+        tile = 0x0A  # grass
+    elif world.options.route_2_access.value == Route2Access.option_ledge:
+        tile = 0x58  # grass with left ledge
+    else:
+        tile = None
+
+    if tile:
+        write_bytes(patch, [tile], data.rom_addresses["Route2_Blocks"] + map_tile_index(5, 1, 10))
 
     # Set slot name
     for i, byte in enumerate(world.player_name.encode("utf-8")):

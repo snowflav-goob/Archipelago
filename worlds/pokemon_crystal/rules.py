@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from BaseClasses import CollectionState
 from worlds.generic.Rules import add_rule, set_rule
 from .data import data
-from .options import JohtoOnly, Route32Condition, UndergroundsRequirePower
+from .options import JohtoOnly, Route32Condition, UndergroundsRequirePower, Route2Access
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
@@ -649,7 +649,10 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                  lambda state: state.has("EVENT_VIRIDIAN_GYM_BLUE", world.player))
 
         # Route 2
-        set_rule(get_entrance("REGION_ROUTE_2:WEST -> REGION_ROUTE_2:NORTHEAST"), can_cut)
+        if world.options.route_2_access.value != Route2Access.option_open:
+            set_rule(get_entrance("REGION_ROUTE_2:WEST -> REGION_ROUTE_2:NORTHEAST"), can_cut)
+        if world.options.route_2_access.value == Route2Access.option_vanilla:
+            set_rule(get_entrance("REGION_ROUTE_2:NORTHEAST -> REGION_ROUTE_2:WEST"), can_cut)
 
         set_rule(get_entrance("REGION_ROUTE_2:WEST -> REGION_ROUTE_2:SOUTHEAST"), can_cut)
 
