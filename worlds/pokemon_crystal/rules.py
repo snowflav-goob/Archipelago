@@ -3,7 +3,8 @@ from typing import TYPE_CHECKING
 from BaseClasses import CollectionState
 from worlds.generic.Rules import add_rule, set_rule
 from .data import data
-from .options import JohtoOnly, Route32Condition, UndergroundsRequirePower, Route2Access, BlackthornDarkCaveAccess
+from .options import JohtoOnly, Route32Condition, UndergroundsRequirePower, Route2Access, BlackthornDarkCaveAccess, \
+    NationalParkAccess
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
@@ -412,6 +413,12 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
              lambda state: state.has("EVENT_GAVE_KENYA", world.player))
 
     set_rule(get_entrance("REGION_ROUTE_35 -> REGION_ROUTE_35:FRUITTREE"), can_surf)
+
+    if world.options.national_park_access.value == NationalParkAccess.option_bicycle:
+        set_rule(get_entrance("REGION_ROUTE_35_NATIONAL_PARK_GATE -> REGION_NATIONAL_PARK"),
+                 lambda state: state.has("Bicycle", world.player))
+        set_rule(get_entrance("REGION_ROUTE_36_NATIONAL_PARK_GATE -> REGION_NATIONAL_PARK"),
+                 lambda state: state.has("Bicycle", world.player))
 
     # Sudowoodo
     set_rule(get_entrance("REGION_ROUTE_36:EAST -> REGION_ROUTE_37"),

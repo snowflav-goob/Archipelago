@@ -9,7 +9,7 @@ from worlds.Files import APProcedurePatch, APTokenMixin, APPatchExtension
 from .data import data, MiscOption
 from .items import item_const_name_to_id
 from .options import Route32Condition, UndergroundsRequirePower, RequireItemfinder, Goal, Route2Access, \
-    BlackthornDarkCaveAccess
+    BlackthornDarkCaveAccess, NationalParkAccess
 from .utils import convert_to_ingame_text, write_bytes, replace_map_tiles
 
 if TYPE_CHECKING:
@@ -561,6 +561,9 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         map_name = "DarkCaveBlackthornEntrance"
         replace_map_tiles(patch, map_name, 2, 7, [0x02])
         replace_map_tiles(patch, map_name, 2, 8, [0x02])
+
+    if world.options.national_park_access.value == NationalParkAccess.option_bicycle:
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_NationalParkBicycle"] + 1)
 
     # Set slot name
     for i, byte in enumerate(world.player_name.encode("utf-8")):

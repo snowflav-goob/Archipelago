@@ -155,6 +155,18 @@ class BlackthornDarkCaveAccess(Choice):
     option_waterfall = 1
 
 
+class NationalParkAccess(Choice):
+    """
+    Sets the requirement to enter National Park
+    Vanilla: No requirement
+    Bicycle: The Bicycle is required
+    """
+    display_name = "National Park Access"
+    default = 0
+    option_vanilla = 0
+    option_bicycle = 1
+
+
 class Trainersanity(Toggle):
     """
     Adds checks for defeating trainers
@@ -760,6 +772,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     red_gyarados_access: RedGyaradosAccess
     route_2_access: Route2Access
     blackthorn_dark_cave_access: BlackthornDarkCaveAccess
+    national_park_access: NationalParkAccess
     trainersanity: Trainersanity
     trainersanity_alerts: TrainersanityAlerts
     randomize_pokegear: RandomizePokegear
