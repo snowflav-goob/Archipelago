@@ -406,7 +406,7 @@ class PokemonCrystalWorld(World):
             slot_data["free_fly_location"] = self.free_fly_location.id
             
         if self.options.free_fly_location.value in [FreeFlyLocation.option_free_fly_and_map_card,
-                                                    FreeFlyLocation.option_free_fly_and_map_card]:
+                                                    FreeFlyLocation.option_map_card]:
             slot_data["map_card_fly_location"] = self.map_card_fly_location.id
 
         return slot_data
