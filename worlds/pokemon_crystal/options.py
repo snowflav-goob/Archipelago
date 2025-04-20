@@ -7,8 +7,8 @@ from .data import data
 
 class Goal(Choice):
     """
-    Elite Four: collect 8 badges and enter the Hall of Fame
-    Red: collect 16 badges and defeat Red at Mt. Silver
+    Elite Four: Defeat the Champion and enter the Hall of Fame
+    Red: Defeat Red at Mt. Silver
     """
     display_name = "Goal"
     default = 0

@@ -259,8 +259,10 @@ class PokemonCrystalWorld(World):
                 default_itempool += [self.create_item_by_code(item_code)]
 
         if self.options.johto_only.value != JohtoOnly.option_off:
-            default_itempool = [item if "JohtoOnlyRemoved" not in item.tags else self.create_item_by_const_name(
-                get_random_filler_item(self.random)) for item in default_itempool]
+            # Replace the S.S. Ticket with the Silver Wing for Johto only seeds
+            default_itempool = [item if item.name != "S.S. Ticket" else self.create_item_by_const_name("SILVER_WING")
+                                for
+                                item in default_itempool]
 
         self.multiworld.itempool += default_itempool
 
