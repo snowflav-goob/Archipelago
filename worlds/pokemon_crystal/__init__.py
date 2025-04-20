@@ -381,7 +381,11 @@ class PokemonCrystalWorld(World):
             "mt_silver_badges",
             "east_west_underground",
             "undergrounds_require_power",
-            "enable_mischief"
+            "enable_mischief",
+            "red_gyarados_access",
+            "route_2_access",
+            "blackthorn_dark_cave_access",
+            "national_park_access"
         )
         slot_data["apworld_version"] = self.apworld_version
         slot_data["tea_north"] = 1 if "North" in self.options.saffron_gatehouse_tea.value else 0
