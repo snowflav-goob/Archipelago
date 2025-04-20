@@ -621,7 +621,8 @@ def _init() -> None:
         "turbo_a": PokemonCrystalGameSetting(2, 6, 1, ON_OFF, 0),
         "low_hp_beep": PokemonCrystalGameSetting(2, 7, 1, INVERTED_ON_OFF, 0),
 
-        "time_of_day": PokemonCrystalGameSetting(3, 0, 2, {"auto": 0, "morn": 1, "day": 2, "nite": 3}, 0)
+        "time_of_day": PokemonCrystalGameSetting(3, 0, 2, {"auto": 0, "morn": 1, "day": 2, "nite": 3}, 0),
+        "exp_distribution": PokemonCrystalGameSetting(3, 2, 2, {"gen2": 0, "gen6": 1, "gen8": 2, "no_exp": 3}, 0)
     }
 
     data.map_sizes = {}

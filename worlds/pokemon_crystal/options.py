@@ -747,6 +747,7 @@ class GameOptions(OptionDict):
     fast_egg_hatch: off/on
     fast_egg_make: off/on
     rods_always_work: off/on
+    exp_distribution: gen2/gen6/gen8/no_exp
     catch_exp: off/on
     poison_flicker: on/off
     turbo_a: off/on

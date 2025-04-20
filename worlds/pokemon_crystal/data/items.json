@@ -285,7 +285,10 @@
   "EXP_SHARE": {
     "name": "Exp Share",
     "classification": "USEFUL",
-    "tags": []
+    "tags": [
+      "KeyItem",
+      "Unique"
+    ]
   },
   "OLD_ROD": {
     "name": "Old Rod",
