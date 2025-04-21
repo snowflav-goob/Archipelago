@@ -4,7 +4,7 @@ from BaseClasses import CollectionState
 from worlds.generic.Rules import add_rule, set_rule
 from .data import data
 from .options import JohtoOnly, Route32Condition, UndergroundsRequirePower, Route2Access, BlackthornDarkCaveAccess, \
-    NationalParkAccess
+    NationalParkAccess, KantoAccessCondition
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
@@ -178,6 +178,9 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
     def has_mt_silver_badges(state: CollectionState):
         return has_n_badges(state, world.options.mt_silver_badges.value)
+
+    def has_kanto_access_badges(state: CollectionState):
+        return has_n_badges(state, world.options.kanto_access_badges.value)
 
     def get_entrance(entrance: str):
         return world.multiworld.get_entrance(entrance, world.player)
@@ -654,11 +657,21 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                  lambda state: can_surf(state) and can_waterfall(state))
 
     if not johto_only():
-        set_rule(get_entrance("REGION_ROUTE_22 -> REGION_VICTORY_ROAD_GATE"),
-                 lambda state: state.has("EVENT_FOUGHT_SNORLAX", world.player))
 
-        set_rule(get_entrance("REGION_VICTORY_ROAD_GATE -> REGION_ROUTE_22"),
-                 lambda state: state.has("EVENT_FOUGHT_SNORLAX", world.player))
+        if world.options.kanto_access_condition.value == KantoAccessCondition.option_wake_snorlax:
+            set_rule(get_entrance("REGION_ROUTE_22 -> REGION_VICTORY_ROAD_GATE"),
+                     lambda state: state.has("EVENT_FOUGHT_SNORLAX", world.player))
+
+            set_rule(get_entrance("REGION_VICTORY_ROAD_GATE -> REGION_ROUTE_22"),
+                     lambda state: state.has("EVENT_FOUGHT_SNORLAX", world.player))
+        elif world.options.kanto_access_condition.value == KantoAccessCondition.option_become_champion:
+            set_rule(get_entrance("REGION_ROUTE_22 -> REGION_VICTORY_ROAD_GATE"),
+                     lambda state: state.has("EVENT_BEAT_ELITE_FOUR", world.player))
+            set_rule(get_entrance("REGION_VICTORY_ROAD_GATE -> REGION_ROUTE_22"),
+                     lambda state: state.has("EVENT_BEAT_ELITE_FOUR", world.player))
+        elif world.options.kanto_access_condition.value == KantoAccessCondition.option_badge_count:
+            set_rule(get_entrance("REGION_ROUTE_22 -> REGION_VICTORY_ROAD_GATE"), has_kanto_access_badges)
+            set_rule(get_entrance("REGION_VICTORY_ROAD_GATE -> REGION_ROUTE_22"), has_kanto_access_badges)
 
         # Viridian
         set_rule(get_location("Viridian City - TM42 from Sleepy Guy"), lambda state: can_surf(state) or can_cut(state))

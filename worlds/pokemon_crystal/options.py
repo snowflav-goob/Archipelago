@@ -119,6 +119,33 @@ class Route32Condition(Choice):
     option_none = 2
 
 
+class KantoAccessCondition(Choice):
+    """
+    Sets the condition required to pass into Kanto from the Victory Road gate (and vice versa)
+    Wake Snorlax: Wake the Snorlax outside of Diglett's Cave
+    Badge Count: Require the number of badges specified by kanto_access_badges
+    Become Champion: Defeat Lance and enter the Hall of Fame
+
+    This setting does nothing if Johto Only is enabled
+    """
+    display_name = "Kanto Access Condition"
+    default = 0
+    option_wake_snorlax = 0
+    option_badge_count = 1
+    option_become_champion = 2
+
+
+class KantoAccessBadges(Range):
+    """
+    Sets the number of badges required to pass into Kanto from the Victory Road gate (and vice versa)
+    Only applies if Kanto Access Condition is set to badge_count
+    """
+    display_name = "Kanto Access Badges"
+    default = 8
+    range_start = 1
+    range_end = 16
+
+
 class RedGyaradosAccess(Choice):
     """
     Sets whether the Red Gyarados requires Whirlpool to access
@@ -771,6 +798,8 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     randomize_hidden_items: RandomizeHiddenItems
     require_itemfinder: RequireItemfinder
     route_32_condition: Route32Condition
+    kanto_access_condition: KantoAccessCondition
+    kanto_access_badges: KantoAccessBadges
     red_gyarados_access: RedGyaradosAccess
     route_2_access: Route2Access
     blackthorn_dark_cave_access: BlackthornDarkCaveAccess
