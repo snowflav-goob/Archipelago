@@ -608,7 +608,6 @@ def _init() -> None:
         "text_frame": PokemonCrystalGameSetting(1, 0, 4, dict([(f"{x + 1}", x) for x in range(8)]), 0),
         "bike_music": PokemonCrystalGameSetting(1, 4, 1, INVERTED_ON_OFF, 1),
         "surf_music": PokemonCrystalGameSetting(1, 5, 1, INVERTED_ON_OFF, 1),
-
         "skip_nicknames": PokemonCrystalGameSetting(1, 6, 1, ON_OFF, 0),
         "auto_run": PokemonCrystalGameSetting(1, 7, 1, ON_OFF, 0),
 
@@ -618,11 +617,11 @@ def _init() -> None:
         "rods_always_work": PokemonCrystalGameSetting(2, 3, 1, ON_OFF, 0),
         "catch_exp": PokemonCrystalGameSetting(2, 4, 1, ON_OFF, 0),
         "poison_flicker": PokemonCrystalGameSetting(2, 5, 1, INVERTED_ON_OFF, 0),
-        "turbo_a": PokemonCrystalGameSetting(2, 6, 1, ON_OFF, 0),
-        "low_hp_beep": PokemonCrystalGameSetting(2, 7, 1, INVERTED_ON_OFF, 0),
+        "low_hp_beep": PokemonCrystalGameSetting(2, 6, 1, INVERTED_ON_OFF, 0),
 
         "time_of_day": PokemonCrystalGameSetting(3, 0, 2, {"auto": 0, "morn": 1, "day": 2, "nite": 3}, 0),
-        "exp_distribution": PokemonCrystalGameSetting(3, 2, 2, {"gen2": 0, "gen6": 1, "gen8": 2, "no_exp": 3}, 0)
+        "exp_distribution": PokemonCrystalGameSetting(3, 2, 2, {"gen2": 0, "gen6": 1, "gen8": 2, "no_exp": 3}, 0),
+        "turbo_button": PokemonCrystalGameSetting(3, 4, 2, {"none": 0, "a": 1, "b": 2, "a_or_b": 3}, 0)
     }
 
     data.map_sizes = {}

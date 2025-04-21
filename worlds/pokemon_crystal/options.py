@@ -778,7 +778,7 @@ class GameOptions(OptionDict):
     exp_distribution: gen2/gen6/gen8/no_exp
     catch_exp: off/on
     poison_flicker: on/off
-    turbo_a: off/on
+    turbo_button: none/a/b/a_or_b
     low_hp_beep: on/off
     time_of_day: auto/morn/day/nite
 
