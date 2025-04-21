@@ -552,14 +552,14 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_SkipE4Credits"] + 1)
 
     if world.options.route_2_access.value == Route2Access.option_open:
-        tile = 0x0A  # grass
+        tiles = [0x01]  # ground
     elif world.options.route_2_access.value == Route2Access.option_ledge:
-        tile = 0x58  # grass with left ledge
+        tiles = [0x58, 0x0A]  # grass with left ledge, grass
     else:
-        tile = None
+        tiles = None
 
-    if tile:
-        replace_map_tiles(patch, "Route2", 5, 1, [tile])
+    if tiles:
+        replace_map_tiles(patch, "Route2", 5, 1, tiles)
 
     if world.options.red_gyarados_access:
         whirlpool_tile = 0x07
