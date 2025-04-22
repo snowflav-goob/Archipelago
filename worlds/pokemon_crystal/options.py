@@ -137,7 +137,7 @@ class KantoAccessCondition(Choice):
 
 class KantoAccessBadges(Range):
     """
-    Sets the number of badges required to pass into Kanto from the Victory Road gate (and vice versa)
+    Sets the number of badges required to pass between
     Only applies if Kanto Access Condition is set to badge_count
     """
     display_name = "Kanto Access Badges"
@@ -158,7 +158,7 @@ class RedGyaradosAccess(Choice):
 
 class Route2Access(Choice):
     """
-    Sets the roadblock to move between the west of route 2 and Diglett's cave
+    Sets the roadblock for moving between the west of route 2 and Diglett's cave
     Vanilla: Cut is required
     Ledge: A ledge is added north of Diglett's cave allowing east -> west access without Cut
     Open: No requirement
@@ -170,9 +170,21 @@ class Route2Access(Choice):
     option_open = 2
 
 
+class Route3Access(Choice):
+    """
+    Sets the roadblock for moving between Pewter City and Route 3
+    Vanilla: No requirement
+    Boulder Badge: The Boulder Badge is required to pass
+    """
+    display_name = "Route 3 Access"
+    default = 0
+    option_vanilla = 0
+    option_boulder_badge = 1
+
+
 class BlackthornDarkCaveAccess(Choice):
     """
-    Sets the roadblock required to travel from Route 31 to Blackthorn City through Dark Cave
+    Sets the roadblock for travelling from Route 31 to Blackthorn City through Dark Cave
     Vanilla: Traversal is not possible
     Waterfall: A waterfall is added to the Violet side of Dark Cave and a ledge is removed on the Blackthorn side, allowing passage with Flash, Surf and Waterfall
     """
@@ -802,6 +814,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     kanto_access_badges: KantoAccessBadges
     red_gyarados_access: RedGyaradosAccess
     route_2_access: Route2Access
+    route_3_access: Route3Access
     blackthorn_dark_cave_access: BlackthornDarkCaveAccess
     national_park_access: NationalParkAccess
     trainersanity: Trainersanity

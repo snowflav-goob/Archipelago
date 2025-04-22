@@ -4,7 +4,7 @@ from BaseClasses import CollectionState
 from worlds.generic.Rules import add_rule, set_rule
 from .data import data
 from .options import JohtoOnly, Route32Condition, UndergroundsRequirePower, Route2Access, BlackthornDarkCaveAccess, \
-    NationalParkAccess, KantoAccessCondition
+    NationalParkAccess, KantoAccessCondition, Route3Access
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
@@ -613,7 +613,8 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
     set_rule(get_location("Route 27 - West Item across Water"), can_surf)
 
-    set_rule(get_location("Route 27 - East Item behind Whirlpool"), lambda state: can_surf(state) and can_whirlpool(state))
+    set_rule(get_location("Route 27 - East Item behind Whirlpool"),
+             lambda state: can_surf(state) and can_whirlpool(state))
     if trainersanity():
         set_rule(get_location("Route 27 - Bird Keeper Jose"), lambda state: can_surf(state) and can_whirlpool(state))
 
@@ -649,7 +650,8 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         if hidden():
             set_rule(get_location("Outside Silver Cave - Hidden Item across Water"), can_surf)
 
-        set_rule(get_location("Silver Cave 2F - Northeast Item"), lambda state: can_surf(state) and can_waterfall(state))
+        set_rule(get_location("Silver Cave 2F - Northeast Item"),
+                 lambda state: can_surf(state) and can_waterfall(state))
 
         set_rule(get_location("Silver Cave 2F - West Item"), lambda state: can_surf(state) and can_waterfall(state))
 
@@ -693,6 +695,13 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
         set_rule(get_entrance("REGION_ROUTE_2:NORTHEAST -> REGION_ROUTE_2:SOUTHEAST"), can_cut)
 
+        # Route 3
+        if world.options.route_3_access.value == Route3Access.option_boulder_badge:
+            set_rule(get_entrance("REGION_PEWTER_CITY -> REGION_ROUTE_3"),
+                     lambda state: has_badge(state, "boulder"))
+            set_rule(get_entrance("REGION_ROUTE_3 -> REGION_PEWTER_CITY"),
+                     lambda state: has_badge(state, "boulder"))
+
         if hidden():
             set_rule(get_location("Mount Moon Square - Hidden Item under Rock"), can_rocksmash)
 
@@ -733,7 +742,8 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
         set_rule(get_location("Route 12 - Item behind North Cut Tree"), can_cut)
 
-        set_rule(get_location("Route 12 - Item behind South Cut Tree across Water"), lambda state: can_cut(state) and can_surf(state))
+        set_rule(get_location("Route 12 - Item behind South Cut Tree across Water"),
+                 lambda state: can_cut(state) and can_surf(state))
 
         if hidden():
             set_rule(get_location("Route 12 - Hidden Item on Island"), can_surf)

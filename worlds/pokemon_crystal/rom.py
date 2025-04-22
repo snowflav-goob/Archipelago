@@ -10,7 +10,7 @@ from . import FreeFlyLocation
 from .data import data, MiscOption
 from .items import item_const_name_to_id
 from .options import Route32Condition, UndergroundsRequirePower, RequireItemfinder, Goal, Route2Access, \
-    BlackthornDarkCaveAccess, NationalParkAccess, KantoAccessCondition
+    BlackthornDarkCaveAccess, NationalParkAccess, KantoAccessCondition, Route3Access
 from .utils import convert_to_ingame_text, write_bytes, replace_map_tiles
 
 if TYPE_CHECKING:
@@ -584,6 +584,9 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
 
     if world.options.national_park_access.value == NationalParkAccess.option_bicycle:
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_NationalParkBicycle"] + 1)
+
+    if world.options.route_3_access == Route3Access.option_boulder_badge:
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_PewterCityBadgeRequired"] + 1)
 
     # Set slot name
     for i, byte in enumerate(world.player_name.encode("utf-8")):
