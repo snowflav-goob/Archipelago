@@ -389,7 +389,8 @@ class PokemonCrystalWorld(World):
             "blackthorn_dark_cave_access",
             "national_park_access",
             "kanto_access_condition",
-            "kanto_access_badges"
+            "kanto_access_badges",
+            "route_3_access"
         )
         slot_data["apworld_version"] = self.apworld_version
         slot_data["tea_north"] = 1 if "North" in self.options.saffron_gatehouse_tea.value else 0
