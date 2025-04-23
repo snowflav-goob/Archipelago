@@ -502,7 +502,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         write_bytes(patch, [map_fly_byte], data.rom_addresses["AP_Setting_MapCardFreeFly_Byte"] + 1)
         write_bytes(patch, map_fly_offset, data.rom_addresses["AP_Setting_MapCardFreeFly_Offset"] + 1)
 
-    if not world.options.remove_ilex_cut_tree:
+    if world.options.remove_ilex_cut_tree:
         # Set cut tree tile to floor
         replace_map_tiles(patch, "IlexForest", 0, 11, [0x1])
 
