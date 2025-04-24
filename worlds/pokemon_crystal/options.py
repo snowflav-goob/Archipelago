@@ -794,7 +794,7 @@ class GameOptions(OptionDict):
     turbo_button: none/a/b/a_or_b
     low_hp_beep: on/off
     time_of_day: auto/morn/day/nite
-
+    battle_move_stats: off/on
     """
     display_name = "Game Options"
 

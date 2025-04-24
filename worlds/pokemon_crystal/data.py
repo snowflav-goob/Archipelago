@@ -618,6 +618,7 @@ def _init() -> None:
         "catch_exp": PokemonCrystalGameSetting(2, 4, 1, ON_OFF, 0),
         "poison_flicker": PokemonCrystalGameSetting(2, 5, 1, INVERTED_ON_OFF, 0),
         "low_hp_beep": PokemonCrystalGameSetting(2, 6, 1, INVERTED_ON_OFF, 0),
+        "battle_move_stats": PokemonCrystalGameSetting(2, 7, 1, INVERTED_ON_OFF, 0),
 
         "time_of_day": PokemonCrystalGameSetting(3, 0, 2, {"auto": 0, "morn": 1, "day": 2, "nite": 3}, 0),
         "exp_distribution": PokemonCrystalGameSetting(3, 2, 2, {"gen2": 0, "gen6": 1, "gen8": 2, "no_exp": 3}, 0),
