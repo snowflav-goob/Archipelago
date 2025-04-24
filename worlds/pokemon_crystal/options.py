@@ -795,7 +795,7 @@ class GameOptions(OptionDict):
     exp_distribution: gen2/gen6/gen8/no_exp - Sets the EXP distribution method:
         gen2: EXP is split evenly among battle participants, EXP Share splits evenly between participants and non-participants
         gen6: Participants earn 100% of EXP, non-participants earn 50% of EXP when EXP Share is enabled
-        gen8: Participants each 100% of EXP, non-participants earn 100% of EXP when EXP Share is enabled
+        gen8: Participants earn 100% of EXP, non-participants earn 100% of EXP when EXP Share is enabled
         no_exp: EXP is disabled
     catch_exp: off/on - Sets whether or not you get EXP for catching a Pokemon
     poison_flicker: on/off - Sets whether the overworld poison flash effect is played
