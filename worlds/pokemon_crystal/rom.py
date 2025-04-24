@@ -255,7 +255,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         if world.options.randomize_learnsets.value:
             address = data.rom_addresses["AP_Attacks_" + pkmn_name]
             for move in pkmn_data.learnset:
-                move_id = data.moves[move.move].id
+                move_id = data.moves[move.move].rom_id
                 write_bytes(patch, [move.level, move_id], address)
                 address += 2
 
@@ -280,7 +280,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
                 item_id = item_const_name_to_id(pokemon.item)
                 pokemon_data.append(item_id)
             for move in pokemon.moves:
-                move_id = data.moves[move].id
+                move_id = data.moves[move].rom_id
                 pokemon_data.append(move_id)
             write_bytes(patch, pokemon_data, address)
             address += len(pokemon_data)

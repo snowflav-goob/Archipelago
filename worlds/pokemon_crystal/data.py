@@ -70,7 +70,8 @@ class PokemonData(NamedTuple):
 
 
 class MoveData(NamedTuple):
-    id: int
+    id: str
+    rom_id: int
     type: str
     power: int
     accuracy: int
@@ -80,6 +81,7 @@ class MoveData(NamedTuple):
 
 
 class TMHMData(NamedTuple):
+    id: str
     tm_num: int
     type: str
     is_hm: bool
@@ -468,6 +470,7 @@ def _init() -> None:
     data.moves = {}
     for move_name, move_attributes in move_data.items():
         data.moves[move_name] = MoveData(
+            move_name,
             move_attributes["id"],
             move_attributes["type"],
             move_attributes["power"],
@@ -546,6 +549,7 @@ def _init() -> None:
     data.tmhm = {}
     for tm_name, tm_data in tmhm_data.items():
         data.tmhm[tm_name] = TMHMData(
+            tm_name,
             tm_data["tm_num"],
             tm_data["type"],
             tm_data["is_hm"],
