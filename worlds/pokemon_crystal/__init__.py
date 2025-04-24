@@ -380,7 +380,6 @@ class PokemonCrystalWorld(World):
             "mt_silver_badges",
             "east_west_underground",
             "undergrounds_require_power",
-            "enable_mischief",
             "red_gyarados_access",
             "route_2_access",
             "blackthorn_dark_cave_access",
@@ -408,6 +407,8 @@ class PokemonCrystalWorld(World):
         if self.options.free_fly_location.value in [FreeFlyLocation.option_free_fly_and_map_card,
                                                     FreeFlyLocation.option_map_card]:
             slot_data["map_card_fly_location"] = self.map_card_fly_location.id
+
+        slot_data["mischief_enabled"] = 1 if MiscOption.SecretSwitch.value in self.generated_misc.selected else 0
 
         return slot_data
 
