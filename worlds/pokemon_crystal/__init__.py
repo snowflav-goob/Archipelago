@@ -340,9 +340,6 @@ class PokemonCrystalWorld(World):
 
         randomize_pokemon(self)
 
-        if self.options.randomize_starters.value:
-            randomize_starters(self)
-
         if self.options.randomize_wilds.value:
             randomize_wild_pokemon(self)
 
