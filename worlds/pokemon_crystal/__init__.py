@@ -216,8 +216,10 @@ class PokemonCrystalWorld(World):
         if self.options.randomize_badges.value == RandomizeBadges.option_shuffle:
             item_locations = [location for location in item_locations if "Badge" not in location.tags]
 
-        total_badges = max(self.options.elite_four_badges.value, self.options.red_badges.value,
-                           self.options.mt_silver_badges.value)
+        total_badges = max(self.options.elite_four_badges.value, self.options.radio_tower_badges.value)
+        if self.options.johto_only.value == JohtoOnly.option_include_silver_cave:
+            total_badges = max(total_badges, self.options.mt_silver_badges.value, self.options.red_badges.value)
+
         add_badges = []
         # Extra badges to add to the pool in johto only
         if self.options.johto_only and total_badges > 8:
