@@ -21,7 +21,8 @@ Once you have installed BizHawk, open `EmuHawk.exe` and change the following set
   This reduces the possibility of losing save data in emulator crashes.
 - In `Config -> Customize`, enable `Run in background`. This will prevent the game from losing connection to the client
   when tabbed out.
-- Open a Gameboy or Gameboy Color game (`.gb` or `.gbc`) and then navigate to `Config -> Controllers...`. This menu may
+- Open a Game Boy or Game Boy Color game (`.gb` or `.gbc`) and then navigate to `Config -> Controllers...`. This menu
+  may
   not be available if a game is not already open.
 
 ### Configuring mGBA
@@ -52,7 +53,7 @@ with [PopTracker](https://github.com/black-sliver/PopTracker/releases)
 8. On your first time opening a patch with BizHawk Client, you will also be asked to locate `EmuHawk.exe` in your
    BizHawk install. For mGBA users, you can select `Cancel` and manually open mGBA.
 
-If you're playing a single-player seed and you don't care about autotracking or hints, you can stop here, close the
+If you're playing a single-player seed, and you don't care about autotracking or hints, you can stop here, close the
 client, and load the patched ROM in any emulator. However, for multiworlds and other Archipelago features, continue
 below using BizHawk or mGBA as your emulator.
 
