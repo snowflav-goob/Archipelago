@@ -161,7 +161,26 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                        "earth": "Earth Badge"
                        }
 
-    def has_badge(state: CollectionState, badge):
+    gym_events = {"falkner": "EVENT_BEAT_FALKNER",
+                  "bugsy": "EVENT_BEAT_BUGSY",
+                  "whitney": "EVENT_BEAT_WHITNEY",
+                  "morty": "EVENT_BEAT_MORTY",
+                  "jasmine": "EVENT_BEAT_JASMINE",
+                  "chuck": "EVENT_BEAT_CHUCK",
+                  "pryce": "EVENT_BEAT_PRYCE",
+                  "clair": "EVENT_BEAT_CLAIR",
+
+                  "brock": "EVENT_BEAT_BROCK",
+                  "misty": "EVENT_BEAT_MISTY",
+                  "ltsurge": "EVENT_BEAT_LTSURGE",
+                  "erika": "EVENT_BEAT_ERIKA",
+                  "janine": "EVENT_BEAT_JANINE",
+                  "sabrina": "EVENT_BEAT_SABRINA",
+                  "blaine": "EVENT_BEAT_BLAINE",
+                  "blue": "EVENT_BEAT_BLUE"
+                  }
+
+    def has_badge(state: CollectionState, badge: str):
         return state.has(badge_items[badge], world.player)
 
     def has_n_badges(state: CollectionState, n: int) -> bool:
@@ -181,6 +200,12 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
     def has_kanto_access_badges(state: CollectionState):
         return has_n_badges(state, world.options.kanto_access_badges.value)
+
+    def has_beaten_gym(state: CollectionState, leader: str):
+        return state.has(gym_events[leader], world.player)
+
+    def has_beaten_n_gyms(state: CollectionState, n: int):
+        return state.has_from_list_unique(gym_events.values(), world.player, n)
 
     def get_entrance(entrance: str):
         return world.multiworld.get_entrance(entrance, world.player)
@@ -292,7 +317,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     set_rule(get_location("Violet City - Northeast Item across Water"), can_surf)
 
     set_rule(get_location("EVENT_GOT_TOGEPI_EGG_FROM_ELMS_AIDE"),
-             lambda state: state.has("EVENT_BEAT_FALKNER", world.player))
+             lambda state: has_beaten_gym(state, "falkner"))
 
     set_rule(get_entrance("REGION_RUINS_OF_ALPH_OUTSIDE:NORTH -> REGION_RUINS_OF_ALPH_OUTSIDE:SOUTH"),
              can_surf)
@@ -503,7 +528,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         set_rule(get_location("Cianwood City - Hidden Item in North Rock"), can_rocksmash)
 
     set_rule(get_location("Cianwood City - HM02 from Chuck's Wife"),
-             lambda state: state.has("EVENT_BEAT_CHUCK", world.player))
+             lambda state: has_beaten_gym(state, "chuck"))
 
     set_rule(get_entrance("REGION_CIANWOOD_GYM -> REGION_CIANWOOD_GYM:STRENGTH"), can_strength)
 
@@ -588,7 +613,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     set_rule(get_entrance("REGION_BLACKTHORN_GYM_2F -> REGION_BLACKTHORN_GYM_1F:STRENGTH"), can_strength)
 
     set_rule(get_entrance("REGION_BLACKTHORN_CITY -> REGION_DRAGONS_DEN_1F"),
-             lambda state: state.has("EVENT_BEAT_CLAIR", world.player) and can_surf(state))
+             lambda state: has_beaten_gym(state, "clair") and can_surf(state))
 
     # Dragons Den
     set_rule(get_entrance("REGION_DRAGONS_DEN_B1F -> REGION_DRAGONS_DEN_B1F:WATER"), can_surf)
