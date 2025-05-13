@@ -222,6 +222,17 @@ class Trainersanity(Toggle):
     display_name = "Trainersanity"
 
 
+class Rematchsanity(Toggle):
+    """
+    Adds rematch fights to the level scaling pool
+    Note: This is extremely beta, and the logic and patch aren't fully fleshed out.
+    This means that the game requires you beat the rematches in vanilla order,
+    but the ap logic might have them in a different order, so earlier rematches might
+    be higher level than later ones.
+    """
+    display_name = "Rematchsanity"
+
+
 class TrainersanityAlerts(Choice):
     """
     Shows a message box or plays a sound for Trainersanity checks
@@ -839,6 +850,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     national_park_access: NationalParkAccess
     trainersanity: Trainersanity
     trainersanity_alerts: TrainersanityAlerts
+    rematchsanity: Rematchsanity
     randomize_pokegear: RandomizePokegear
     randomize_berry_trees: RandomizeBerryTrees
     randomize_starters: RandomizeStarters
