@@ -1,4 +1,5 @@
 import logging
+from random import Random
 from typing import TYPE_CHECKING
 
 from .data import data
@@ -23,6 +24,13 @@ def get_random_filler_item(random):
                      ["HEAL_POWDER", "BURN_HEAL", "PARLYZ_HEAL", "ICE_HEAL", "ANTIDOTE", "AWAKENING", "FULL_HEAL"] * 5]
     group = random.choice(weighted_pool)
     return random.choice(group)
+
+
+def get_random_ball(random: Random):
+    balls = ["POKE_BALL", "GREAT_BALL", "ULTRA_BALL", "FRIEND_BALL", "HEAVY_BALL", "LOVE_BALL", "LEVEL_BALL",
+             "LURE_BALL", "FAST_BALL"]
+    ball_weights = [50, 30, 20, 1, 1, 1, 1, 1, 1]
+    return random.choices(balls, weights=ball_weights)[0]
 
 
 def get_free_fly_locations(world: "PokemonCrystalWorld"):

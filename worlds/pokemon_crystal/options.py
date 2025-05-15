@@ -244,6 +244,20 @@ class TrainersanityAlerts(Choice):
     option_sound_only = 2
 
 
+class Dexsanity(NamedRange):
+    """
+    Adds checks for catching Pokemon
+    """
+    display_name = "Dexsanity"
+    default = 0
+    range_start = 0
+    range_end = 251
+    special_range_names = {
+        "off": default,
+        "full": range_end
+    }
+
+
 class RandomizePokegear(Toggle):
     """
     Shuffles the Pokegear and cards into the pool
@@ -851,6 +865,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     trainersanity: Trainersanity
     trainersanity_alerts: TrainersanityAlerts
     rematchsanity: Rematchsanity
+    dexsanity: Dexsanity
     randomize_pokegear: RandomizePokegear
     randomize_berry_trees: RandomizeBerryTrees
     randomize_starters: RandomizeStarters

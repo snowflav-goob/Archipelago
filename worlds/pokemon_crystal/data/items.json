@@ -292,7 +292,7 @@
   },
   "OLD_ROD": {
     "name": "Old Rod",
-    "classification": "USEFUL",
+    "classification": "PROGRESSION",
     "tags": [
       "KeyItem",
       "Unique"
@@ -300,7 +300,7 @@
   },
   "GOOD_ROD": {
     "name": "Good Rod",
-    "classification": "USEFUL",
+    "classification": "PROGRESSION",
     "tags": [
       "KeyItem",
       "Unique"
@@ -313,7 +313,7 @@
   },
   "SUPER_ROD": {
     "name": "Super Rod",
-    "classification": "USEFUL",
+    "classification": "PROGRESSION",
     "tags": [
       "KeyItem",
       "Unique"
@@ -1212,7 +1212,7 @@
   },
   "TM_2": {
     "name": "TM02",
-    "classification": "USEFUL",
+    "classification": "PROGRESSION",
     "tags": [
       "TM"
     ]

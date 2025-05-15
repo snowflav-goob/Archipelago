@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Dict, Set, List
 import worlds._bizhawk as bizhawk
 from NetUtils import ClientStatus
 from worlds._bizhawk.client import BizHawkClient
-from .data import data
+from .data import data, POKEDEX_OFFSET
 
 if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext
@@ -184,6 +184,14 @@ class PokemonCrystalClient(BizHawkClient):
                 [overworld_guard]
             )
 
+            pokedex_read_result = await bizhawk.guarded_read(
+                ctx.bizhawk_ctx,
+                [(data.ram_addresses["wArchipelagoPokedexCaught"], 0x20, "WRAM")],
+                [overworld_guard]
+            )
+
+            pokedex_caught_bytes = pokedex_read_result[0]
+
             if read_result is None:
                 return
 
@@ -208,6 +216,16 @@ class PokemonCrystalClient(BizHawkClient):
 
                         if location_id in KEY_ITEM_FLAG_MAP:
                             local_found_key_items[KEY_ITEM_FLAG_MAP[location_id]] = True
+
+            if ctx.slot_data["dexsanity"]:
+                for byte_i, byte in enumerate(pokedex_caught_bytes):
+                    for i in range(8):
+                        if byte & (1 << i) != 0:
+                            dex_number = (byte_i * 8 + i) + 1
+
+                            location_id = dex_number + POKEDEX_OFFSET
+                            if location_id in ctx.server_locations:
+                                local_checked_locations.add(location_id)
 
             if local_checked_locations != self.local_checked_locations:
                 await ctx.send_msgs([{

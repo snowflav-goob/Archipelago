@@ -3,7 +3,8 @@ from typing import TYPE_CHECKING
 from BaseClasses import CollectionState
 from worlds.generic.Rules import add_rule, set_rule
 from .data import data
-from .options import Goal, JohtoOnly, Route32Condition, UndergroundsRequirePower, Route2Access, BlackthornDarkCaveAccess, \
+from .options import Goal, JohtoOnly, Route32Condition, UndergroundsRequirePower, Route2Access, \
+    BlackthornDarkCaveAccess, \
     NationalParkAccess, KantoAccessCondition, Route3Access
 
 if TYPE_CHECKING:
@@ -316,14 +317,10 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         set_rule(get_location("BUG_CATCHER_WADE_RADIO"),
                  lambda state: state.has("EVENT_CLEARED_RADIO_TOWER", world.player))
 
-    # Dark Cave Violet
+        # Dark Cave Violet
         if world.options.goal == Goal.option_red:
             set_rule(get_location("BUG_CATCHER_WADE_CHAMPION"),
-                 lambda state: state.has("EVENT_BEAT_ELITE_FOUR", world.player))
-
-    if world.options.blackthorn_dark_cave_access.value == BlackthornDarkCaveAccess.option_waterfall:
-        set_rule(get_entrance("REGION_DARK_CAVE_VIOLET_ENTRANCE -> REGION_DARK_CAVE_BLACKTHORN_ENTRANCE"),
-                 lambda state: can_surf(state) and can_waterfall(state))
+                     lambda state: state.has("EVENT_BEAT_ELITE_FOUR", world.player))
 
     set_rule(get_location("Dark Cave Violet Entrance - Southeast Item (Left)"), can_rocksmash)
     set_rule(get_location("Dark Cave Violet Entrance - Southeast Item (Right)"), can_rocksmash)
@@ -452,7 +449,8 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
              lambda state: state.has("EVENT_CLEARED_SLOWPOKE_WELL", world.player))
 
     set_rule(get_location("RIVAL_BAYLEEF_AZALEA"), lambda state: state.has("EVENT_CLEARED_SLOWPOKE_WELL", world.player))
-    set_rule(get_location("RIVAL_CROCONAW_AZALEA"), lambda state: state.has("EVENT_CLEARED_SLOWPOKE_WELL", world.player))
+    set_rule(get_location("RIVAL_CROCONAW_AZALEA"),
+             lambda state: state.has("EVENT_CLEARED_SLOWPOKE_WELL", world.player))
     set_rule(get_location("RIVAL_QUILAVA_AZALEA"), lambda state: state.has("EVENT_CLEARED_SLOWPOKE_WELL", world.player))
 
     # Ilex Forest
@@ -461,6 +459,8 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         set_rule(get_entrance("REGION_ILEX_FOREST:SOUTH -> REGION_ILEX_FOREST:NORTH"), can_cut)
 
     set_rule(get_location("Celebi"), lambda state: state.has("GS Ball", world.player))
+    if world.options.dexsanity:
+        set_rule(get_location("Static_Celebi_1"), lambda state: state.has("GS Ball", world.player))
 
     add_rule(get_entrance("REGION_ILEX_FOREST:SOUTH -> REGION_ILEX_FOREST:NORTH"),
              lambda state: state.has("EVENT_CLEARED_SLOWPOKE_WELL", world.player))
@@ -695,6 +695,8 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
              lambda state: can_whirlpool(state) and can_flash(state))
 
     set_rule(get_location("Lugia"), lambda state: state.has("Silver Wing", world.player))
+    if world.options.dexsanity:
+        set_rule(get_location("Static_Lugia_1"), lambda state: state.has("Silver Wing", world.player))
 
     # Cianwood
     set_rule(get_entrance("REGION_CIANWOOD_CITY -> REGION_ROUTE_41"), can_surf)
@@ -1038,7 +1040,8 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         set_rule(get_entrance("REGION_VERMILION_CITY -> REGION_VERMILION_GYM"),
                  lambda state: can_cut(state) or can_surf(state))
 
-        set_rule(get_location("Vermilion City - HP Up from Man nowhere near PokeCenter"), lambda state: has_n_badges(state, 16))
+        set_rule(get_location("Vermilion City - HP Up from Man nowhere near PokeCenter"),
+                 lambda state: has_n_badges(state, 16))
 
         set_rule(get_location("Vermilion City - Lost Item from Guy in Fan Club"),
                  lambda state: state.has("EVENT_RESTORED_POWER_TO_KANTO", world.player) and state.has(
@@ -1139,3 +1142,35 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         for location in world.multiworld.get_locations(world.player):
             if "Hidden" in location.tags:
                 add_rule(location, lambda state: state.has("Itemfinder", world.player))
+
+    for (pokemon_id, pokemon_data) in world.generated_dexsanity.items():
+        set_rule(get_location(f"Pokedex - {pokemon_data.friendly_name}"),
+                 lambda state, species_id=pokemon_id: state.has(f"CATCH_{species_id}", world.player))
+
+    if world.options.dexsanity:
+
+        def set_dexsanity_rule(region_id: str, count: int, rule):
+            for i in range(count):
+                try:
+                    set_rule(get_location(f"{region_id}_{i + 1}"), rule)
+                except KeyError:
+                    pass
+
+        for (name, encounters) in world.generated_wild.water.items():
+            set_dexsanity_rule(f"WildWater_{name}", len(encounters), can_surf)
+        for (name, encounters) in world.generated_wild.fish.items():
+            set_dexsanity_rule(f"WildFish_{name}_Old", len(encounters.old),
+                               lambda state: state.has("Old Rod", world.player))
+            set_dexsanity_rule(f"WildFish_{name}_Good", len(encounters.good),
+                               lambda state: state.has("Good Rod", world.player))
+            set_dexsanity_rule(f"WildFish_{name}_Super", len(encounters.super),
+                               lambda state: state.has("Super Rod", world.player))
+        for (name, encounters) in world.generated_wild.tree.items():
+            if name == "Rock":
+                set_dexsanity_rule(f"WildRockSmash", len(encounters.common),
+                                   lambda state: state.has("TM08 Rock Smash", world.player))
+            else:
+                set_dexsanity_rule(f"WildTree_{name}_Common", len(encounters.common),
+                                   lambda state: state.has("TM02", world.player))
+                set_dexsanity_rule(f"WildTree_{name}_Rare", len(encounters.rare),
+                                   lambda state: state.has("TM02", world.player))

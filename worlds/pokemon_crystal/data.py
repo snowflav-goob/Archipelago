@@ -7,6 +7,8 @@ import yaml
 
 from BaseClasses import ItemClassification
 
+POKEDEX_OFFSET = 10000
+
 
 class ItemData(NamedTuple):
     label: str
@@ -61,6 +63,7 @@ class EvolutionData(NamedTuple):
 
 class PokemonData(NamedTuple):
     id: int
+    friendly_name: str
     base_stats: List[int]
     types: List[str]
     evolutions: List[EvolutionData]
@@ -183,6 +186,14 @@ class TradeData(NamedTuple):
     held_item: str
 
 
+class RegionWildEncounterData:
+    grass: str | None
+    surfing: str | None
+    fishing: str | None
+    headbutt: str | None
+    rock_smash: bool
+
+
 class RegionData:
     name: str
     johto: bool
@@ -193,6 +204,7 @@ class RegionData:
     statics: List[StaticPokemon]
     locations: List[str]
     events: List[EventData]
+    wild_encounters: RegionWildEncounterData | None
 
     def __init__(self, name: str):
         self.name = name
@@ -202,6 +214,7 @@ class RegionData:
         self.statics = []
         self.locations = []
         self.events = []
+        self.wild_encounters = None
 
 
 class FlyRegion(NamedTuple):
@@ -408,6 +421,16 @@ def _init() -> None:
             new_region.exits.append(region_exit)
         new_region.johto = region_json["johto"]
         new_region.silver_cave = region_json["silver_cave"] if "silver_cave" in region_json else False
+
+        if "wild_encounters" in region_json:
+            wild_encounter_data = region_json["wild_encounters"]
+            new_region.wild_encounters = RegionWildEncounterData()
+            new_region.wild_encounters.grass = wild_encounter_data.get("grass")
+            new_region.wild_encounters.surfing = wild_encounter_data.get("surfing")
+            new_region.wild_encounters.fishing = wild_encounter_data.get("fishing")
+            new_region.wild_encounters.headbutt = wild_encounter_data.get("headbutt")
+            new_region.wild_encounters.rock_smash = wild_encounter_data.get("rock_smash")
+
         data.regions[region_name] = new_region
 
     # items
@@ -459,6 +482,7 @@ def _init() -> None:
                 evolutions.append(EvolutionData(evo[0], None, evo[1], evo[2], len(evo)))
         data.pokemon[pokemon_name] = PokemonData(
             pokemon_data["id"],
+            pokemon_data["friendly_name"],
             pokemon_data["base_stats"],
             pokemon_data["types"],
             evolutions,

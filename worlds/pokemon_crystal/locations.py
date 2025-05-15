@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING, Optional, Dict, FrozenSet
 
 from BaseClasses import Location, Region, LocationProgressType
+from .data import data, POKEDEX_OFFSET
 from .options import Goal
-from .data import data
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
@@ -76,6 +76,19 @@ def create_locations(world: "PokemonCrystalWorld", regions: Dict[str, Region]) -
                 )
                 region.locations.append(location)
 
+    if world.options.dexsanity:
+        pokedex_region = regions["Pokedex"]
+
+        for (pokemon_id, pokemon_data) in world.generated_dexsanity.items():
+            new_location = PokemonCrystalLocation(
+                world.player,
+                f"Pokedex - {pokemon_data.friendly_name}",
+                pokedex_region,
+                flag=POKEDEX_OFFSET + pokemon_data.id,
+                tags=frozenset({"dexsanity"})
+            )
+            pokedex_region.locations.append(new_location)
+
 
 def create_location_label_to_id_map() -> Dict[str, int]:
     """
@@ -86,5 +99,8 @@ def create_location_label_to_id_map() -> Dict[str, int]:
         for location_name in region_data.locations:
             location_data = data.locations[location_name]
             label_to_id_map[location_data.label] = location_data.flag
+
+    for pokemon in data.pokemon.values():
+        label_to_id_map[f"Pokedex - {pokemon.friendly_name}"] = pokemon.id + POKEDEX_OFFSET
 
     return label_to_id_map

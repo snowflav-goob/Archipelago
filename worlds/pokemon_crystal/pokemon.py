@@ -1,7 +1,9 @@
 import copy
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Set
 
-from .data import data as crystal_data
+from BaseClasses import ItemClassification
+from . import PokemonCrystalItem, StaticPokemon
+from .data import data as crystal_data, EncounterMon
 from .moves import get_tmhm_compatibility, randomize_learnset
 from .options import RandomizeTypes, RandomizePalettes, RandomizeBaseStats, RandomizeStarters, RandomizeTrades
 from .utils import get_random_filler_item
@@ -136,38 +138,117 @@ def randomize_traded_pokemon(world: "PokemonCrystalWorld"):
     world.generated_trades = new_trades
 
 
+def generate_dexsanity_checks(world: "PokemonCrystalWorld"):
+    pokemon_items = list(world.generated_pokemon.items())
+    world.random.shuffle(pokemon_items)
+    available_pokemon = _get_available_pokemon(world)
+    pokemon_items = [item for item in pokemon_items if item[0] in available_pokemon]
+    for _ in range(min(world.options.dexsanity.value, len(pokemon_items))):
+        chosen_pokemon = pokemon_items.pop()
+        world.generated_dexsanity[chosen_pokemon[0]] = chosen_pokemon[1]
+
+
+def _get_available_pokemon(world: "PokemonCrystalWorld") -> Set[str]:
+    available_pokemon = set()
+
+    for region, wilds in world.generated_wild.grass.items():
+        if f"WildGrass_{region}" in world.available_wild_regions:
+            for wild in wilds:
+                available_pokemon.add(wild.pokemon)
+    for region, wilds in world.generated_wild.water.items():
+        if f"WildWater_{region}" in world.available_wild_regions:
+            for wild in wilds:
+                available_pokemon.add(wild.pokemon)
+    for region, wilds in world.generated_wild.fish.items():
+        if f"WildFish_{region}" in world.available_wild_regions:
+            for wild in wilds.old:
+                available_pokemon.add(wild.pokemon)
+            for wild in wilds.good:
+                available_pokemon.add(wild.pokemon)
+            for wild in wilds.super:
+                available_pokemon.add(wild.pokemon)
+    for region, wilds in world.generated_wild.tree.items():
+        region_id = "WildRockSmash" if region == "Rock" else f"WildTree_{region}"
+        if region_id in world.available_wild_regions:
+            for wild in wilds.common:
+                available_pokemon.add(wild.pokemon)
+            if region != "Rock":
+                for wild in wilds.rare:
+                    available_pokemon.add(wild.pokemon)
+
+    for static in world.generated_static.values():
+        if f"Static_{static.name}" in world.available_wild_regions:
+            available_pokemon.add(static.pokemon)
+
+    return available_pokemon
+
+
+def fill_dexsanity_locations(world: "PokemonCrystalWorld"):
+    for (name, encounters) in world.generated_wild.grass.items():
+        _fill_dexsanity_area(world, f"WildGrass_{name}", encounters)
+    for (name, encounters) in world.generated_wild.water.items():
+        _fill_dexsanity_area(world, f"WildWater_{name}", encounters)
+    for (name, encounters) in world.generated_wild.fish.items():
+        _fill_dexsanity_area(world, f"WildFish_{name}_Old", encounters.old)
+        _fill_dexsanity_area(world, f"WildFish_{name}_Good", encounters.good)
+        _fill_dexsanity_area(world, f"WildFish_{name}_Super", encounters.super)
+    for (name, encounters) in world.generated_wild.tree.items():
+        if name == "Rock":
+            _fill_dexsanity_area(world, f"WildRockSmash", encounters.common)
+        else:
+            _fill_dexsanity_area(world, f"WildTree_{name}_Common", encounters.common)
+            _fill_dexsanity_area(world, f"WildTree_{name}_Rare", encounters.rare)
+    for encounter in world.generated_static.values():
+        _fill_dexsanity_area(world, f"Static_{encounter.name}", [encounter])
+
+
+def _fill_dexsanity_area(world: "PokemonCrystalWorld", area_name: str, encounters: List[EncounterMon | StaticPokemon]):
+    for (i, encounter) in enumerate(encounters):
+        # Not all encounter regions may be needed so we just ignore ones that don't exist
+        try:
+            location = world.get_location(f"{area_name}_{i + 1}")
+            location.place_locked_item(PokemonCrystalItem(
+                f"CATCH_{encounter.pokemon}",
+                ItemClassification.progression_skip_balancing,
+                None,
+                world.player
+            ))
+        except KeyError:
+            pass
+
+
 def get_random_pokemon(world: "PokemonCrystalWorld", types=None, base_only=False, force_fully_evolved_at=None,
                        current_level=None, starter=False, exclude_unown=False):
     bst_range = world.options.starters_bst_average * .10
 
-    def filter_out_pokemons(pkmn_name, pkmn_data):
+    def filter_out_pokemon(pkmn_name, pkmn_data):
         if exclude_unown and pkmn_name == "UNOWN":
             return True
 
-        # If types are passed in, filter ou pokemons that do not match it
+        # If types are passed in, filter out Pokemon that do not match it
         if types is not None:
             if types[0] not in pkmn_data.types and types[-1] not in pkmn_data.types:
                 return True
 
-        # Exclude evolved pokemons when we only want base ones
+        # Exclude evolved Pokemon when we only want base ones
         if base_only and not pkmn_data.is_base:
             return True
 
         # If we have a level to force fully evolved at and the current level of the pokemon is passed in,
-        # exlude pokemons with evolutions from the list if the level is greater or equal than forced_fully_evolved
+        # exlude Pokemon with evolutions from the list if the level is greater or equal than forced_fully_evolved
         if force_fully_evolved_at is not None and current_level is not None:
             if current_level >= force_fully_evolved_at and pkmn_data.evolutions:
                 return True
 
-        # if this is a starter and the starter option is first stage can evolve, filter pokemon that are not base
+        # if this is a starter and the starter option is first stage can evolve, filter Pokemon that are not base
         if starter and world.options.randomize_starters == RandomizeStarters.option_first_stage_can_evolve and not pkmn_data.is_base:
             return True
 
-        # if this is a starter and the starter option is first stage can evolve, filter pokemont that cannot evolve
+        # if this is a starter and the starter option is first stage can evolve, filter Pokemon that cannot evolve
         if starter and world.options.randomize_starters == RandomizeStarters.option_first_stage_can_evolve and pkmn_data.evolutions == []:
             return True
 
-        # if this is a starter and the starter option is base stat mode, filter pokemon that are 
+        # if this is a starter and the starter option is base stat mode, filter Pokemon that are
         if starter and world.options.randomize_starters == RandomizeStarters.option_base_stat_mode:
             if abs(pkmn_data.bst - world.options.starters_bst_average) >= bst_range:
                 return True
@@ -175,15 +256,15 @@ def get_random_pokemon(world: "PokemonCrystalWorld", types=None, base_only=False
         return False
 
     pokemon_pool = [pkmn_name for pkmn_name, pkmn_data in world.generated_pokemon.items()
-                    if not filter_out_pokemons(pkmn_name, pkmn_data)]
+                    if not filter_out_pokemon(pkmn_name, pkmn_data)]
 
-    # If there are no pokemon left and this is bst mode, increase the range and try again
+    # If there are no Pokemon left and this is bst mode, increase the range and try again
     if not pokemon_pool and starter and world.options.randomize_starters == RandomizeStarters.option_base_stat_mode:
         bst_range += world.options.starters_bst_average * .10
         pokemon_pool = [pkmn_name for pkmn_name, pkmn_data in world.generated_pokemon.items()
-                        if not filter_out_pokemons(pkmn_name, pkmn_data)]
+                        if not filter_out_pokemon(pkmn_name, pkmn_data)]
 
-    # If there's no pokemon left, give up and shove everything back in, it can happen in some very rare edge cases
+    # If there's no Pokemon left, give up and shove everything back in, it can happen in some very rare edge cases
     if not pokemon_pool:
         pokemon_pool = [pkmn_name for pkmn_name, _ in world.generated_pokemon.items() if
                         (not exclude_unown or pkmn_name != "UNOWN")]
@@ -199,9 +280,9 @@ def get_random_nezumi(random):
 
 
 def get_random_pokemon_evolution(random, pkmn_name, pkmn_data):
-    # if the pokemon has no evolutions
+    # if the Pokemon has no evolutions
     if not len(pkmn_data.evolutions):
-        # return the same pokemon
+        # return the same Pokemon
         return pkmn_name
     return random.choice(pkmn_data.evolutions).pokemon
 
@@ -221,7 +302,7 @@ def get_random_types(random):
     data_types = copy.deepcopy(crystal_data.types)
     random.shuffle(data_types)
     new_types = [data_types.pop()]
-    # approx. 110/251 pokemon are dual type in gen 2
+    # approx. 110/251 Pokemon are dual type in gen 2
     if random.randint(0, 24) < 11:
         new_types.append(data_types.pop())
     return new_types

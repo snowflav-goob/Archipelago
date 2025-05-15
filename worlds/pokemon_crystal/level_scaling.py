@@ -2,10 +2,8 @@ import logging
 from typing import List, Set
 
 from BaseClasses import CollectionState, MultiWorld
-from .data import RegionData
 from .locations import PokemonCrystalLocation
 from .options import LevelScaling
-from .regions import RegionData
 from .utils import bound
 
 
@@ -136,7 +134,7 @@ def perform_level_scaling(multiworld: MultiWorld):
                         sphere.add(location)
 
                         if location.game == "Pokemon Crystal":
-                            parent_region: RegionData = location.parent_region
+                            parent_region = location.parent_region
                             if getattr(parent_region, "distance", None) is None:
                                 distance = 0
                             else:

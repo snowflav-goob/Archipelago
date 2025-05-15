@@ -1,8 +1,9 @@
 import logging
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Dict, List, Tuple
 
 from BaseClasses import Region, ItemClassification, Entrance
-from .data import data
+from . import StaticPokemon
+from .data import data, RegionData, EncounterMon
 from .items import PokemonCrystalItem
 from .locations import PokemonCrystalLocation
 from .options import FreeFlyLocation, JohtoOnly, LevelScaling, BlackthornDarkCaveAccess, Goal
@@ -59,22 +60,14 @@ KANTO_LOCKED = [
     "HIKER_PARRY_POWER", "LASS_DANA_POWER",
     "PICNICKER_ERIN_POWER", "PICNICKER_GINA_POWER",
     "PICNICKER_TIFFANY_POWER", "POKEMANIAC_BRENT_POWER",
-    "RIVAL_FERALIGATR_INDIGO", "RIVAL_MEGANIUM_INDIGO", # Rival is in a Kanto region rn,
-    "RIVAL_TYPHLOSION_INDIGO", "SAILOR_HUEY_POWER",     # so this is redundant, but eh.
+    "RIVAL_FERALIGATR_INDIGO", "RIVAL_MEGANIUM_INDIGO",  # Rival is in a Kanto region rn,
+    "RIVAL_TYPHLOSION_INDIGO", "SAILOR_HUEY_POWER",  # so this is redundant, but eh.
     "SCHOOLBOY_ALAN_POWER", "SCHOOLBOY_CHAD_POWER",
     "SCHOOLBOY_JACK_POWER"
 ]
 
 E4_LOCKED = list(set(CHAMPION_LOCKED + KANTO_LOCKED))
 REMATCHES = list(set(MAP_LOCKED + ROCKETHQ_LOCKED + RADIO_LOCKED + E4_LOCKED + KANTO_LOCKED))
-
-
-
-class RegionData:
-    name: str
-    exits: List[str]
-    locations: List[str]
-    distance: Optional[int]
 
 
 def create_regions(world: "PokemonCrystalWorld") -> Dict[str, Region]:
@@ -98,6 +91,68 @@ def create_regions(world: "PokemonCrystalWorld") -> Dict[str, Region]:
         else:
             return False
 
+    def create_wild_region(parent_region: Region, region_id: str, wilds: List[EncounterMon | StaticPokemon]):
+        if region_id not in regions:
+            wild_region = Region(region_id, world.player, world.multiworld)
+            regions[region_id] = wild_region
+
+            # We place a slot for each encounter here, but we don't care about what they are yet
+            for i, wild in enumerate(wilds):
+                location_name = f"{region_id}_{i + 1}"
+                location = PokemonCrystalLocation(
+                    world.player,
+                    location_name,
+                    wild_region,
+                    tags=frozenset({"wild encounter"})
+                )
+                location.show_in_spoiler = False
+                wild_region.locations.append(location)
+        else:
+            wild_region = regions[region_id]
+        parent_region.connect(wild_region)
+
+    def setup_wild_regions(parent_region: Region, wild_region_data: RegionData):
+        if not world.options.dexsanity: return
+
+        if wild_region_data.wild_encounters:
+            if wild_region_data.wild_encounters.grass:
+                region_id = f"WildGrass_{wild_region_data.wild_encounters.grass}"
+                world.available_wild_regions.add(region_id)
+                create_wild_region(parent_region, region_id,
+                                   world.generated_wild.grass[wild_region_data.wild_encounters.grass])
+
+            if wild_region_data.wild_encounters.surfing:
+                region_id = f"WildWater_{wild_region_data.wild_encounters.surfing}"
+                world.available_wild_regions.add(region_id)
+                create_wild_region(parent_region, region_id,
+                                   world.generated_wild.water[wild_region_data.wild_encounters.surfing])
+
+            if wild_region_data.wild_encounters.fishing:
+                base_id = f"WildFish_{wild_region_data.wild_encounters.fishing}"
+                world.available_wild_regions.add(base_id)
+                fish_data = world.generated_wild.fish[wild_region_data.wild_encounters.fishing]
+                create_wild_region(parent_region, f"{base_id}_Old", fish_data.old)
+                create_wild_region(parent_region, f"{base_id}_Good", fish_data.good)
+                create_wild_region(parent_region, f"{base_id}_Super", fish_data.super)
+
+            if wild_region_data.wild_encounters.headbutt:
+                base_id = f"WildTree_{wild_region_data.wild_encounters.headbutt}"
+                world.available_wild_regions.add(base_id)
+                tree_data = world.generated_wild.tree[wild_region_data.wild_encounters.headbutt]
+                create_wild_region(parent_region, f"{base_id}_Common", tree_data.common)
+                create_wild_region(parent_region, f"{base_id}_Rare", tree_data.rare)
+
+            if wild_region_data.wild_encounters.rock_smash:
+                region_id = "WildRockSmash"
+                world.available_wild_regions.add(region_id)
+                create_wild_region(parent_region, region_id, world.generated_wild.tree["Rock"].common)
+
+        if wild_region_data.statics:
+            for static_encounter in wild_region_data.statics:
+                region_id = f"Static_{static_encounter.name}"
+                world.available_wild_regions.add(region_id)
+                create_wild_region(parent_region, region_id, [static_encounter])
+
     for region_name, region_data in data.regions.items():
         if should_include_region(region_data):
             new_region = Region(region_name, world.player, world.multiworld)
@@ -110,6 +165,8 @@ def create_regions(world: "PokemonCrystalWorld") -> Dict[str, Region]:
                 event.place_locked_item(PokemonCrystalItem(
                     event_data.name, ItemClassification.progression, None, world.player))
                 new_region.locations.append(event)
+
+            setup_wild_regions(new_region, region_data)
 
             # Level Scaling
             if world.options != LevelScaling.option_off:
@@ -188,6 +245,11 @@ def create_regions(world: "PokemonCrystalWorld") -> Dict[str, Region]:
     if world.options.blackthorn_dark_cave_access.value == BlackthornDarkCaveAccess.option_waterfall:
         regions["REGION_DARK_CAVE_BLACKTHORN_ENTRANCE:SOUTH_WEST"].connect(
             regions["REGION_DARK_CAVE_BLACKTHORN_ENTRANCE:NORTH_WEST"])
+
+    if world.options.dexsanity:
+        pokedex_region = Region("Pokedex", world.player, world.multiworld)
+        regions["Pokedex"] = pokedex_region
+        regions["Menu"].connect(regions["Pokedex"])
 
     world.trainer_level_list.sort()
     world.encounter_level_list.sort()

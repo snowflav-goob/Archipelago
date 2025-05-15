@@ -11,7 +11,7 @@ from Options import Toggle
 from worlds.AutoWorld import World, WebWorld
 from .client import PokemonCrystalClient
 from .data import PokemonData, TrainerData, MiscData, TMHMData, data as crystal_data, \
-    WildData, StaticPokemon, MusicData, MoveData, FlyRegion, TradeData, MiscOption
+    WildData, StaticPokemon, MusicData, MoveData, FlyRegion, TradeData, MiscOption, POKEDEX_OFFSET
 from .items import PokemonCrystalItem, create_item_label_to_code_map, get_item_classification, \
     ITEM_GROUPS, item_const_name_to_id, item_const_name_to_label
 from .level_scaling import perform_level_scaling
@@ -23,12 +23,13 @@ from .options import PokemonCrystalOptions, JohtoOnly, RandomizeBadges, Goal, HM
     LevelScaling, RedGyaradosAccess, FreeFlyLocation
 from .phone import generate_phone_traps
 from .phone_data import PhoneScript
-from .pokemon import randomize_pokemon, randomize_starters, randomize_traded_pokemon
+from .pokemon import randomize_pokemon, randomize_starters, randomize_traded_pokemon, generate_dexsanity_checks, \
+    fill_dexsanity_locations
 from .regions import create_regions, setup_free_fly_regions
 from .rom import generate_output, PokemonCrystalProcedurePatch
 from .rules import set_rules
 from .trainers import boost_trainer_pokemon, randomize_trainers, vanilla_trainer_movesets
-from .utils import get_random_filler_item, get_free_fly_locations
+from .utils import get_random_filler_item, get_free_fly_locations, get_random_ball
 from .wild import randomize_wild_pokemon, randomize_static_pokemon
 
 
@@ -78,6 +79,7 @@ class PokemonCrystalWorld(World):
     map_card_fly_location: FlyRegion
     generated_moves = Dict[str, MoveData]
     generated_pokemon: Dict[str, PokemonData]
+    generated_dexsanity: Dict[str, PokemonData]
     generated_starters: Tuple[List[str], List[str], List[str]]
     generated_starter_helditems: Tuple[str, str, str]
     generated_trainers: Dict[str, TrainerData]
@@ -112,6 +114,7 @@ class PokemonCrystalWorld(World):
         self.generated_trades = copy.deepcopy(crystal_data.trades)
         self.generated_music = copy.deepcopy(crystal_data.music)
         self.generated_pokemon = copy.deepcopy(crystal_data.pokemon)
+        self.generated_dexsanity = {}
         self.generated_starters = (["CYNDAQUIL", "QUILAVA", "TYPHLOSION"],
                                    ["TOTODILE", "CROCONAW", "FERALIGATR"],
                                    ["CHIKORITA", "BAYLEEF", "MEGANIUM"])
@@ -127,6 +130,8 @@ class PokemonCrystalWorld(World):
         self.encounter_level_list = []
 
         self.blocklisted_moves = set()
+
+        self.available_wild_regions = set()
 
         self.finished_level_scaling = Event()
 
@@ -198,8 +203,18 @@ class PokemonCrystalWorld(World):
 
         self.blocklisted_moves = {move.replace(" ", "_").upper() for move in self.options.move_blocklist.value}
 
+        if self.options.randomize_wilds.value:
+            randomize_wild_pokemon(self)
+
+        if self.options.randomize_static_pokemon.value:
+            randomize_static_pokemon(self)
+
     def create_regions(self) -> None:
         regions = create_regions(self)
+
+        if self.options.dexsanity:
+            generate_dexsanity_checks(self)
+
         create_locations(self, regions)
         self.multiworld.regions.extend(regions.values())
         if self.options.free_fly_location:
@@ -210,7 +225,7 @@ class PokemonCrystalWorld(World):
         item_locations = [
             location
             for location in self.multiworld.get_locations(self.player)
-            if location.address is not None
+            if location.address is not None and location.address < POKEDEX_OFFSET
         ]
 
         if self.options.randomize_badges.value == RandomizeBadges.option_shuffle:
@@ -220,13 +235,16 @@ class PokemonCrystalWorld(World):
         if self.options.johto_only.value == JohtoOnly.option_include_silver_cave:
             total_badges = max(total_badges, self.options.mt_silver_badges.value, self.options.red_badges.value)
 
-        add_badges = []
+        add_items = []
         # Extra badges to add to the pool in johto only
         if self.options.johto_only and total_badges > 8:
-            kanto_badges = [item_id for item_id, item_data in crystal_data.items.items() if
+            kanto_badges = [item_data.item_const for item_data in crystal_data.items.values() if
                             "KantoBadge" in item_data.tags]
             self.random.shuffle(kanto_badges)
-            add_badges = kanto_badges[:total_badges - 8]
+            add_items += kanto_badges[:total_badges - 8]
+
+        if self.options.johto_only:
+            add_items.append("SUPER_ROD")
 
         trap_names, trap_weights = zip(
             ("Phone Trap", self.options.phone_trap_weight.value),
@@ -247,8 +265,8 @@ class PokemonCrystalWorld(World):
             item_code = location.default_item_code
             if item_code > 0 and get_item_classification(item_code) != ItemClassification.filler:
                 default_itempool += [self.create_item_by_code(item_code)]
-            elif add_badges:
-                default_itempool += [self.create_item_by_code(add_badges.pop())]
+            elif add_items:
+                default_itempool += [self.create_item_by_const_name(add_items.pop())]
             elif self.random.randint(0, 100) < total_trap_weight:
                 default_itempool += [get_random_trap()]
             elif item_code == 0:  # item is NO_ITEM, trainersanity checks
@@ -256,11 +274,14 @@ class PokemonCrystalWorld(World):
             else:
                 default_itempool += [self.create_item_by_code(item_code)]
 
+        if self.options.dexsanity:
+            default_itempool += [self.create_item_by_const_name(get_random_ball(self.random)) for _ in
+                                 range(len(self.generated_dexsanity))]
+
         if self.options.johto_only.value != JohtoOnly.option_off:
             # Replace the S.S. Ticket with the Silver Wing for Johto only seeds
             default_itempool = [item if item.name != "S.S. Ticket" else self.create_item_by_const_name("SILVER_WING")
-                                for
-                                item in default_itempool]
+                                for item in default_itempool]
 
         self.multiworld.itempool += default_itempool
 
@@ -309,6 +330,9 @@ class PokemonCrystalWorld(World):
 
                 logging.debug(f"Failed to shuffle badges for player {self.player} ({self.player_name}). Retrying.")
 
+        if self.options.dexsanity:
+            fill_dexsanity_locations(self)
+
     @classmethod
     def stage_generate_output(cls, multiworld: MultiWorld, output_directory: str):
         perform_level_scaling(multiworld)
@@ -338,9 +362,6 @@ class PokemonCrystalWorld(World):
 
         randomize_pokemon(self)
 
-        if self.options.randomize_wilds.value:
-            randomize_wild_pokemon(self)
-
         self.finished_level_scaling.wait()
 
         if self.options.boost_trainers:
@@ -350,9 +371,6 @@ class PokemonCrystalWorld(World):
             randomize_trainers(self)
         elif self.options.randomize_learnsets.value:
             vanilla_trainer_movesets(self)
-
-        if self.options.randomize_static_pokemon.value:
-            randomize_static_pokemon(self)
 
         patch = PokemonCrystalProcedurePatch(player=self.player, player_name=self.player_name)
         patch.write_file("basepatch.bsdiff4", pkgutil.get_data(__name__, "data/basepatch.bsdiff4"))
@@ -369,6 +387,7 @@ class PokemonCrystalWorld(World):
             "randomize_hidden_items",
             "require_itemfinder",
             "trainersanity",
+            "dexsanity",
             "randomize_pokegear",
             "hm_badge_requirements",
             "randomize_berry_trees",

@@ -1110,7 +1110,6 @@
       "ENGINE_FLYPOINT_ECRUTEAK"
     ],
     "wild_encounters": {
-      "headbutt": "City",
       "surfing": "ECRUTEAK_CITY",
       "fishing": "Pond"
     }
@@ -1814,7 +1813,7 @@
     ],
     "events": [],
     "wild_encounters": {
-      "grass": "ICE_PATH_B2F"
+      "grass": "ICE_PATH_B2F_BLACKTHORN_SIDE"
     }
   },
   "REGION_ICE_PATH_B2F_MAHOGANY_SIDE": {
@@ -1829,7 +1828,7 @@
     ],
     "events": [],
     "wild_encounters": {
-      "grass": "ICE_PATH_B2F"
+      "grass": "ICE_PATH_B2F_MAHOGANY_SIDE"
     }
   },
   "REGION_ICE_PATH_B2F_MAHOGANY_SIDE:MIDDLE": {
@@ -1843,7 +1842,7 @@
     ],
     "events": [],
     "wild_encounters": {
-      "grass": "ICE_PATH_B2F"
+      "grass": "ICE_PATH_B2F_MAHOGANY_SIDE"
     }
   },
   "REGION_ICE_PATH_B3F": {
@@ -2202,10 +2201,7 @@
     "locations": [],
     "events": [
       "ENGINE_FLYPOINT_MAHOGANY"
-    ],
-    "wild_encounters": {
-      "headbutt": "City"
-    }
+    ]
   },
   "REGION_MANIAS_HOUSE": {
     "johto": true,
@@ -2561,7 +2557,6 @@
     "locations": [],
     "events": [],
     "wild_encounters": {
-      "headbutt": "City",
       "surfing": "NEW_BARK_TOWN",
       "fishing": "Ocean"
     }
@@ -3193,8 +3188,8 @@
     "locations": [],
     "events": [],
     "wild_encounters": {
-      "grass": "ROUTE_10",
-      "surfing": "ROUTE_10",
+      "grass": "ROUTE_10_NORTH",
+      "surfing": "ROUTE_10_NORTH",
       "fishing": "Lake"
     }
   },
@@ -3454,8 +3449,7 @@
     ],
     "events": [],
     "wild_encounters": {
-      "grass": "ROUTE_17",
-      "surfing": "ROUTE_17"
+      "grass": "ROUTE_17"
     }
   },
   "REGION_ROUTE_17_ROUTE_18_GATE": {
@@ -3637,6 +3631,7 @@
     ],
     "events": [],
     "wild_encounters": {
+      "grass": "ROUTE_21",
       "surfing": "ROUTE_21",
       "fishing": "Ocean"
     }
@@ -4442,7 +4437,7 @@
       "EVENT_BEAT_POKEFANM_2"
     ],
     "wild_encounters": {
-      "grass": "ROUTE_38",
+      "grass": "ROUTE_39",
       "headbutt": "Route"
     }
   },
@@ -5047,7 +5042,12 @@
       "ITEM_FROM_HIKER_TIM",
       "ITEM_FROM_HIKER_SIDNEY"
     ],
-    "events": []
+    "events": [],
+    "wild_encounters": {
+      "grass": "ROUTE_9",
+      "surfing": "ROUTE_9",
+      "fishing": "Lake"
+    }
   },
   "REGION_RUINS_OF_ALPH_AERODACTYL_CHAMBER": {
     "johto": true,
@@ -5525,7 +5525,12 @@
       "SLOWPOKE_WELL_B2F_TM_RAIN_DANCE",
       "KINGS_ROCK_IN_SLOWPOKE_WELL"
     ],
-    "events": []
+    "events": [],
+    "wild_encounters": {
+      "grass": "SLOWPOKE_WELL_B2F",
+      "surfing": "SLOWPOKE_WELL_B2F",
+      "fishing": "Lake"
+    }
   },
   "REGION_SOUL_HOUSE": {
     "johto": false,
@@ -5553,10 +5558,7 @@
       "SPROUT_TOWER_1F_PARLYZ_HEAL",
       "ITEM_FROM_SAGE_CHOW"
     ],
-    "events": [],
-    "wild_encounters": {
-      "grass": "SPROUT_TOWER_1F"
-    }
+    "events": []
   },
   "REGION_SPROUT_TOWER_2F": {
     "johto": true,
@@ -5704,10 +5706,7 @@
     "locations": [
       "TIN_TOWER_1F_RAINBOW_WING"
     ],
-    "events": [],
-    "wild_encounters": {
-      "grass": "TIN_TOWER_1F"
-    }
+    "events": []
   },
   "REGION_TIN_TOWER_2F": {
     "johto": true,
@@ -6208,8 +6207,7 @@
     "events": [],
     "wild_encounters": {
       "surfing": "VIOLET_CITY",
-      "fishing": "Pond",
-      "headbutt": "City"
+      "fishing": "Pond"
     }
   },
   "REGION_VIOLET_GYM": {

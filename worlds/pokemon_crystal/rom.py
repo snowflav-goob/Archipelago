@@ -6,7 +6,7 @@ import bsdiff4
 
 from settings import get_settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APPatchExtension
-from . import FreeFlyLocation
+from . import FreeFlyLocation, POKEDEX_OFFSET
 from .data import data, MiscOption
 from .items import item_const_name_to_id
 from .options import Route32Condition, UndergroundsRequirePower, RequireItemfinder, Goal, Route2Access, \
@@ -59,7 +59,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
 
     item_texts = []
     for location in world.multiworld.get_locations(world.player):
-        if location.address is None:
+        if location.address is None or location.address > POKEDEX_OFFSET:
             continue
 
         if not world.options.remote_items and location.item and location.item.player == world.player:
