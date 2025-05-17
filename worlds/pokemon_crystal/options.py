@@ -247,6 +247,7 @@ class TrainersanityAlerts(Choice):
 class Dexsanity(NamedRange):
     """
     Adds checks for catching Pokemon
+    Pokemon that cannot be logically obtained will never be included
     """
     display_name = "Dexsanity"
     default = 0
@@ -298,11 +299,17 @@ class StarterBST(NamedRange):
     }
 
 
-class RandomizeWilds(Toggle):
+class RandomizeWilds(Choice):
     """
     Randomizes species of wild Pokemon
+
+    Catch 'em all ensures that every pokemon will be obtainable in the wild
     """
     display_name = "Randomize Wilds"
+    default = 0
+    option_vanilla = 0
+    option_completely_random = 1
+    option_catch_em_all = 2
 
 
 class ForceFullyEvolved(Range):

@@ -217,8 +217,9 @@ def _fill_dexsanity_area(world: "PokemonCrystalWorld", area_name: str, encounter
             pass
 
 
-def get_random_pokemon(world: "PokemonCrystalWorld", types=None, base_only=False, force_fully_evolved_at=None,
-                       current_level=None, starter=False, exclude_unown=False):
+def get_random_pokemon(world: "PokemonCrystalWorld", priority_list: set[str] | None = None, types=None,
+                       base_only=False, force_fully_evolved_at=None, current_level=None, starter=False,
+                       exclude_unown=False):
     bst_range = world.options.starters_bst_average * .10
 
     def filter_out_pokemon(pkmn_name, pkmn_data):
@@ -255,8 +256,12 @@ def get_random_pokemon(world: "PokemonCrystalWorld", types=None, base_only=False
 
         return False
 
-    pokemon_pool = [pkmn_name for pkmn_name, pkmn_data in world.generated_pokemon.items()
-                    if not filter_out_pokemon(pkmn_name, pkmn_data)]
+    if priority_list:
+        pokemon_pool = [pkmn_name for pkmn_name in priority_list if
+                        not filter_out_pokemon(pkmn_name, world.generated_pokemon[pkmn_name])]
+    else:
+        pokemon_pool = [pkmn_name for pkmn_name, pkmn_data in world.generated_pokemon.items()
+                        if not filter_out_pokemon(pkmn_name, pkmn_data)]
 
     # If there are no Pokemon left and this is bst mode, increase the range and try again
     if not pokemon_pool and starter and world.options.randomize_starters == RandomizeStarters.option_base_stat_mode:
