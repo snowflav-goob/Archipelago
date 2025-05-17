@@ -160,11 +160,10 @@ def create_regions(world: "PokemonCrystalWorld") -> Dict[str, Region]:
             regions[region_name] = new_region
 
             for event_data in region_data.events:
-                event = PokemonCrystalLocation(world.player, event_data.name, new_region)
-                event.show_in_spoiler = False
-                event.place_locked_item(PokemonCrystalItem(
-                    event_data.name, ItemClassification.progression, None, world.player))
-                new_region.locations.append(event)
+                event_location = PokemonCrystalLocation(world.player, event_data.name, new_region)
+                event_location.show_in_spoiler = False
+                event_location.place_locked_item(world.create_event(event_data.name))
+                new_region.locations.append(event_location)
 
             setup_wild_regions(new_region, region_data)
 

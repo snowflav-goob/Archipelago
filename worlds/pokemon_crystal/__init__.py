@@ -75,6 +75,8 @@ class PokemonCrystalWorld(World):
     location_name_to_id = create_location_label_to_id_map()
     item_name_groups = ITEM_GROUPS  # item_groups
 
+    auth: bytes
+
     free_fly_location: FlyRegion
     map_card_fly_location: FlyRegion
     generated_moves = Dict[str, MoveData]
@@ -333,6 +335,10 @@ class PokemonCrystalWorld(World):
         if self.options.dexsanity:
             fill_dexsanity_locations(self)
 
+    def generate_basic(self) -> None:
+        # Create auth
+        self.auth = self.random.randbytes(16)
+
     @classmethod
     def stage_generate_output(cls, multiworld: MultiWorld, output_directory: str):
         perform_level_scaling(multiworld)
@@ -430,6 +436,11 @@ class PokemonCrystalWorld(World):
 
         return slot_data
 
+    def modify_multidata(self, multidata: Dict[str, Any]):
+        import base64
+        multidata["connect_names"][base64.b64encode(self.auth).decode("ascii")] \
+            = multidata["connect_names"][self.player_name]
+
     def write_spoiler(self, spoiler_handle) -> None:
         if self.options.randomize_starters:
             spoiler_handle.write(f"\n\nStarter Pokemon ({self.multiworld.player_name[self.player]}):\n\n")
@@ -470,5 +481,13 @@ class PokemonCrystalWorld(World):
             self.item_id_to_name[item_code],
             get_item_classification(item_code),
             item_code,
+            self.player
+        )
+
+    def create_event(self, name: str) -> PokemonCrystalItem:
+        return PokemonCrystalItem(
+            name,
+            ItemClassification.progression,
+            None,
             self.player
         )

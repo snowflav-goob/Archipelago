@@ -1,14 +1,12 @@
-from typing import Dict, FrozenSet, Optional
-
 from BaseClasses import Item, ItemClassification
 from .data import data
 
 
 class PokemonCrystalItem(Item):
     game: str = "Pokemon Crystal"
-    tags: FrozenSet[str]
+    tags: frozenset[str]
 
-    def __init__(self, name: str, classification: ItemClassification, code: Optional[int], player: int) -> None:
+    def __init__(self, name: str, classification: ItemClassification, code: int | None, player: int) -> None:
         super().__init__(name, classification, code, player)
 
         if code is None:
@@ -17,11 +15,11 @@ class PokemonCrystalItem(Item):
             self.tags = data.items[code].tags
 
 
-def create_item_label_to_code_map() -> Dict[str, int]:
+def create_item_label_to_code_map() -> dict[str, int]:
     """
     Creates a map from item labels to their AP item id (code)
     """
-    label_to_code_map: Dict[str, int] = {}
+    label_to_code_map: dict[str, int] = {}
     for item_value, attributes in data.items.items():
         label_to_code_map[attributes.label] = item_value
 

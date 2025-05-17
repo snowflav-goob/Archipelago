@@ -660,9 +660,8 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
     write_bytes(patch, headbutt_seed[:0], data.rom_addresses["AP_Setting_TreeMonSeed_1"] + 1)
     write_bytes(patch, headbutt_seed[-1:], data.rom_addresses["AP_Setting_TreeMonSeed_2"] + 1)
 
-    # Set slot name
-    for i, byte in enumerate(world.player_name.encode("utf-8")):
-        write_bytes(patch, [byte], data.rom_addresses["AP_Seed_Name"] + i)
+    # Set slot auth
+    write_bytes(patch, world.auth, data.rom_addresses["AP_Seed_Auth"])
 
     patch.write_file("token_data.bin", patch.get_token_binary())
 

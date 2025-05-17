@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Dict, Set, List
+from typing import TYPE_CHECKING
 
 import worlds._bizhawk as bizhawk
 from NetUtils import ClientStatus
@@ -78,12 +78,12 @@ KEY_ITEM_FLAG_MAP = {data.event_flags[event]: event for event in TRACKER_KEY_ITE
 class PokemonCrystalClient(BizHawkClient):
     game = "Pokemon Crystal"
     system = ("GB", "GBC")
-    local_checked_locations: Set[int]
+    local_checked_locations: set[int]
     patch_suffix = ".apcrystal"
-    local_set_events: Dict[str, bool]
-    local_found_key_items: Dict[str, bool]
-    phone_trap_locations: List[int]
-    current_map: List[int]
+    local_set_events: dict[str, bool]
+    local_found_key_items: dict[str, bool]
+    phone_trap_locations: list[int]
+    current_map: list[int]
 
     def __init__(self) -> None:
         super().__init__()
@@ -143,8 +143,9 @@ class PokemonCrystalClient(BizHawkClient):
         return True
 
     async def set_auth(self, ctx: "BizHawkClientContext") -> None:
-        slot_name_bytes = (await bizhawk.read(ctx.bizhawk_ctx, [(data.rom_addresses["AP_Seed_Name"], 64, "ROM")]))[0]
-        ctx.auth = bytes([byte for byte in slot_name_bytes if byte != 0]).decode("utf-8")
+        import base64
+        auth_raw = (await bizhawk.read(ctx.bizhawk_ctx, [(data.rom_addresses["AP_Seed_Auth"], 16, "ROM")]))[0]
+        ctx.auth = base64.b64encode(auth_raw).decode("utf-8")
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
 
