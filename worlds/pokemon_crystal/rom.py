@@ -518,10 +518,8 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
             quantity = 1
         while quantity:
             item_code = world.item_name_to_id[item]
-            if item_code > 511:
+            if item_code > 255:
                 continue
-            elif item_code > 255:
-                item_code -= 256
             if quantity > 99:
                 write_bytes(patch, [item_code, 99], start_inventory_address)
                 quantity -= 99
