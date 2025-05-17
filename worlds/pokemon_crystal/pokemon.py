@@ -1,8 +1,7 @@
 import copy
-from typing import TYPE_CHECKING, List, Set
+from typing import TYPE_CHECKING
 
-from BaseClasses import ItemClassification
-from . import PokemonCrystalItem, StaticPokemon
+from . import StaticPokemon
 from .data import data as crystal_data, EncounterMon
 from .moves import get_tmhm_compatibility, randomize_learnset
 from .options import RandomizeTypes, RandomizePalettes, RandomizeBaseStats, RandomizeStarters, RandomizeTrades
@@ -148,7 +147,7 @@ def generate_dexsanity_checks(world: "PokemonCrystalWorld"):
         world.generated_dexsanity[chosen_pokemon[0]] = chosen_pokemon[1]
 
 
-def _get_available_pokemon(world: "PokemonCrystalWorld") -> Set[str]:
+def _get_available_pokemon(world: "PokemonCrystalWorld") -> set[str]:
     available_pokemon = set()
 
     for region, wilds in world.generated_wild.grass.items():
@@ -202,17 +201,12 @@ def fill_dexsanity_locations(world: "PokemonCrystalWorld"):
         _fill_dexsanity_area(world, f"Static_{encounter.name}", [encounter])
 
 
-def _fill_dexsanity_area(world: "PokemonCrystalWorld", area_name: str, encounters: List[EncounterMon | StaticPokemon]):
+def _fill_dexsanity_area(world: "PokemonCrystalWorld", area_name: str, encounters: list[EncounterMon | StaticPokemon]):
     for (i, encounter) in enumerate(encounters):
         # Not all encounter regions may be needed so we just ignore ones that don't exist
         try:
             location = world.get_location(f"{area_name}_{i + 1}")
-            location.place_locked_item(PokemonCrystalItem(
-                f"CATCH_{encounter.pokemon}",
-                ItemClassification.progression_skip_balancing,
-                None,
-                world.player
-            ))
+            location.place_locked_item(world.create_event(f"CATCH_{encounter.pokemon}"))
         except KeyError:
             pass
 
