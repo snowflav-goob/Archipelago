@@ -328,14 +328,19 @@ class EncounterSlotDistribution(Choice):
     """
     Sets how the Pokemon encounter slots in an area are distributed.
 
-    Remove 1%'s modifies grass/cave encounters to 20%/20%/15%/15%/10%/10%/10% and does not modify any others.
+    Remove 1%'s modifies grass/cave encounters to 30%/25%/20%/10%/5%/5%/5% and does not modify any others.
+    Balanced sets the following:
+        Grass/Cave: 20%/20%/15%/15%/10%/10%/10%
+        Headbutt:  20%/20%/20%/15%/15%/10%
+        Rock Smash: 70%/30%
     Equal sets all encounter slots to have (almost) equal probability.
     """
     display_name = "Encounter Slot Distribution"
     default = 0
     option_vanilla = 0
     option_remove_one_percents = 1
-    option_equal = 2
+    option_balanced = 2
+    option_equal = 3
 
 
 class RandomizeStaticPokemon(Toggle):

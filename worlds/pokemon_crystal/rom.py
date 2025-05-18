@@ -200,17 +200,25 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
                     write_bytes(patch, [pokemon_id, encounter.level], cur_address)
                     cur_address += 2
 
+        tree_encounter_rates = []
+        rock_encounter_rates = []
+        if world.options.encounter_slot_distribution.value == EncounterSlotDistribution.option_balanced:
+            tree_encounter_rates = [20, 20, 20, 15, 15, 10]
+            rock_encounter_rates = [70, 30]
+        elif world.options.encounter_slot_distribution.value == EncounterSlotDistribution.option_equal:
+            tree_encounter_rates = [16, 16, 17, 17, 17, 17]
+            rock_encounter_rates = [50, 50]
+
         for tree_name, tree_data in world.generated_wild.tree.items():
             cur_address = data.rom_addresses["TreeMonSet_" + tree_name]
             for rarity in [tree_data.common, tree_data.rare]:
                 for i, encounter in enumerate(rarity):
-                    if world.options.encounter_slot_distribution.value == EncounterSlotDistribution.option_equal:
-                        # headbutt encounter rates are stored as individual percentages
-                        encounter_rate = int(1 / len(rarity) * 100)
-                        if i + 1 == len(rarity):
-                            # casting to int means the total percentages will not sum to 100,
-                            # this accounts for the discrepancy
-                            encounter_rate = 100 - (i * encounter_rate)
+                    encounter_rate = None
+                    if len(rarity) == 2 and rock_encounter_rates:
+                        encounter_rate = rock_encounter_rates[i]
+                    elif tree_encounter_rates:
+                        encounter_rate = tree_encounter_rates[i]
+                    if encounter_rate:
                         write_bytes(patch, [encounter_rate], cur_address)
                     cur_address += 1
                     pokemon_id = data.pokemon[encounter.pokemon].id
@@ -227,10 +235,12 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
     water_probs = []
 
     if world.options.encounter_slot_distribution.value == EncounterSlotDistribution.option_remove_one_percents:
-        grass_probs = [20, 40, 55, 70, 80, 90, 100]
+        grass_probs = [30, 55, 75, 85, 90, 95, 100]
     elif world.options.encounter_slot_distribution.value == EncounterSlotDistribution.option_equal:
         grass_probs = [14, 28, 42, 57, 71, 85, 100]
         water_probs = [33, 66, 100]
+    elif world.options.encounter_slot_distribution.value == EncounterSlotDistribution.option_balanced:
+        grass_probs = [20, 40, 55, 70, 80, 90, 100]
 
     if grass_probs:
         grass_prob_table = [f(x) for x in enumerate(grass_probs) for f in (lambda x: x[1], lambda x: x[0] * 2)]
