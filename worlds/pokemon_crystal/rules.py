@@ -1,11 +1,13 @@
+from collections import defaultdict
 from typing import TYPE_CHECKING
 
 from BaseClasses import CollectionState
 from worlds.generic.Rules import add_rule, set_rule
-from .data import data
+from .data import data, EvolutionType, EvolutionData
 from .options import Goal, JohtoOnly, Route32Condition, UndergroundsRequirePower, Route2Access, \
     BlackthornDarkCaveAccess, \
     NationalParkAccess, KantoAccessCondition, Route3Access
+from .utils import evolution_in_logic, evolution_location_name
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
@@ -118,10 +120,22 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
             return state.has("HM07 Waterfall", world.player)
 
     def can_rocksmash(state: CollectionState):
-        return state.has("TM08 Rock Smash", world.player)
+        return state.has("TM08", world.player)
+
+    def can_headbutt(state: CollectionState):
+        return state.has("TM02", world.player)
 
     def has_tea(state: CollectionState):
         return state.has("Tea", world.player)
+
+    def has_old_rod(state: CollectionState):
+        return state.has("Old Rod", world.player)
+
+    def has_good_rod(state: CollectionState):
+        return state.has("Good Rod", world.player)
+
+    def has_super_rod(state: CollectionState):
+        return state.has("Super Rod", world.player)
 
     if world.options.randomize_badges.value == 0:
         badge_items = {"zephyr": "EVENT_ZEPHYR_BADGE_FROM_FALKNER",
@@ -1159,18 +1173,50 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         for (name, encounters) in world.generated_wild.water.items():
             set_dexsanity_rule(f"WildWater_{name}", len(encounters), can_surf)
         for (name, encounters) in world.generated_wild.fish.items():
-            set_dexsanity_rule(f"WildFish_{name}_Old", len(encounters.old),
-                               lambda state: state.has("Old Rod", world.player))
-            set_dexsanity_rule(f"WildFish_{name}_Good", len(encounters.good),
-                               lambda state: state.has("Good Rod", world.player))
-            set_dexsanity_rule(f"WildFish_{name}_Super", len(encounters.super),
-                               lambda state: state.has("Super Rod", world.player))
+            set_dexsanity_rule(f"WildFish_{name}_Old", len(encounters.old), has_old_rod)
+            set_dexsanity_rule(f"WildFish_{name}_Good", len(encounters.good), has_good_rod)
+            set_dexsanity_rule(f"WildFish_{name}_Super", len(encounters.super), has_super_rod)
         for (name, encounters) in world.generated_wild.tree.items():
             if name == "Rock":
-                set_dexsanity_rule(f"WildRockSmash", len(encounters.common),
-                                   lambda state: state.has("TM08 Rock Smash", world.player))
+                set_dexsanity_rule(f"WildRockSmash", len(encounters.common), can_rocksmash)
             else:
-                set_dexsanity_rule(f"WildTree_{name}_Common", len(encounters.common),
-                                   lambda state: state.has("TM02", world.player))
-                set_dexsanity_rule(f"WildTree_{name}_Rare", len(encounters.rare),
-                                   lambda state: state.has("TM02", world.player))
+                set_dexsanity_rule(f"WildTree_{name}_Common", len(encounters.common), can_headbutt)
+                set_dexsanity_rule(f"WildTree_{name}_Rare", len(encounters.rare), can_headbutt)
+
+        if world.options.johto_only:
+            badge_factor = 8
+        else:
+            badge_factor = 4
+
+        def evolution_logic(state: CollectionState, evolved_from: str, evolutions: list[EvolutionData]):
+            if not state.has(f"CATCH_{evolved_from}", world.player): return False
+            for evo in evolutions:
+                if evo.evo_type is EvolutionType.Level or evo.evo_type is EvolutionType.Stats:
+                    required_gyms = evo.level // badge_factor
+                    if has_beaten_n_gyms(state, required_gyms): return True
+                if evo.evo_type is EvolutionType.Item:
+                    if state.has("EVENT_GOLDENROD_EVOLUTION_ITEMS", world.player) or state.has(
+                            "EVENT_CELADON_EVOLUTION_ITEMS", world.player): return True
+                if evo.evo_type is EvolutionType.Happiness:
+                    if state.has("EVENT_DAISY_GROOMING", world.player) or state.has(
+                            "EVENT_HAIRCUT_BROTHERS", world.player): return True
+
+            return False
+
+        if world.options.evolution_methods_required:
+            locations_to_evolutions = defaultdict[str, list[EvolutionData]](lambda: [])
+            locations_to_pokemon = dict[str, str]()
+            for pokemon_id, pokemon_data in world.generated_pokemon.items():
+                for evolution in pokemon_data.evolutions:
+                    if evolution_in_logic(world, evolution):
+                        location_name = evolution_location_name(world, pokemon_id, evolution.pokemon)
+                        locations_to_pokemon[location_name] = pokemon_id
+                        locations_to_evolutions[location_name].append(evolution)
+
+            for location_name, evo_data in locations_to_evolutions.items():
+                evolves_from = locations_to_pokemon[location_name]
+                set_rule(
+                    get_location(location_name),
+                    lambda state, from_pokemon=evolves_from, evolutions=evo_data:
+                    evolution_logic(state, from_pokemon, evolutions)
+                )

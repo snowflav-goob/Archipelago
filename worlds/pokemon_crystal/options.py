@@ -259,6 +259,15 @@ class Dexsanity(NamedRange):
     }
 
 
+class EvolutionMethodsRequired(OptionSet):
+    """
+    Sets which types of evolutions may be logically required.
+    """
+    display_name = "Evolution Methods Required"
+    valid_keys = ["Level", "Level Tyrogue", "Use Item", "Happiness"]
+    default = ["Level", "Level Tyrogue", "Use Item", "Happiness"]
+
+
 class RandomizePokegear(Toggle):
     """
     Shuffles the Pokegear and cards into the pool
@@ -885,6 +894,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     trainersanity_alerts: TrainersanityAlerts
     rematchsanity: Rematchsanity
     dexsanity: Dexsanity
+    evolution_methods_required: EvolutionMethodsRequired
     randomize_pokegear: RandomizePokegear
     randomize_berry_trees: RandomizeBerryTrees
     randomize_starters: RandomizeStarters

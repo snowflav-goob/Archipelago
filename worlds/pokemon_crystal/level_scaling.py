@@ -1,5 +1,4 @@
 import logging
-from typing import List, Set
 
 from BaseClasses import CollectionState, MultiWorld
 from .locations import PokemonCrystalLocation
@@ -61,7 +60,7 @@ def perform_level_scaling(multiworld: MultiWorld):
     level_scaling_required = False
     state = CollectionState(multiworld)
     progression_locations = {loc for loc in multiworld.get_filled_locations() if loc.item.advancement}
-    crystal_locations: Set[PokemonCrystalLocation] = {loc for loc in multiworld.get_filled_locations() if
+    crystal_locations: set[PokemonCrystalLocation] = {loc for loc in multiworld.get_filled_locations() if
                                                       loc.game == "Pokemon Crystal"}
     scaling_locations = {loc for loc in crystal_locations if
                          ("trainer scaling" in loc.tags) or ("static scaling" in loc.tags)}
@@ -81,7 +80,7 @@ def perform_level_scaling(multiworld: MultiWorld):
     # AP runs through the seed and starts collecting locations and counting spheres
     # to find battle milestones as listed above. this is important for creating our level curve.
     while len(locations) > 0:
-        new_spheres: List[Set] = []
+        new_spheres: list[set] = []
         new_battle_events = set()
         battle_events_found = True
 
@@ -105,15 +104,15 @@ def perform_level_scaling(multiworld: MultiWorld):
                     while regions:
                         # update_regions = True
                         # while update_regions:
-                            # update_regions = False
-                            # same_distance_regions = set()
-                            # for region in regions:
-                                # encounter_regions = {e.connected_region for e in region.exits if e.access_rule(state)}
-                                # same_distance_regions.update(encounter_regions)
-                            # regions_len = len(regions)
-                            # regions.update(same_distance_regions)
-                            # if len(regions) > regions_len:
-                                # update_regions = True
+                        # update_regions = False
+                        # same_distance_regions = set()
+                        # for region in regions:
+                        # encounter_regions = {e.connected_region for e in region.exits if e.access_rule(state)}
+                        # same_distance_regions.update(encounter_regions)
+                        # regions_len = len(regions)
+                        # regions.update(same_distance_regions)
+                        # if len(regions) > regions_len:
+                        # update_regions = True
                         next_regions = set()
                         for region in regions:
                             if not hasattr(region, "distance") or distance < region.distance:

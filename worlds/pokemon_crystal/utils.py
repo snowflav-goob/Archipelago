@@ -2,7 +2,7 @@ import logging
 from random import Random
 from typing import TYPE_CHECKING
 
-from .data import data
+from .data import data, EvolutionData, EvolutionType
 from .options import FreeFlyLocation, Route32Condition, JohtoOnly
 from ..Files import APTokenTypes
 
@@ -72,6 +72,23 @@ def get_free_fly_locations(world: "PokemonCrystalWorld"):
     if world.options.free_fly_location.value in [FreeFlyLocation.option_free_fly_and_map_card,
                                                  FreeFlyLocation.option_map_card]:
         world.map_card_fly_location = location_pool.pop()
+
+
+def evolution_in_logic(world: "PokemonCrystalWorld", evolution: EvolutionData):
+    if evolution.evo_type is EvolutionType.Level:
+        return "Level" in world.options.evolution_methods_required.value
+    if evolution.evo_type is EvolutionType.Happiness:
+        return "Happiness" in world.options.evolution_methods_required.value
+    if evolution.evo_type is EvolutionType.Item:
+        return "Use Item" in world.options.evolution_methods_required.value
+    if evolution.evo_type is EvolutionType.Stats:
+        return "Level Tyrogue" in world.options.evolution_methods_required.value
+    return False
+
+
+def evolution_location_name(world: "PokemonCrystalWorld", from_pokemon: str, to_pokemon: str):
+    return (f"Evolve {world.generated_pokemon[from_pokemon].friendly_name} "
+            f"into {world.generated_pokemon[to_pokemon].friendly_name}")
 
 
 def convert_to_ingame_text(text: str):

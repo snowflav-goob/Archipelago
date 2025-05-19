@@ -252,7 +252,9 @@
       "REGION_PALLET_TOWN"
     ],
     "locations": [],
-    "events": []
+    "events": [
+      "EVENT_DAISY_GROOMING"
+    ]
   },
   "REGION_BRUNOS_ROOM": {
     "johto": true,
@@ -350,7 +352,9 @@
       "REGION_CELADON_DEPT_STORE_ELEVATOR"
     ],
     "locations": [],
-    "events": []
+    "events": [
+      "EVENT_CELADON_EVOLUTION_ITEMS"
+    ]
   },
   "REGION_CELADON_DEPT_STORE_2F": {
     "johto": false,
@@ -1435,7 +1439,8 @@
     ],
     "locations": [],
     "events": [
-      "EVENT_MART_WATER_STONE"
+      "EVENT_MART_WATER_STONE",
+      "EVENT_GOLDENROD_EVOLUTION_ITEMS"
     ]
   },
   "REGION_GOLDENROD_DEPT_STORE_2F": {
@@ -1642,7 +1647,9 @@
       "ITEM_FROM_POKEMANIAC_ISSAC",
       "ITEM_FROM_POKEMANIAC_DONALD"
     ],
-    "events": []
+    "events": [
+      "EVENT_HAIRCUT_BROTHERS"
+    ]
   },
   "REGION_GOLDENROD_UNDERGROUND_SWITCH_ROOM_ENTRANCES": {
     "johto": true,

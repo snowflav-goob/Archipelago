@@ -1,6 +1,6 @@
 import pkgutil
 from enum import Enum
-from typing import Dict, List, NamedTuple, Set, FrozenSet, Any, Union, Optional
+from typing import NamedTuple, Any
 
 import orjson
 import yaml
@@ -16,7 +16,7 @@ class ItemData(NamedTuple):
     item_id: int
     item_const: str
     classification: ItemClassification
-    tags: FrozenSet[str]
+    tags: frozenset[str]
 
 
 class LocationData(NamedTuple):
@@ -26,7 +26,7 @@ class LocationData(NamedTuple):
     default_item: int
     rom_address: int
     flag: int
-    tags: FrozenSet[str]
+    tags: frozenset[str]
     script: str
 
 
@@ -38,14 +38,14 @@ class EventData(NamedTuple):
 class TrainerPokemon(NamedTuple):
     level: int
     pokemon: str
-    item: Union[str, None]
-    moves: List[str]
+    item: str | None
+    moves: list[str]
 
 
 class TrainerData(NamedTuple):
     name: str
     trainer_type: str
-    pokemon: List[TrainerPokemon]
+    pokemon: list[TrainerPokemon]
     name_length: int
 
 
@@ -54,10 +54,27 @@ class LearnsetData(NamedTuple):
     move: str
 
 
+class EvolutionType(Enum):
+    Level = 0
+    Item = 1
+    Happiness = 2
+    Stats = 3
+    Trade = 4
+
+    @staticmethod
+    def from_string(evo_type_string):
+        if evo_type_string == "EVOLVE_LEVEL": return EvolutionType.Level
+        if evo_type_string == "EVOLVE_ITEM": return EvolutionType.Item
+        if evo_type_string == "EVOLVE_HAPPINESS": return EvolutionType.Happiness
+        if evo_type_string == "EVOLVE_STAT": return EvolutionType.Stats
+        if evo_type_string == "EVOLVE_TRADE": return EvolutionType.Trade
+        raise ValueError(f"Invalid evolution type: {evo_type_string}")
+
+
 class EvolutionData(NamedTuple):
-    evo_type: str
-    level: Union[int, None]
-    condition: Union[str, None]
+    evo_type: EvolutionType
+    level: int | None
+    condition: str | None
     pokemon: str
     length: int
 
@@ -65,11 +82,11 @@ class EvolutionData(NamedTuple):
 class PokemonData(NamedTuple):
     id: int
     friendly_name: str
-    base_stats: List[int]
-    types: List[str]
-    evolutions: List[EvolutionData]
-    learnset: List[LearnsetData]
-    tm_hm: List[str]
+    base_stats: list[int]
+    types: list[str]
+    evolutions: list[EvolutionData]
+    learnset: list[LearnsetData]
+    tm_hm: list[str]
     is_base: bool
     bst: int
 
@@ -113,13 +130,13 @@ class MiscOption(Enum):
 
 
 class MiscWarp(NamedTuple):
-    coords: List[int]
+    coords: list[int]
     id: int
 
 
 class MiscSaffronWarps(NamedTuple):
-    warps: Dict[str, MiscWarp]
-    pairs: List[List[str]]
+    warps: dict[str, MiscWarp]
+    pairs: list[list[str]]
 
 
 class MiscMomItem(NamedTuple):
@@ -128,12 +145,12 @@ class MiscMomItem(NamedTuple):
 
 
 class MiscData(NamedTuple):
-    fuchsia_gym_trainers: List[List[int]]
-    radio_tower_questions: List[str]
+    fuchsia_gym_trainers: list[list[int]]
+    radio_tower_questions: list[str]
     saffron_gym_warps: MiscSaffronWarps
-    radio_channel_addresses: List[int]
-    mom_items: List[MiscMomItem]
-    selected: List[MiscOption] = MiscOption.all()
+    radio_channel_addresses: list[int]
+    mom_items: list[MiscMomItem]
+    selected: list[MiscOption] = MiscOption.all()
 
 
 class MusicConst(NamedTuple):
@@ -142,10 +159,10 @@ class MusicConst(NamedTuple):
 
 
 class MusicData(NamedTuple):
-    consts: Dict[str, MusicConst]
-    maps: Dict[str, str]
-    encounters: List[str]
-    scripts: Dict[str, str]
+    consts: dict[str, MusicConst]
+    maps: dict[str, str]
+    encounters: list[str]
+    scripts: dict[str, str]
 
 
 class EncounterMon(NamedTuple):
@@ -154,30 +171,30 @@ class EncounterMon(NamedTuple):
 
 
 class FishData(NamedTuple):
-    old: List[EncounterMon]
-    good: List[EncounterMon]
-    super: List[EncounterMon]
+    old: list[EncounterMon]
+    good: list[EncounterMon]
+    super: list[EncounterMon]
 
 
 class TreeMonData(NamedTuple):
-    common: List[EncounterMon]
-    rare: List[EncounterMon]
+    common: list[EncounterMon]
+    rare: list[EncounterMon]
 
 
 class WildData(NamedTuple):
-    grass: Dict[str, List[EncounterMon]]
-    water: Dict[str, List[EncounterMon]]
-    fish: Dict[str, FishData]
-    tree: Dict[str, TreeMonData]
+    grass: dict[str, list[EncounterMon]]
+    water: dict[str, list[EncounterMon]]
+    fish: dict[str, FishData]
+    tree: dict[str, TreeMonData]
 
 
 class StaticPokemon(NamedTuple):
     name: str
     pokemon: str
-    addresses: List[str]
+    addresses: list[str]
     level: int
     level_type: str
-    level_address: Optional[str]
+    level_address: str | None
 
 
 class TradeData(NamedTuple):
@@ -200,12 +217,12 @@ class RegionData:
     name: str
     johto: bool
     silver_cave: bool
-    exits: List[str]
-    warps: List[str]
-    trainers: List[TrainerData]
-    statics: List[StaticPokemon]
-    locations: List[str]
-    events: List[EventData]
+    exits: list[str]
+    warps: list[str]
+    trainers: list[TrainerData]
+    statics: list[StaticPokemon]
+    locations: list[str]
+    events: list[EventData]
     wild_encounters: RegionWildEncounterData | None
 
     def __init__(self, name: str):
@@ -228,9 +245,9 @@ class FlyRegion(NamedTuple):
 class PhoneScriptData:
     name: str
     caller: str
-    script: List[str]
+    script: list[str]
 
-    def __init__(self, name: str, caller: str, script: List[str]):
+    def __init__(self, name: str, caller: str, script: list[str]):
         self.name = name
         self.caller = caller
         self.script = script
@@ -239,24 +256,24 @@ class PhoneScriptData:
 class PokemonCrystalData:
     rom_version: int
     rom_version_11: int
-    rom_addresses: Dict[str, int]
-    ram_addresses: Dict[str, int]
-    event_flags: Dict[str, int]
-    regions: Dict[str, RegionData]
-    locations: Dict[str, LocationData]
-    items: Dict[int, ItemData]
-    trainers: Dict[str, TrainerData]
-    pokemon: Dict[str, PokemonData]
-    moves: Dict[str, MoveData]
+    rom_addresses: dict[str, int]
+    ram_addresses: dict[str, int]
+    event_flags: dict[str, int]
+    regions: dict[str, RegionData]
+    locations: dict[str, LocationData]
+    items: dict[int, ItemData]
+    trainers: dict[str, TrainerData]
+    pokemon: dict[str, PokemonData]
+    moves: dict[str, MoveData]
     wild: WildData
-    types: List[str]
-    type_ids: Dict[str, int]
-    tmhm: Dict[str, TMHMData]
+    types: list[str]
+    type_ids: dict[str, int]
+    tmhm: dict[str, TMHMData]
     misc: MiscData
     music: MusicData
-    static: Dict[str, StaticPokemon]
-    trades: List[TradeData]
-    fly_regions: List[FlyRegion]
+    static: dict[str, StaticPokemon]
+    trades: list[TradeData]
+    fly_regions: list[FlyRegion]
 
     def __init__(self) -> None:
         self.rom_addresses = {}
@@ -278,7 +295,7 @@ class PokemonCrystalGameSetting(NamedTuple):
     values: dict[str, int]
     default: int
 
-    def set_option_byte(self, option_selection: Optional[str], option_bytes: bytearray):
+    def set_option_byte(self, option_selection: str | None, option_bytes: bytearray):
         if option_selection is True:
             option_selection = "on"
         elif option_selection is False:
@@ -303,11 +320,11 @@ class PokemonCrystalMapSizeData(NamedTuple):
     height: int
 
 
-def load_json_data(data_name: str) -> Union[List[Any], Dict[str, Any]]:
+def load_json_data(data_name: str) -> list[Any] | dict[str, Any]:
     return orjson.loads(pkgutil.get_data(__name__, "data/" + data_name).decode('utf-8-sig'))
 
 
-def load_yaml_data(data_name: str) -> Union[List[Any], Dict[str, Any]]:
+def load_yaml_data(data_name: str) -> list[Any] | dict[str, Any]:
     return yaml.safe_load(pkgutil.get_data(__name__, "data/" + data_name).decode('utf-8-sig'))
 
 
@@ -339,7 +356,7 @@ def _init() -> None:
     data.rom_version = data_json["rom_version"]
     data.rom_version_11 = data_json["rom_version11"]
 
-    claimed_locations: Set[str] = set()
+    claimed_locations: set[str] = set()
 
     data.trainers = {}
 
@@ -388,7 +405,7 @@ def _init() -> None:
         for location_name in region_json["locations"]:
             if location_name in claimed_locations:
                 raise AssertionError(f"Location [{location_name}] was claimed by multiple regions")
-            location_json = location_data[location_name]
+            location_json: dict[str, Any] = location_data[location_name]
             new_location = LocationData(
                 location_name,
                 location_json["label"],
@@ -476,12 +493,13 @@ def _init() -> None:
     for pokemon_name, pokemon_data in data_json["pokemon"].items():
         evolutions = []
         for evo in pokemon_data["evolutions"]:
+            evo_type = EvolutionType.from_string(evo[0])
             if len(evo) == 4:
-                evolutions.append(EvolutionData(evo[0], int(evo[1]), evo[2], evo[3], len(evo)))
-            elif evo[0] == "EVOLVE_LEVEL":
-                evolutions.append(EvolutionData(evo[0], int(evo[1]), None, evo[2], len(evo)))
+                evolutions.append(EvolutionData(evo_type, int(evo[1]), evo[2], evo[3], len(evo)))
+            elif evo_type is EvolutionType.Level:
+                evolutions.append(EvolutionData(evo_type, int(evo[1]), None, evo[2], len(evo)))
             else:
-                evolutions.append(EvolutionData(evo[0], None, evo[1], evo[2], len(evo)))
+                evolutions.append(EvolutionData(evo_type, None, evo[1], evo[2], len(evo)))
         data.pokemon[pokemon_name] = PokemonData(
             pokemon_data["id"],
             pokemon_data["friendly_name"],

@@ -1,8 +1,9 @@
-from typing import TYPE_CHECKING, Optional, Dict, FrozenSet
+from typing import TYPE_CHECKING, Dict
 
 from BaseClasses import Location, Region, LocationProgressType
 from .data import data, POKEDEX_OFFSET
 from .options import Goal
+from .utils import evolution_in_logic, evolution_location_name
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
@@ -10,20 +11,20 @@ if TYPE_CHECKING:
 
 class PokemonCrystalLocation(Location):
     game: str = "Pokemon Crystal"
-    rom_address: Optional[int]
-    default_item_code: Optional[int]
-    flag: Optional[int]
-    tags: FrozenSet[str]
+    rom_address: int | None
+    default_item_code: int | None
+    flag: int | None
+    tags: frozenset[str]
 
     def __init__(
             self,
             player: int,
             name: str,
-            parent: Optional[Region] = None,
-            flag: Optional[int] = None,
-            rom_address: Optional[int] = None,
-            default_item_value: Optional[int] = None,
-            tags: FrozenSet[str] = frozenset(),
+            parent: Region | None = None,
+            flag: int | None = None,
+            rom_address: int | None = None,
+            default_item_value: int | None = None,
+            tags: frozenset[str] = frozenset(),
             progress_type: LocationProgressType = LocationProgressType.DEFAULT
     ) -> None:
         super().__init__(player, name, flag, parent)
@@ -33,7 +34,7 @@ class PokemonCrystalLocation(Location):
         self.progress_type = progress_type
 
 
-def create_locations(world: "PokemonCrystalWorld", regions: Dict[str, Region]) -> None:
+def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -> None:
     exclude = set()
     if not world.options.randomize_hidden_items:
         exclude.add("Hidden")
@@ -89,8 +90,28 @@ def create_locations(world: "PokemonCrystalWorld", regions: Dict[str, Region]) -
             )
             pokedex_region.locations.append(new_location)
 
+        if world.options.evolution_methods_required:
+            evolution_region = regions["Evolutions"]
+            created_locations = set()
+            for pokemon_id, pokemon_data in world.generated_pokemon.items():
+                for evolution in pokemon_data.evolutions:
+                    location_name = evolution_location_name(world, pokemon_id, evolution.pokemon)
+                    if not evolution_in_logic(world, evolution) or location_name in created_locations: continue
+                    new_location = PokemonCrystalLocation(
+                        world.player,
+                        location_name,
+                        evolution_region,
+                        tags=frozenset({"dexsanity", "evolution"})
+                    )
+                    new_location.show_in_spoiler = False
+                    new_location.place_locked_item(
+                        world.create_event(f"CATCH_{evolution.pokemon}")
+                    )
+                    evolution_region.locations.append(new_location)
+                    created_locations.add(location_name)
 
-def create_location_label_to_id_map() -> Dict[str, int]:
+
+def create_location_label_to_id_map() -> dict[str, int]:
     """
     Creates a map from location labels to their AP location id (address)
     """
