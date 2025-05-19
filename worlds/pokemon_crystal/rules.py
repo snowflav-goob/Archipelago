@@ -1183,16 +1183,11 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                 set_dexsanity_rule(f"WildTree_{name}_Common", len(encounters.common), can_headbutt)
                 set_dexsanity_rule(f"WildTree_{name}_Rare", len(encounters.rare), can_headbutt)
 
-        if world.options.johto_only:
-            badge_factor = 8
-        else:
-            badge_factor = 4
-
         def evolution_logic(state: CollectionState, evolved_from: str, evolutions: list[EvolutionData]):
             if not state.has(f"CATCH_{evolved_from}", world.player): return False
             for evo in evolutions:
                 if evo.evo_type is EvolutionType.Level or evo.evo_type is EvolutionType.Stats:
-                    required_gyms = evo.level // badge_factor
+                    required_gyms = max(1, evo.level // world.options.evolution_gym_levels)
                     if has_beaten_n_gyms(state, required_gyms): return True
                 if evo.evo_type is EvolutionType.Item:
                     if state.has("EVENT_GOLDENROD_EVOLUTION_ITEMS", world.player) or state.has(

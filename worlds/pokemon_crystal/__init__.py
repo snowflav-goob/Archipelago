@@ -187,6 +187,12 @@ class PokemonCrystalWorld(World):
                         "Pokemon Crystal: Mt. Silver Badges >8 incompatible with Johto Only "
                         "if badges are not completely random. Changing Mt. Silver Badges to 8 for player %s.",
                         self.multiworld.get_player_name(self.player))
+            if self.options.evolution_gym_levels.value < 8:
+                self.options.evolution_gym_levels.value = 8
+                logging.warning(
+                    "Pokemon Crystal: Evolution Gym Levels <8 incompatible with Johto Only "
+                    "if badges are not completely random. Changing Evolution Gym Levels to 8 for player %s.",
+                    self.multiworld.get_player_name(self.player))
 
         if (self.options.red_gyarados_access
                 and self.options.randomize_badges.value == RandomizeBadges.option_vanilla

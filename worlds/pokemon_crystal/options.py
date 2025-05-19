@@ -268,6 +268,20 @@ class EvolutionMethodsRequired(OptionSet):
     default = ["Level", "Level Tyrogue", "Use Item", "Happiness"]
 
 
+class EvolutionGymLevels(Range):
+    """
+    Sets how many levels each beaten gym puts into logic for level (and Tyrogue) evolutions
+
+    For example, if you set this to 4 and have beaten 5 gyms, evolutions up to level 20 would be in logic.
+
+    If Johto only is enabled the minimum for this setting is 8.
+    """
+    display_name = "Evolution Gym Levels"
+    default = 8
+    range_start = 4
+    range_end = 69
+
+
 class RandomizePokegear(Toggle):
     """
     Shuffles the Pokegear and cards into the pool
@@ -895,6 +909,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     rematchsanity: Rematchsanity
     dexsanity: Dexsanity
     evolution_methods_required: EvolutionMethodsRequired
+    evolution_gym_levels: EvolutionGymLevels
     randomize_pokegear: RandomizePokegear
     randomize_berry_trees: RandomizeBerryTrees
     randomize_starters: RandomizeStarters
