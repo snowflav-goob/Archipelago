@@ -91,7 +91,8 @@ def create_regions(world: "PokemonCrystalWorld") -> Dict[str, Region]:
         else:
             return False
 
-    def create_wild_region(parent_region: Region, region_id: str, wilds: List[EncounterMon | StaticPokemon]):
+    def create_wild_region(parent_region: Region, region_id: str, wilds: List[EncounterMon | StaticPokemon],
+                           tags: set[str] | None = None):
         if region_id not in regions:
             wild_region = Region(region_id, world.player, world.multiworld)
             regions[region_id] = wild_region
@@ -103,7 +104,7 @@ def create_regions(world: "PokemonCrystalWorld") -> Dict[str, Region]:
                     world.player,
                     location_name,
                     wild_region,
-                    tags=frozenset({"wild encounter"})
+                    tags=frozenset({"wild encounter"} | (tags if tags else set()))
                 )
                 location.show_in_spoiler = False
                 wild_region.locations.append(location)
@@ -148,9 +149,12 @@ def create_regions(world: "PokemonCrystalWorld") -> Dict[str, Region]:
 
         if wild_region_data.statics:
             for static_encounter in wild_region_data.statics:
+                tags = set()
+                if static_encounter.exclude_from_logic:
+                    tags |= {"exclude"}
                 region_id = f"Static_{static_encounter.name}"
                 world.available_wild_regions.add(region_id)
-                create_wild_region(parent_region, region_id, [static_encounter])
+                create_wild_region(parent_region, region_id, [static_encounter], tags)
 
     for region_name, region_data in data.regions.items():
         if should_include_region(region_data):

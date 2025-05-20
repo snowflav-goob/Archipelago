@@ -195,6 +195,7 @@ class StaticPokemon(NamedTuple):
     level: int
     level_type: str
     level_address: str | None
+    exclude_from_logic: bool
 
 
 class TradeData(NamedTuple):
@@ -389,12 +390,15 @@ def _init() -> None:
             level_address = static_data["level_address"]
         else:
             level_address = None
-        data.static[static_name] = StaticPokemon(static_name,
-                                                 static_data["pokemon"],
-                                                 static_data["addresses"],
-                                                 static_data["level"],
-                                                 static_data["type"],
-                                                 level_address)
+        data.static[static_name] = StaticPokemon(
+            static_name,
+            static_data["pokemon"],
+            static_data["addresses"],
+            static_data["level"],
+            static_data["type"],
+            level_address,
+            static_data["exclude_from_logic"] if "exclude_from_logic" in static_data else False
+        )
 
     data.regions = {}
 

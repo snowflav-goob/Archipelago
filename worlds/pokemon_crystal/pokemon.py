@@ -213,7 +213,8 @@ def _fill_encounter_area(world: "PokemonCrystalWorld", area_name: str, encounter
         # Not all encounter regions may be needed so we just ignore ones that don't exist
         try:
             location = world.get_location(f"{area_name}_{i + 1}")
-            location.place_locked_item(world.create_event(encounter.pokemon))
+            location.place_locked_item(world.create_event(encounter.pokemon if not (
+                        encounter is StaticPokemon and encounter.exclude_from_logic) else "NO_POKEMON"))
         except KeyError:
             pass
 
