@@ -112,7 +112,6 @@ def create_regions(world: "PokemonCrystalWorld") -> Dict[str, Region]:
         parent_region.connect(wild_region)
 
     def setup_wild_regions(parent_region: Region, wild_region_data: RegionData):
-        if not world.options.dexsanity: return
 
         if wild_region_data.wild_encounters:
             if wild_region_data.wild_encounters.grass:
@@ -249,10 +248,10 @@ def create_regions(world: "PokemonCrystalWorld") -> Dict[str, Region]:
         pokedex_region = Region("Pokedex", world.player, world.multiworld)
         regions["Pokedex"] = pokedex_region
         regions["Menu"].connect(regions["Pokedex"])
-        if world.options.evolution_methods_required:
-            evolution_region = Region("Evolutions", world.player, world.multiworld)
-            regions["Evolutions"] = evolution_region
-            regions["Menu"].connect(regions["Evolutions"])
+    if world.options.evolution_methods_required:
+        evolution_region = Region("Evolutions", world.player, world.multiworld)
+        regions["Evolutions"] = evolution_region
+        regions["Menu"].connect(regions["Evolutions"])
 
     world.trainer_level_list.sort()
     world.encounter_level_list.sort()

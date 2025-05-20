@@ -1162,57 +1162,55 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         set_rule(get_location(f"Pokedex - {pokemon_data.friendly_name}"),
                  lambda state, species_id=pokemon_id: state.has(f"CATCH_{species_id}", world.player))
 
-    if world.options.dexsanity:
+    def set_encounter_rule(region_id: str, count: int, rule):
+        for i in range(count):
+            try:
+                set_rule(get_location(f"{region_id}_{i + 1}"), rule)
+            except KeyError:
+                pass
 
-        def set_dexsanity_rule(region_id: str, count: int, rule):
-            for i in range(count):
-                try:
-                    set_rule(get_location(f"{region_id}_{i + 1}"), rule)
-                except KeyError:
-                    pass
+    for (name, encounters) in world.generated_wild.water.items():
+        set_encounter_rule(f"WildWater_{name}", len(encounters), can_surf)
+    for (name, encounters) in world.generated_wild.fish.items():
+        set_encounter_rule(f"WildFish_{name}_Old", len(encounters.old), has_old_rod)
+        set_encounter_rule(f"WildFish_{name}_Good", len(encounters.good), has_good_rod)
+        set_encounter_rule(f"WildFish_{name}_Super", len(encounters.super), has_super_rod)
+    for (name, encounters) in world.generated_wild.tree.items():
+        if name == "Rock":
+            set_encounter_rule(f"WildRockSmash", len(encounters.common), can_rocksmash)
+        else:
+            set_encounter_rule(f"WildTree_{name}_Common", len(encounters.common), can_headbutt)
+            set_encounter_rule(f"WildTree_{name}_Rare", len(encounters.rare), can_headbutt)
 
-        for (name, encounters) in world.generated_wild.water.items():
-            set_dexsanity_rule(f"WildWater_{name}", len(encounters), can_surf)
-        for (name, encounters) in world.generated_wild.fish.items():
-            set_dexsanity_rule(f"WildFish_{name}_Old", len(encounters.old), has_old_rod)
-            set_dexsanity_rule(f"WildFish_{name}_Good", len(encounters.good), has_good_rod)
-            set_dexsanity_rule(f"WildFish_{name}_Super", len(encounters.super), has_super_rod)
-        for (name, encounters) in world.generated_wild.tree.items():
-            if name == "Rock":
-                set_dexsanity_rule(f"WildRockSmash", len(encounters.common), can_rocksmash)
-            else:
-                set_dexsanity_rule(f"WildTree_{name}_Common", len(encounters.common), can_headbutt)
-                set_dexsanity_rule(f"WildTree_{name}_Rare", len(encounters.rare), can_headbutt)
+    def evolution_logic(state: CollectionState, evolved_from: str, evolutions: list[EvolutionData]):
+        if not state.has(f"CATCH_{evolved_from}", world.player): return False
+        for evo in evolutions:
+            if evo.evo_type is EvolutionType.Level or evo.evo_type is EvolutionType.Stats:
+                required_gyms = max(1, evo.level // world.options.evolution_gym_levels)
+                if has_beaten_n_gyms(state, required_gyms): return True
+            if evo.evo_type is EvolutionType.Item:
+                if state.has("EVENT_GOLDENROD_EVOLUTION_ITEMS", world.player) or state.has(
+                        "EVENT_CELADON_EVOLUTION_ITEMS", world.player): return True
+            if evo.evo_type is EvolutionType.Happiness:
+                if state.has("EVENT_DAISY_GROOMING", world.player) or state.has(
+                        "EVENT_HAIRCUT_BROTHERS", world.player): return True
 
-        def evolution_logic(state: CollectionState, evolved_from: str, evolutions: list[EvolutionData]):
-            if not state.has(f"CATCH_{evolved_from}", world.player): return False
-            for evo in evolutions:
-                if evo.evo_type is EvolutionType.Level or evo.evo_type is EvolutionType.Stats:
-                    required_gyms = max(1, evo.level // world.options.evolution_gym_levels)
-                    if has_beaten_n_gyms(state, required_gyms): return True
-                if evo.evo_type is EvolutionType.Item:
-                    if state.has("EVENT_GOLDENROD_EVOLUTION_ITEMS", world.player) or state.has(
-                            "EVENT_CELADON_EVOLUTION_ITEMS", world.player): return True
-                if evo.evo_type is EvolutionType.Happiness:
-                    if state.has("EVENT_DAISY_GROOMING", world.player) or state.has(
-                            "EVENT_HAIRCUT_BROTHERS", world.player): return True
+        return False
 
-            return False
+    if world.options.evolution_methods_required:
+        locations_to_evolutions = defaultdict[str, list[EvolutionData]](lambda: [])
+        locations_to_pokemon = dict[str, str]()
+        for pokemon_id in world.logically_available_pokemon:
+            for evolution in world.generated_pokemon[pokemon_id].evolutions:
+                if evolution_in_logic(world, evolution):
+                    location_name = evolution_location_name(world, pokemon_id, evolution.pokemon)
+                    locations_to_pokemon[location_name] = pokemon_id
+                    locations_to_evolutions[location_name].append(evolution)
 
-        if world.options.evolution_methods_required:
-            locations_to_evolutions = defaultdict[str, list[EvolutionData]](lambda: [])
-            locations_to_pokemon = dict[str, str]()
-            for pokemon_id in world.logically_available_pokemon:
-                for evolution in world.generated_pokemon[pokemon_id].evolutions:
-                    if evolution_in_logic(world, evolution):
-                        location_name = evolution_location_name(world, pokemon_id, evolution.pokemon)
-                        locations_to_pokemon[location_name] = pokemon_id
-                        locations_to_evolutions[location_name].append(evolution)
-
-            for location_name, evo_data in locations_to_evolutions.items():
-                evolves_from = locations_to_pokemon[location_name]
-                set_rule(
-                    get_location(location_name),
-                    lambda state, from_pokemon=evolves_from, evolutions=evo_data:
-                    evolution_logic(state, from_pokemon, evolutions)
-                )
+        for location_name, evo_data in locations_to_evolutions.items():
+            evolves_from = locations_to_pokemon[location_name]
+            set_rule(
+                get_location(location_name),
+                lambda state, from_pokemon=evolves_from, evolutions=evo_data:
+                evolution_logic(state, from_pokemon, evolutions)
+            )

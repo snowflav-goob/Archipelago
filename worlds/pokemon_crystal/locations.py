@@ -91,25 +91,25 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
             )
             pokedex_region.locations.append(new_location)
 
-        if world.options.evolution_methods_required:
-            evolution_region = regions["Evolutions"]
-            created_locations = set()
-            for pokemon_id in world.logically_available_pokemon:
-                for evolution in world.generated_pokemon[pokemon_id].evolutions:
-                    location_name = evolution_location_name(world, pokemon_id, evolution.pokemon)
-                    if not evolution_in_logic(world, evolution) or location_name in created_locations: continue
-                    new_location = PokemonCrystalLocation(
-                        world.player,
-                        location_name,
-                        evolution_region,
-                        tags=frozenset({"evolution"})
-                    )
-                    new_location.show_in_spoiler = False
-                    new_location.place_locked_item(
-                        world.create_event(f"CATCH_{evolution.pokemon}")
-                    )
-                    evolution_region.locations.append(new_location)
-                    created_locations.add(location_name)
+    if world.options.evolution_methods_required:
+        evolution_region = regions["Evolutions"]
+        created_locations = set()
+        for pokemon_id in world.logically_available_pokemon:
+            for evolution in world.generated_pokemon[pokemon_id].evolutions:
+                location_name = evolution_location_name(world, pokemon_id, evolution.pokemon)
+                if not evolution_in_logic(world, evolution) or location_name in created_locations: continue
+                new_location = PokemonCrystalLocation(
+                    world.player,
+                    location_name,
+                    evolution_region,
+                    tags=frozenset({"evolution"})
+                )
+                new_location.show_in_spoiler = False
+                new_location.place_locked_item(
+                    world.create_event(f"CATCH_{evolution.pokemon}")
+                )
+                evolution_region.locations.append(new_location)
+                created_locations.add(location_name)
 
 
 def create_location_label_to_id_map() -> dict[str, int]:
