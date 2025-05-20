@@ -53,7 +53,7 @@ TRACKER_EVENT_FLAGS = [
     "EVENT_GOT_SHUCKIE",
     "EVENT_GOT_EEVEE",
     "EVENT_GOT_DRATINI",
-    "EVENT_HATCHED_TOGEPI"
+    "EVENT_TOGEPI_HATCHED"
 ]
 EVENT_FLAG_MAP = {data.event_flags[event]: event for event in TRACKER_EVENT_FLAGS}
 
