@@ -326,13 +326,15 @@ class RandomizeWilds(Choice):
     """
     Randomizes species of wild Pokemon
 
-    Catch 'em all ensures that every pokemon will be obtainable in the wild
+    Base forms ensures that every Pokemon that cannot be obtained through evolution is available in the wild
+    Catch 'em all ensures that every Pokemon will be obtainable in the wild
     """
     display_name = "Randomize Wilds"
     default = 0
     option_vanilla = 0
     option_completely_random = 1
-    option_catch_em_all = 2
+    option_base_forms = 2
+    option_catch_em_all = 3
 
 
 class ForceFullyEvolved(Range):
