@@ -189,31 +189,31 @@ def generate_dexsanity_checks(world: "PokemonCrystalWorld"):
         world.generated_dexsanity.add(pokemon_items.pop())
 
 
-def fill_dexsanity_locations(world: "PokemonCrystalWorld"):
+def fill_wild_encounter_locations(world: "PokemonCrystalWorld"):
     for (name, encounters) in world.generated_wild.grass.items():
-        _fill_dexsanity_area(world, f"WildGrass_{name}", encounters)
+        _fill_encounter_area(world, f"WildGrass_{name}", encounters)
     for (name, encounters) in world.generated_wild.water.items():
-        _fill_dexsanity_area(world, f"WildWater_{name}", encounters)
+        _fill_encounter_area(world, f"WildWater_{name}", encounters)
     for (name, encounters) in world.generated_wild.fish.items():
-        _fill_dexsanity_area(world, f"WildFish_{name}_Old", encounters.old)
-        _fill_dexsanity_area(world, f"WildFish_{name}_Good", encounters.good)
-        _fill_dexsanity_area(world, f"WildFish_{name}_Super", encounters.super)
+        _fill_encounter_area(world, f"WildFish_{name}_Old", encounters.old)
+        _fill_encounter_area(world, f"WildFish_{name}_Good", encounters.good)
+        _fill_encounter_area(world, f"WildFish_{name}_Super", encounters.super)
     for (name, encounters) in world.generated_wild.tree.items():
         if name == "Rock":
-            _fill_dexsanity_area(world, f"WildRockSmash", encounters.common)
+            _fill_encounter_area(world, f"WildRockSmash", encounters.common)
         else:
-            _fill_dexsanity_area(world, f"WildTree_{name}_Common", encounters.common)
-            _fill_dexsanity_area(world, f"WildTree_{name}_Rare", encounters.rare)
+            _fill_encounter_area(world, f"WildTree_{name}_Common", encounters.common)
+            _fill_encounter_area(world, f"WildTree_{name}_Rare", encounters.rare)
     for encounter in world.generated_static.values():
-        _fill_dexsanity_area(world, f"Static_{encounter.name}", [encounter])
+        _fill_encounter_area(world, f"Static_{encounter.name}", [encounter])
 
 
-def _fill_dexsanity_area(world: "PokemonCrystalWorld", area_name: str, encounters: list[EncounterMon | StaticPokemon]):
+def _fill_encounter_area(world: "PokemonCrystalWorld", area_name: str, encounters: list[EncounterMon | StaticPokemon]):
     for (i, encounter) in enumerate(encounters):
         # Not all encounter regions may be needed so we just ignore ones that don't exist
         try:
             location = world.get_location(f"{area_name}_{i + 1}")
-            location.place_locked_item(world.create_event(f"CATCH_{encounter.pokemon}"))
+            location.place_locked_item(world.create_event(encounter.pokemon))
         except KeyError:
             pass
 

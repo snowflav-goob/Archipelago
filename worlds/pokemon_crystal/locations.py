@@ -106,7 +106,7 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
                 )
                 new_location.show_in_spoiler = False
                 new_location.place_locked_item(
-                    world.create_event(f"CATCH_{evolution.pokemon}")
+                    world.create_event(evolution.pokemon)
                 )
                 evolution_region.locations.append(new_location)
                 created_locations.add(location_name)

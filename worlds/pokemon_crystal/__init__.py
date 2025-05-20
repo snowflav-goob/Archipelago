@@ -24,7 +24,7 @@ from .options import PokemonCrystalOptions, JohtoOnly, RandomizeBadges, Goal, HM
 from .phone import generate_phone_traps
 from .phone_data import PhoneScript
 from .pokemon import randomize_pokemon, randomize_starters, randomize_traded_pokemon, generate_dexsanity_checks, \
-    fill_dexsanity_locations, generate_logically_available_pokemon
+    fill_wild_encounter_locations, generate_logically_available_pokemon
 from .regions import create_regions, setup_free_fly_regions
 from .rom import generate_output, PokemonCrystalProcedurePatch
 from .rules import set_rules
@@ -230,7 +230,7 @@ class PokemonCrystalWorld(World):
         regions = create_regions(self)
 
         generate_logically_available_pokemon(self)
-        
+
         if self.options.dexsanity:
             generate_dexsanity_checks(self)
 
@@ -349,8 +349,7 @@ class PokemonCrystalWorld(World):
 
                 logging.debug(f"Failed to shuffle badges for player {self.player} ({self.player_name}). Retrying.")
 
-        if self.options.dexsanity:
-            fill_dexsanity_locations(self)
+        fill_wild_encounter_locations(self)
 
     def generate_basic(self) -> None:
         # Create auth
@@ -426,13 +425,27 @@ class PokemonCrystalWorld(World):
             "national_park_access",
             "kanto_access_condition",
             "kanto_access_badges",
-            "route_3_access"
+            "route_3_access",
+            "vanilla_clair",
+            "evolution_methods_required",
+            "evolution_gym_levels",
+            "rematchsanity"
         )
         slot_data["apworld_version"] = self.apworld_version
         slot_data["tea_north"] = 1 if "North" in self.options.saffron_gatehouse_tea.value else 0
         slot_data["tea_east"] = 1 if "East" in self.options.saffron_gatehouse_tea.value else 0
         slot_data["tea_south"] = 1 if "South" in self.options.saffron_gatehouse_tea.value else 0
         slot_data["tea_west"] = 1 if "West" in self.options.saffron_gatehouse_tea.value else 0
+        slot_data["dexsanity_count"] = len(self.generated_dexsanity)
+        slot_data["dexsanity_pokemon"] = [self.generated_pokemon[poke].id for poke in self.generated_dexsanity]
+        wild_encounters = dict[int, list[str]]()
+        slot_data["wild_encounters"] = wild_encounters
+        for location in self.get_locations():
+            if "wild encounter" in location.tags:
+                dex_id = self.generated_pokemon[location.item.name].id
+                if dex_id not in wild_encounters:
+                    wild_encounters[dex_id] = []
+                wild_encounters[dex_id] += [location.name]
 
         for hm in self.options.remove_badge_requirement.valid_keys:
             slot_data["free_" + hm.lower()] = 1 if hm in self.options.remove_badge_requirement.value else 0

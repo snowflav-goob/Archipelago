@@ -1160,7 +1160,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     for pokemon_id in world.generated_dexsanity:
         pokemon_data = world.generated_pokemon[pokemon_id]
         set_rule(get_location(f"Pokedex - {pokemon_data.friendly_name}"),
-                 lambda state, species_id=pokemon_id: state.has(f"CATCH_{species_id}", world.player))
+                 lambda state, species_id=pokemon_id: state.has(species_id, world.player))
 
     def set_encounter_rule(region_id: str, count: int, rule):
         for i in range(count):
@@ -1183,7 +1183,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
             set_encounter_rule(f"WildTree_{name}_Rare", len(encounters.rare), can_headbutt)
 
     def evolution_logic(state: CollectionState, evolved_from: str, evolutions: list[EvolutionData]):
-        if not state.has(f"CATCH_{evolved_from}", world.player): return False
+        if not state.has(evolved_from, world.player): return False
         for evo in evolutions:
             if evo.evo_type is EvolutionType.Level or evo.evo_type is EvolutionType.Stats:
                 required_gyms = max(1, evo.level // world.options.evolution_gym_levels)
