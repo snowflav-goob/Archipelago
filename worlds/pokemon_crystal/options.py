@@ -343,7 +343,7 @@ class EncounterGrouping(Choice):
 
     All Split: Each encounter area will have each slot randomized separately. For example, grass areas will have seven
         randomized encounter slots. This does not guarantee slot uniqueness.
-    One to One: Each encounter area will retain its vanilla slot grouping. For exampke, if an area has two encounters
+    One to One: Each encounter area will retain its vanilla slot grouping. For example, if an area has two encounters
         in vanilla, it will be randomized as two slots. This does not guarantee slot uniqueness.
     One per Method: Each encounter method on a route will be treated as a single slot. For example, the grass on a route
      will contain only a single encounter. Each rod is a separate encounter.
