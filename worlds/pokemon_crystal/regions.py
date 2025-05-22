@@ -66,6 +66,10 @@ KANTO_LOCKED = [
     "SCHOOLBOY_JACK_POWER"
 ]
 
+LOGIC_EXCLUDE_STATICS = [
+    "Raikou", "Entei", "CatchTutorial1", "CatchTutorial2", "CatchTutorial3"
+]
+
 E4_LOCKED = list(set(CHAMPION_LOCKED + KANTO_LOCKED))
 REMATCHES = list(set(MAP_LOCKED + ROCKETHQ_LOCKED + RADIO_LOCKED + E4_LOCKED + KANTO_LOCKED))
 
@@ -150,7 +154,7 @@ def create_regions(world: "PokemonCrystalWorld") -> Dict[str, Region]:
         if wild_region_data.statics:
             for static_encounter in wild_region_data.statics:
                 tags = set()
-                if static_encounter.exclude_from_logic:
+                if static_encounter.name in LOGIC_EXCLUDE_STATICS:
                     tags |= {"exclude"}
                 region_id = f"Static_{static_encounter.name}"
                 world.available_wild_regions.add(region_id)
