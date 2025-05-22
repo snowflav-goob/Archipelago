@@ -268,6 +268,17 @@ class EvolutionMethodsRequired(OptionSet):
     default = ["Level", "Level Tyrogue", "Use Item", "Happiness"]
 
 
+class BreedingMethodsRequired(Choice):
+    """
+    Specifies which breeding methods may be logically required.
+    """
+    display_name = "Breeding Method Required"
+    default = 0
+    option_none = 0
+    option_ditto_only = 1
+    option_any = 2
+
+
 class EvolutionGymLevels(Range):
     """
     Sets how many levels each beaten gym puts into logic for level (and Tyrogue) evolutions
@@ -935,6 +946,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     rematchsanity: Rematchsanity
     dexsanity: Dexsanity
     evolution_methods_required: EvolutionMethodsRequired
+    breeding_methods_required: BreedingMethodsRequired
     evolution_gym_levels: EvolutionGymLevels
     randomize_pokegear: RandomizePokegear
     randomize_berry_trees: RandomizeBerryTrees

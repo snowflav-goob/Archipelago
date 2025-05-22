@@ -214,9 +214,26 @@ def _fill_encounter_area(world: "PokemonCrystalWorld", area_name: str, encounter
         try:
             location = world.get_location(f"{area_name}_{i + 1}")
             location.place_locked_item(world.create_event(encounter.pokemon if not (
-                        encounter is StaticPokemon and encounter.exclude_from_logic) else "NO_POKEMON"))
+                    encounter is StaticPokemon and encounter.exclude_from_logic) else "NO_POKEMON"))
         except KeyError:
             pass
+
+
+def generate_breeding_data(world: "PokemonCrystalWorld"):
+    def process_evolution(base: str, evolution: str):
+        if evolution not in world.logically_available_pokemon: return
+        evolution_data = world.generated_pokemon[evolution]
+        if "EGG_NONE" in evolution_data.egg_groups or evolution_data.gender_ratio == "GENDER_UNKNOWN": return
+        world.generated_breeding[base] |= {evolution}
+
+    for pokemon_id, pokemon_data in world.generated_pokemon.items():
+        if not pokemon_data.is_base: continue
+        for evolution in pokemon_data.evolutions:
+            process_evolution(pokemon_id, evolution.pokemon)
+            for second_evo in world.generated_pokemon[evolution.pokemon].evolutions:
+                process_evolution(pokemon_id, second_evo.pokemon)
+
+    world.logically_available_pokemon |= world.generated_breeding.keys()
 
 
 def get_random_pokemon(world: "PokemonCrystalWorld", priority_pokemon: set[str] | None = None, types=None,

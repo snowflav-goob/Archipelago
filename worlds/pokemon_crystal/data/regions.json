@@ -3189,7 +3189,6 @@
     "johto": false,
     "exits": [
       "REGION_ROUTE_9",
-      "REGION_ROUTE_10_POKECENTER_1F",
       "REGION_POWER_PLANT"
     ],
     "locations": [],
@@ -3203,7 +3202,7 @@
   "REGION_ROUTE_10_POKECENTER_1F": {
     "johto": false,
     "exits": [
-      "REGION_ROUTE_10_NORTH",
+      "REGION_ROUTE_9",
       "REGION_POKECENTER_2F"
     ],
     "locations": [],
@@ -4163,7 +4162,9 @@
       "ITEM_FROM_YOUNGSTER_IAN",
       "ITEM_FROM_POKEFANM_BRANDON"
     ],
-    "events": [],
+    "events": [
+      "EVENT_UNLOCKED_DAY_CARE"
+    ],
     "wild_encounters": {
       "grass": "ROUTE_34",
       "surfing": "ROUTE_34",
@@ -5030,7 +5031,8 @@
     "exits": [
       "REGION_ROUTE_10_NORTH",
       "REGION_CERULEAN_CITY",
-      "REGION_ROCK_TUNNEL_1F"
+      "REGION_ROCK_TUNNEL_1F",
+      "REGION_ROUTE_10_POKECENTER_1F"
     ],
     "trainers": [
       "CAMPER_DEAN",

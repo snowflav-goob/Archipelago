@@ -6,7 +6,7 @@ from worlds.generic.Rules import add_rule, set_rule
 from .data import data, EvolutionType, EvolutionData
 from .options import Goal, JohtoOnly, Route32Condition, UndergroundsRequirePower, Route2Access, \
     BlackthornDarkCaveAccess, \
-    NationalParkAccess, KantoAccessCondition, Route3Access
+    NationalParkAccess, KantoAccessCondition, Route3Access, BreedingMethodsRequired
 from .utils import evolution_in_logic, evolution_location_name
 
 if TYPE_CHECKING:
@@ -1009,8 +1009,8 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         set_rule(get_entrance("REGION_CERULEAN_CITY -> REGION_ROUTE_9"), can_cut)
 
         set_rule(get_entrance("REGION_ROUTE_9 -> REGION_CERULEAN_CITY"), can_cut)
-
-        set_rule(get_entrance("REGION_ROUTE_10_NORTH -> REGION_POWER_PLANT"), can_surf)
+        set_rule(get_entrance("REGION_ROUTE_9 -> REGION_ROUTE_10_NORTH"), can_surf)
+        set_rule(get_entrance("REGION_ROUTE_10_NORTH -> REGION_ROUTE_9"), can_surf)
 
         # Route 25
         set_rule(get_location("Route 25 - Item behind Cut Tree"), can_cut)
@@ -1181,7 +1181,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
             set_encounter_rule(f"WildTree_{name}_Common", len(encounters.common), can_headbutt)
             set_encounter_rule(f"WildTree_{name}_Rare", len(encounters.rare), can_headbutt)
 
-    def evolution_logic(state: CollectionState, evolved_from: str, evolutions: list[EvolutionData]):
+    def evolution_logic(state: CollectionState, evolved_from: str, evolutions: list[EvolutionData]) -> bool:
         if not state.has(evolved_from, world.player): return False
         for evo in evolutions:
             if evo.evo_type is EvolutionType.Level or evo.evo_type is EvolutionType.Stats:
@@ -1212,4 +1212,21 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                 get_location(location_name),
                 lambda state, from_pokemon=evolves_from, evolutions=evo_data:
                 evolution_logic(state, from_pokemon, evolutions)
+            )
+
+    def breeding_logic(state: CollectionState, breeders: set[str]) -> bool:
+        if not state.has("EVENT_UNLOCKED_DAY_CARE", world.player): return False
+        if (world.options.breeding_methods_required.value
+                == BreedingMethodsRequired.option_ditto_only and not state.has("DITTO", world.player)):
+            return False
+
+        for breeder in breeders:
+            if state.has(breeder, world.player): return True
+        return False
+
+    if world.options.breeding_methods_required:
+        for base_form_id, breeders in world.generated_breeding.items():
+            set_rule(
+                get_location(f"Hatch {world.generated_pokemon[base_form_id].friendly_name}"),
+                lambda state, b=breeders: breeding_logic(state, b)
             )

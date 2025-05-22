@@ -2,7 +2,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING
 
 from .data import FishData, TreeMonData, EncounterMon
-from .options import RandomizeWilds, EncounterGrouping
+from .options import RandomizeWilds, EncounterGrouping, BreedingMethodsRequired
 from .pokemon import get_random_pokemon
 
 if TYPE_CHECKING:
@@ -19,6 +19,9 @@ def randomize_wild_pokemon(world: "PokemonCrystalWorld"):
                                 pokemon_data.is_base])
 
     world.generated_wooper = get_random_pokemon(world, exclude_unown=True)
+
+    if world.options.breeding_methods_required.value == BreedingMethodsRequired.option_ditto_only:
+        priority_pokemon |= {"DITTO"}  # Ensure Ditto appears in the wild at least once if required for breeding
 
     def randomize_encounter_list(encounter_list: list[EncounterMon], exclude_unown=False):
         new_encounters = list[EncounterMon]()

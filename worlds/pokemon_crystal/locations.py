@@ -111,6 +111,21 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
                 evolution_region.locations.append(new_location)
                 created_locations.add(location_name)
 
+    if world.options.breeding_methods_required:
+        breeding_region = regions["Breeding"]
+        for pokemon_id in world.generated_breeding.keys():
+            new_location = PokemonCrystalLocation(
+                world.player,
+                f"Hatch {world.generated_pokemon[pokemon_id].friendly_name}",
+                breeding_region,
+                tags=frozenset({"breeding"})
+            )
+            new_location.show_in_spoiler = False
+            new_location.place_locked_item(
+                world.create_event(pokemon_id)
+            )
+            breeding_region.locations.append(new_location)
+
 
 def create_location_label_to_id_map() -> dict[str, int]:
     """

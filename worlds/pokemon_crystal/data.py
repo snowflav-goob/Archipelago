@@ -89,6 +89,8 @@ class PokemonData(NamedTuple):
     tm_hm: list[str]
     is_base: bool
     bst: int
+    egg_groups: list[str]
+    gender_ratio: str
 
 
 class MoveData(NamedTuple):
@@ -513,7 +515,9 @@ def _init() -> None:
             [LearnsetData(move[0], move[1]) for move in pokemon_data["learnset"]],
             pokemon_data["tm_hm"],
             pokemon_data["is_base"],
-            pokemon_data["bst"]
+            pokemon_data["bst"],
+            pokemon_data["egg_groups"],
+            pokemon_data["gender_ratio"]
         )
 
     data.moves = {}

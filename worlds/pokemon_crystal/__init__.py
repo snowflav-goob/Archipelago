@@ -1,6 +1,7 @@
 import copy
 import logging
 import pkgutil
+from collections import defaultdict
 from threading import Event
 from typing import List, ClassVar, Dict, Any, Tuple
 
@@ -24,7 +25,7 @@ from .options import PokemonCrystalOptions, JohtoOnly, RandomizeBadges, Goal, HM
 from .phone import generate_phone_traps
 from .phone_data import PhoneScript
 from .pokemon import randomize_pokemon, randomize_starters, randomize_traded_pokemon, generate_dexsanity_checks, \
-    fill_wild_encounter_locations, generate_logically_available_pokemon
+    fill_wild_encounter_locations, generate_logically_available_pokemon, generate_breeding_data
 from .regions import create_regions, setup_free_fly_regions
 from .rom import generate_output, PokemonCrystalProcedurePatch
 from .rules import set_rules
@@ -95,6 +96,7 @@ class PokemonCrystalWorld(World):
     generated_starters: Tuple[List[str], List[str], List[str]]
     generated_starter_helditems: Tuple[str, str, str]
     generated_palettes: Dict[str, List[int]]
+    generated_breeding: dict[str, set[str]]
 
     generated_music: MusicData
     generated_misc: MiscData
@@ -128,6 +130,7 @@ class PokemonCrystalWorld(World):
                                    ["CHIKORITA", "BAYLEEF", "MEGANIUM"])
         self.generated_starter_helditems = ("BERRY", "BERRY", "BERRY")
         self.generated_palettes = {}
+        self.generated_breeding = defaultdict(lambda: set())
         self.generated_music = copy.deepcopy(crystal_data.music)
         self.generated_misc = copy.deepcopy(crystal_data.misc)
         self.generated_phone_traps = []
@@ -230,6 +233,9 @@ class PokemonCrystalWorld(World):
         regions = create_regions(self)
 
         generate_logically_available_pokemon(self)
+
+        if self.options.breeding_methods_required:
+            generate_breeding_data(self)
 
         if self.options.dexsanity:
             generate_dexsanity_checks(self)

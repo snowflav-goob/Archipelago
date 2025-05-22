@@ -256,6 +256,10 @@ def create_regions(world: "PokemonCrystalWorld") -> Dict[str, Region]:
         evolution_region = Region("Evolutions", world.player, world.multiworld)
         regions["Evolutions"] = evolution_region
         regions["Menu"].connect(regions["Evolutions"])
+    if world.options.breeding_methods_required:
+        breeding_region = Region("Breeding", world.player, world.multiworld)
+        regions["Breeding"] = breeding_region
+        regions["Menu"].connect(regions["Breeding"])
 
     world.trainer_level_list.sort()
     world.encounter_level_list.sort()
