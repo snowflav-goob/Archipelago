@@ -662,6 +662,8 @@ class EarlyFly(Toggle):
     """
     HM02 Fly will be placed early in the game
     If this option is enabled, you will be able to Fly before being forced to use an item to progress
+    Early Fly is a best effort setting, if Fly and its badge cannot be placed early, then they will be placed
+        randomly
     """
     display_name = "Early Fly"
 
@@ -672,8 +674,8 @@ class HMBadgeRequirements(Choice):
     No Badges: HMs do not require a badge to use
     Add Kanto: HMs can be used with the Johto or Kanto badge
     Regional: HMs can be used in Johto with the Johto badge and in Kanto with the Kanto badge
-        This does not apply to Fly which will default to either badge.
-        Routes 26, 27, 28 and Tohjo Falls are in Johto for HM purposes.
+        This does not apply to Fly which will default to either badge
+        Routes 26, 27, 28 and Tohjo Falls are in Johto for HM purposes
     """
     display_name = "HM Badge Requirements"
     default = 0

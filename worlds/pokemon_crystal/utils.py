@@ -67,18 +67,20 @@ def _starting_town_valid(world: "PokemonCrystalWorld", starting_town: StartingTo
 def get_free_fly_locations(world: "PokemonCrystalWorld"):
     location_pool = data.fly_regions[:]
 
-    if world.options.route_32_condition.value != Route32Condition.option_any_badge:
-        # Azalea, Goldenrod
-        location_pool = [region for region in location_pool if region.id not in [18, 20]]
-    if not world.options.remove_ilex_cut_tree and world.options.route_32_condition.value != Route32Condition.option_any_badge:
-        # Goldenrod
-        location_pool = [region for region in location_pool if region.id != 20]
+    if not world.options.randomize_starting_town:
+        location_pool = \
+            [region for region in location_pool if not region.exclude_vanilla_start]
+        if world.options.route_32_condition.value != Route32Condition.option_any_badge:
+            # Azalea, Goldenrod
+            location_pool = [region for region in location_pool if region.name not in ["Azalea Town", "Goldenrod City"]]
+        if not world.options.remove_ilex_cut_tree and world.options.route_32_condition.value != Route32Condition.option_any_badge:
+            # Goldenrod
+            location_pool = [region for region in location_pool if region.name != "Goldenrod City"]
     if world.options.johto_only:
-        # Pallet, Viridian, Pewter, Cerulean, Vermilion, Lavender, Saffron, Celadon, Fuchsia, Cinnabar
-        location_pool = [region for region in location_pool if region.id not in [2, 3, 4, 5, 7, 8, 9, 10, 11, 12]]
+        location_pool = [region for region in location_pool if region.johto]
     if world.options.johto_only.value == JohtoOnly.option_on:
         # Mt. Silver
-        location_pool = [region for region in location_pool if region.id != 26]
+        location_pool = [region for region in location_pool if region.name != "Silver Cave"]
 
     # only do any of this if there even is a fly location blocklist
     if world.options.free_fly_blocklist:

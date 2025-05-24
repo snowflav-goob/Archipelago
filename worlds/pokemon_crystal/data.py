@@ -248,10 +248,13 @@ class StartingTown:
     restrictive_start: bool = False
 
 
-class FlyRegion(NamedTuple):
+@dataclass()
+class FlyRegion:
     id: int
     name: str
     region_id: str
+    johto: bool
+    exclude_vanilla_start: bool = False
 
 
 class PhoneScriptData:
@@ -668,26 +671,29 @@ def _init() -> None:
     ]
 
     data.fly_regions = [
-        FlyRegion(2, "Pallet Town", "REGION_PALLET_TOWN"),
-        FlyRegion(3, "Viridian City", "REGION_VIRIDIAN_CITY"),
-        FlyRegion(4, "Pewter City", "REGION_PEWTER_CITY"),
-        FlyRegion(5, "Cerulean City", "REGION_CERULEAN_CITY"),
-        FlyRegion(7, "Vermilion City", "REGION_VERMILION_CITY"),
-        FlyRegion(8, "Lavender Town", "REGION_LAVENDER_TOWN"),
-        FlyRegion(9, "Saffron City", "REGION_SAFFRON_CITY"),
-        FlyRegion(10, "Celadon City", "REGION_CELADON_CITY"),
-        FlyRegion(11, "Fuchsia City", "REGION_FUCHSIA_CITY"),
-        FlyRegion(12, "Cinnabar Island", "REGION_CINNABAR_ISLAND"),
+        FlyRegion(2, "Pallet Town", "REGION_PALLET_TOWN", False),
+        FlyRegion(3, "Viridian City", "REGION_VIRIDIAN_CITY", False),
+        FlyRegion(4, "Pewter City", "REGION_PEWTER_CITY", False),
+        FlyRegion(5, "Cerulean City", "REGION_CERULEAN_CITY", False),
+        FlyRegion(7, "Vermilion City", "REGION_VERMILION_CITY", False),
+        FlyRegion(8, "Lavender Town", "REGION_LAVENDER_TOWN", False),
+        FlyRegion(9, "Saffron City", "REGION_SAFFRON_CITY", False),
+        FlyRegion(10, "Celadon City", "REGION_CELADON_CITY", False),
+        FlyRegion(11, "Fuchsia City", "REGION_FUCHSIA_CITY", False),
+        FlyRegion(12, "Cinnabar Island", "REGION_CINNABAR_ISLAND", False),
 
-        FlyRegion(18, "Azalea Town", "REGION_AZALEA_TOWN"),
-        FlyRegion(19, "Cianwood City", "REGION_CIANWOOD_CITY"),
-        FlyRegion(20, "Goldenrod City", "REGION_GOLDENROD_CITY"),
-        FlyRegion(21, "Olivine City", "REGION_OLIVINE_CITY"),
-        FlyRegion(22, "Ecruteak City", "REGION_ECRUTEAK_CITY"),
-        FlyRegion(23, "Mahogany Town", "REGION_MAHOGANY_TOWN"),
-        FlyRegion(24, "Lake of Rage", "REGION_LAKE_OF_RAGE"),
-        FlyRegion(25, "Blackthorn City", "REGION_BLACKTHORN_CITY"),
-        FlyRegion(26, "Silver Cave", "REGION_SILVER_CAVE_OUTSIDE")
+        FlyRegion(14, "New Bark Town", "REGION_NEW_BARK_TOWN", True, exclude_vanilla_start=True),
+        FlyRegion(15, "Cherrygrove City", "REGION_CHERRYGROVE_CITY", True, exclude_vanilla_start=True),
+        FlyRegion(16, "Violet City", "REGION_VIOLET_CITY", True, exclude_vanilla_start=True),
+        FlyRegion(18, "Azalea Town", "REGION_AZALEA_TOWN", True),
+        FlyRegion(19, "Cianwood City", "REGION_CIANWOOD_CITY", True),
+        FlyRegion(20, "Goldenrod City", "REGION_GOLDENROD_CITY", True),
+        FlyRegion(21, "Olivine City", "REGION_OLIVINE_CITY", True),
+        FlyRegion(22, "Ecruteak City", "REGION_ECRUTEAK_CITY", True),
+        FlyRegion(23, "Mahogany Town", "REGION_MAHOGANY_TOWN", True),
+        FlyRegion(24, "Lake of Rage", "REGION_LAKE_OF_RAGE", True),
+        FlyRegion(25, "Blackthorn City", "REGION_BLACKTHORN_CITY", True),
+        FlyRegion(26, "Silver Cave", "REGION_SILVER_CAVE_OUTSIDE", True)
     ]
 
     data.game_settings = {
