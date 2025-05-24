@@ -657,8 +657,14 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         write_bytes(patch, [town_id], data.rom_addresses["AP_Setting_RandomStartTown_1"] + 1)
         write_bytes(patch, [town_id], data.rom_addresses["AP_Setting_RandomStartTown_2"] + 1)
         write_bytes(patch, [town_id], data.rom_addresses["AP_Setting_RandomStartTown_3"] + 1)
+
+    if world.options.randomize_starting_town or world.options.dexsanity:
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_StartWithPokedex_1"] + 2)
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_StartWithPokedex_2"] + 2)
+
+    if world.options.all_pokemon_seen:
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_AllPokemonSeen_1"] + 1)
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_AllPokemonSeen_2"] + 1)
 
     # Set slot auth
     write_bytes(patch, world.auth, data.rom_addresses["AP_Seed_Auth"])

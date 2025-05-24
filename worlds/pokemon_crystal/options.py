@@ -796,6 +796,14 @@ class ExpModifier(NamedRange):
     }
 
 
+class AllPokemonSeen(Toggle):
+    """
+    Start will all Pokemon seen in your Pokedex.
+    This allows you to see where the Pokemon can be encountered in the wild.
+    """
+    display_name = "All Pokemon Seen"
+
+
 class PhoneTrapWeight(Range):
     """
     Adds random Pokegear calls that acts as traps
@@ -1020,6 +1028,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     skip_elite_four: SkipEliteFour
     better_marts: BetterMarts
     experience_modifier: ExpModifier
+    all_pokemon_seen: AllPokemonSeen
     phone_trap_weight: PhoneTrapWeight
     sleep_trap_weight: SleepTrapWeight
     poison_trap_weight: PoisonTrapWeight
