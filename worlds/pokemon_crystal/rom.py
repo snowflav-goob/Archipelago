@@ -489,7 +489,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
 
     if world.options.trainersanity:
         # prevents disabling gym trainers, among a few others
-        write_bytes(patch, [1], data.rom_addresses["AP_Setting_Trainersanity"] + 1)
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_Trainersanity"] + 2)
         # removes events from certain trainers, to prevent disabling them.
         missable_trainers = ["BurglarDuncan", "BurglarEddie", "GruntM13", "GruntM11", "GruntM25", "GruntF3", "GruntM24",
                              "GruntM14", "GruntM15", "GruntM3", "GruntM4", "GruntM5", "GruntM6", "GruntF2", "GruntM7",
@@ -563,18 +563,18 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
     route_32_badge = [1] if world.options.route_32_condition.value == Route32Condition.option_any_badge else [0]
     route_32_egg = [1] if world.options.route_32_condition.value == Route32Condition.option_egg_from_aide else [0]
 
-    write_bytes(patch, route_32_open, data.rom_addresses["AP_Setting_Route32Open"] + 1)
+    write_bytes(patch, route_32_open, data.rom_addresses["AP_Setting_Route32Open"] + 2)
     write_bytes(patch, route_32_badge, data.rom_addresses["AP_Setting_Route32RequiresBadge"] + 1)
     write_bytes(patch, route_32_egg, data.rom_addresses["AP_Setting_Route32RequiresEgg"] + 1)
 
     if "North" in world.options.saffron_gatehouse_tea.value:
-        write_bytes(patch, [1], data.rom_addresses["AP_Setting_SaffronRoute5Blocked"] + 1)
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_SaffronRoute5Blocked"] + 2)
     if "East" in world.options.saffron_gatehouse_tea.value:
-        write_bytes(patch, [1], data.rom_addresses["AP_Setting_SaffronRoute8Blocked"] + 1)
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_SaffronRoute8Blocked"] + 2)
     if "South" in world.options.saffron_gatehouse_tea.value:
-        write_bytes(patch, [1], data.rom_addresses["AP_Setting_SaffronRoute6Blocked"] + 1)
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_SaffronRoute6Blocked"] + 2)
     if "West" in world.options.saffron_gatehouse_tea.value:
-        write_bytes(patch, [1], data.rom_addresses["AP_Setting_SaffronRoute7Blocked"] + 1)
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_SaffronRoute7Blocked"] + 2)
 
     if world.options.saffron_gatehouse_tea.value:
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_TeaEnabled"] + 1)
@@ -584,12 +584,12 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
 
     if world.options.undergrounds_require_power.value in [UndergroundsRequirePower.option_neither,
                                                           UndergroundsRequirePower.option_east_west]:
-        write_bytes(patch, [1], data.rom_addresses["AP_Setting_NorthSouthUndergroundOpen"] + 1)
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_NorthSouthUndergroundOpen"] + 2)
 
     if (world.options.east_west_underground.value and
             world.options.undergrounds_require_power.value in [UndergroundsRequirePower.option_neither,
                                                                UndergroundsRequirePower.option_north_south]):
-        write_bytes(patch, [1], data.rom_addresses["AP_Setting_EastWestUndergroundOpen"] + 1)
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_EastWestUndergroundOpen"] + 2)
 
     if world.options.remote_items:
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_RemoteItems"])
@@ -601,7 +601,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_SkipE4Credits"] + 1)
 
     if world.options.vanilla_clair:
-        write_bytes(patch, [1], data.rom_addresses["AP_Setting_VanillaClair"] + 1)
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_VanillaClair"] + 2)
 
     if world.options.route_2_access.value == Route2Access.option_open:
         tiles = [0x01]  # ground
@@ -635,14 +635,23 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         replace_map_tiles(patch, map_name, 2, 8, [0x02])
 
     if world.options.national_park_access.value == NationalParkAccess.option_bicycle:
-        write_bytes(patch, [1], data.rom_addresses["AP_Setting_NationalParkBicycle"] + 1)
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_NationalParkBicycle"] + 2)
 
     if world.options.route_3_access == Route3Access.option_boulder_badge:
-        write_bytes(patch, [1], data.rom_addresses["AP_Setting_PewterCityBadgeRequired"] + 1)
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_PewterCityBadgeRequired_1"] + 2)
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_PewterCityBadgeRequired_2"] + 2)
 
     headbutt_seed = (world.multiworld.seed & 0xFFFF).to_bytes(2, "little")
     write_bytes(patch, headbutt_seed[:0], data.rom_addresses["AP_Setting_TreeMonSeed_1"] + 1)
     write_bytes(patch, headbutt_seed[-1:], data.rom_addresses["AP_Setting_TreeMonSeed_2"] + 1)
+
+    if world.options.randomize_starting_town:
+        town_id = world.starting_town.id
+        write_bytes(patch, [town_id], data.rom_addresses["AP_Setting_RandomStartTown_1"] + 1)
+        write_bytes(patch, [town_id], data.rom_addresses["AP_Setting_RandomStartTown_2"] + 1)
+        write_bytes(patch, [town_id], data.rom_addresses["AP_Setting_RandomStartTown_3"] + 1)
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_StartWithPokedex_1"] + 2)
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_StartWithPokedex_2"] + 2)
 
     # Set slot auth
     write_bytes(patch, world.auth, data.rom_addresses["AP_Seed_Auth"])

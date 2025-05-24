@@ -69,6 +69,27 @@ class RadioTowerBadges(Range):
     range_end = 16
 
 
+class RandomizeStartingTown(Toggle):
+    """
+    Randomly chooses a town to start in.
+    Any Pokemon Center except Indigo Plateau, Cinnabar Island and Silver Cave can be chosen.
+
+    Other settings may additionally affect which Pokemon Centers can be chosen.
+
+    WARNING: Some starting towns in combination with Trainersanity may produce difficult starts.
+    """
+    display_name = "Randomize Starting Town"
+
+
+class StartingTownBlocklist(OptionSet):
+    """
+    Specify places which cannot be chosen as a starting town. If you block every valid option, this list will do
+    nothing.
+    """
+    display_name = "Starting Town Blocklist"
+    valid_keys = sorted([town.name for town in data.starting_towns])
+
+
 class VanillaClair(Toggle):
     """
     Clair refuses to give you the Rising Badge until you prove your worth
@@ -930,6 +951,8 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     mt_silver_badges: MtSilverBadges
     radio_tower_badges: RadioTowerBadges
     vanilla_clair: VanillaClair
+    randomize_starting_town: RandomizeStartingTown
+    starting_town_blocklist: StartingTownBlocklist
     randomize_badges: RandomizeBadges
     randomize_hidden_items: RandomizeHiddenItems
     require_itemfinder: RequireItemfinder

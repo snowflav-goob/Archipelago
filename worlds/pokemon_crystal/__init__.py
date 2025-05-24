@@ -12,7 +12,8 @@ from Options import Toggle
 from worlds.AutoWorld import World, WebWorld
 from .client import PokemonCrystalClient
 from .data import PokemonData, TrainerData, MiscData, TMHMData, data as crystal_data, \
-    WildData, StaticPokemon, MusicData, MoveData, FlyRegion, TradeData, MiscOption, APWORLD_VERSION, POKEDEX_OFFSET
+    WildData, StaticPokemon, MusicData, MoveData, FlyRegion, TradeData, MiscOption, APWORLD_VERSION, POKEDEX_OFFSET, \
+    StartingTown
 from .items import PokemonCrystalItem, create_item_label_to_code_map, get_item_classification, \
     ITEM_GROUPS, item_const_name_to_id, item_const_name_to_label
 from .level_scaling import perform_level_scaling
@@ -30,7 +31,7 @@ from .regions import create_regions, setup_free_fly_regions
 from .rom import generate_output, PokemonCrystalProcedurePatch
 from .rules import set_rules
 from .trainers import boost_trainer_pokemon, randomize_trainers, vanilla_trainer_movesets
-from .utils import get_random_filler_item, get_free_fly_locations, get_random_ball
+from .utils import get_random_filler_item, get_free_fly_locations, get_random_ball, get_random_starting_town
 from .wild import randomize_wild_pokemon, randomize_static_pokemon
 
 
@@ -80,6 +81,8 @@ class PokemonCrystalWorld(World):
 
     free_fly_location: FlyRegion
     map_card_fly_location: FlyRegion
+
+    starting_town: StartingTown
 
     generated_moves: Dict[str, MoveData]
     generated_pokemon: Dict[str, PokemonData]
@@ -229,10 +232,13 @@ class PokemonCrystalWorld(World):
         generate_breeding_data(self)
 
     def create_regions(self) -> None:
+        if self.options.randomize_starting_town:
+            get_random_starting_town(self)
+
         regions = create_regions(self)
         create_locations(self, regions)
         self.multiworld.regions.extend(regions.values())
-        
+
         if self.options.free_fly_location:
             get_free_fly_locations(self)
             setup_free_fly_regions(self)
@@ -443,6 +449,10 @@ class PokemonCrystalWorld(World):
         slot_data["enable_mischief"] = 1 if (self.options.enable_mischief
                                              and MiscOption.SecretSwitch.value in self.generated_misc.selected) else 0
 
+        slot_data["starting_town"] = 0
+        if self.options.randomize_starting_town:
+            slot_data["starting_town"] = self.starting_town.id
+
         return slot_data
 
     def modify_multidata(self, multidata: Dict[str, Any]):
@@ -469,6 +479,10 @@ class PokemonCrystalWorld(World):
                                                     FreeFlyLocation.option_map_card]:
             spoiler_handle.write(f"Map Card Fly Location ({self.multiworld.player_name[self.player]}): "
                                  f"{self.map_card_fly_location.name}\n")
+
+        if self.options.randomize_starting_town:
+            spoiler_handle.write(f"Starting Town ({self.multiworld.player_name[self.player]}):"
+                                 f"{self.starting_town.name}\n")
 
         if self.options.enable_mischief:
             spoiler_handle.write(f"\n\nMischief ({self.multiworld.player_name[self.player]}):\n\n")

@@ -2,8 +2,8 @@ import logging
 from random import Random
 from typing import TYPE_CHECKING
 
-from .data import data, EvolutionData, EvolutionType
-from .options import FreeFlyLocation, Route32Condition, JohtoOnly
+from .data import data, EvolutionData, EvolutionType, StartingTown
+from .options import FreeFlyLocation, Route32Condition, JohtoOnly, RandomizeBadges
 from ..Files import APTokenTypes
 
 if TYPE_CHECKING:
@@ -31,6 +31,37 @@ def get_random_ball(random: Random):
              "LURE_BALL", "FAST_BALL"]
     ball_weights = [50, 30, 20, 1, 1, 1, 1, 1, 1]
     return random.choices(balls, weights=ball_weights)[0]
+
+
+def get_random_starting_town(world: "PokemonCrystalWorld"):
+    location_pool = data.starting_towns[:]
+    location_pool = [loc for loc in location_pool if _starting_town_valid(world, loc)]
+
+    filtered_pool = [loc for loc in location_pool if loc.name not in world.options.starting_town_blocklist]
+    if not filtered_pool: filtered_pool = location_pool
+
+    world.random.shuffle(filtered_pool)
+    world.starting_town = filtered_pool.pop()
+    logging.warning(f"Starting town({world.player_name}): {world.starting_town.name}")
+
+
+def _starting_town_valid(world: "PokemonCrystalWorld", starting_town: StartingTown):
+    if world.options.johto_only and not starting_town.johto: return False
+    if not starting_town.restrictive_start: return True
+    if world.options.randomize_badges != RandomizeBadges.option_completely_random: return False
+
+    immediate_hiddens = world.options.randomize_hidden_items and not world.options.require_itemfinder
+
+    if starting_town.name in ["Cianwood City", "Rock Tunnel"]:
+        return world.options.trainersanity
+
+    if starting_town.name in ["Cerulean City", "Celadon City", "Vermilion City"]:
+        return not world.options.saffron_gatehouse_tea or immediate_hiddens
+
+    if starting_town.name in ["Lavender Town", "Fuchsia City"]:
+        return not world.options.saffron_gatehouse_tea or (immediate_hiddens and world.options.randomize_berry_trees)
+
+    return True
 
 
 def get_free_fly_locations(world: "PokemonCrystalWorld"):

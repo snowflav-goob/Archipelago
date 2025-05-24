@@ -241,7 +241,11 @@ def create_regions(world: "PokemonCrystalWorld") -> Dict[str, Region]:
             regions[source].connect(regions[dest], name)
 
     regions["Menu"] = Region("Menu", world.player, world.multiworld)
-    regions["Menu"].connect(regions["REGION_PLAYERS_HOUSE_2F"], "Start Game")
+    if world.options.randomize_starting_town:
+        regions["Menu"].connect(regions[world.starting_town.region_id])
+    else:
+        regions["Menu"].connect(regions["REGION_PLAYERS_HOUSE_2F"], "Start Game")
+
     regions["Menu"].connect(regions["REGION_FLY"], "Fly")
 
     if world.options.johto_only.value == JohtoOnly.option_off and world.options.east_west_underground:

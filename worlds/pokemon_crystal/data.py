@@ -1,4 +1,5 @@
 import pkgutil
+from dataclasses import dataclass
 from enum import Enum
 from typing import NamedTuple, Any
 
@@ -238,6 +239,15 @@ class RegionData:
         self.wild_encounters = None
 
 
+@dataclass
+class StartingTown:
+    id: int
+    name: str
+    region_id: str
+    johto: bool
+    restrictive_start: bool = False
+
+
 class FlyRegion(NamedTuple):
     id: int
     name: str
@@ -276,6 +286,7 @@ class PokemonCrystalData:
     static: dict[str, StaticPokemon]
     trades: list[TradeData]
     fly_regions: list[FlyRegion]
+    starting_towns: list[StartingTown]
 
     def __init__(self) -> None:
         self.rom_addresses = {}
@@ -628,6 +639,33 @@ def _init() -> None:
                       trade_data["received_pokemon"],
                       trade_data["requested_gender"],
                       trade_data["held_item"]))
+
+    data.starting_towns = [
+        StartingTown(2, "Pallet Town", "REGION_PALLET_TOWN", False),
+        StartingTown(3, "Viridian City", "REGION_VIRIDIAN_CITY", False),
+        StartingTown(4, "Pewter City", "REGION_PEWTER_CITY", False),
+        StartingTown(5, "Cerulean City", "REGION_CERULEAN_CITY", False, restrictive_start=True),
+        StartingTown(6, "Rock Tunnel", "REGION_ROUTE_9", False, restrictive_start=True),
+        StartingTown(7, "Vermilion City", "REGION_VERMILION_CITY", False, restrictive_start=True),
+        StartingTown(8, "Lavender Town", "REGION_LAVENDER_TOWN", False, restrictive_start=True),
+        StartingTown(9, "Saffron City", "REGION_SAFFRON_CITY", False),
+        StartingTown(10, "Celadon City", "REGION_CELADON_CITY", False, restrictive_start=True),
+        StartingTown(11, "Fuchsia City", "REGION_FUCHSIA_CITY", False, restrictive_start=True),
+        # StartingTown(12, "Cinnabar Island", "REGION_CINNABAR_ISLAND", False, restrictive_start=True),
+
+        StartingTown(14, "New Bark Town", "REGION_NEW_BARK_TOWN", True),
+        StartingTown(15, "Cherrygrove City", "REGION_CHERRYGROVE_CITY", True),
+        StartingTown(16, "Violet City", "REGION_VIOLET_CITY", True),
+        StartingTown(17, "Union Cave", "REGION_ROUTE_32:SOUTH", True),
+        StartingTown(18, "Azalea Town", "REGION_AZALEA_TOWN", True),
+        StartingTown(19, "Cianwood City", "REGION_CIANWOOD_CITY", True, restrictive_start=True),
+        StartingTown(20, "Goldenrod City", "REGION_GOLDENROD_CITY", True),
+        StartingTown(21, "Olivine City", "REGION_OLIVINE_CITY", True),
+        StartingTown(22, "Ecruteak City", "REGION_ECRUTEAK_CITY", True),
+        StartingTown(23, "Mahogany Town", "REGION_MAHOGANY_TOWN", True),
+        StartingTown(24, "Lake of Rage", "REGION_LAKE_OF_RAGE", True),
+        StartingTown(25, "Blackthorn City", "REGION_BLACKTHORN_CITY", True)
+    ]
 
     data.fly_regions = [
         FlyRegion(2, "Pallet Town", "REGION_PALLET_TOWN"),
