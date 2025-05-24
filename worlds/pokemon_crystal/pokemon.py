@@ -139,10 +139,6 @@ def randomize_traded_pokemon(world: "PokemonCrystalWorld"):
     world.generated_trades = new_trades
 
 
-def generate_dexsanity_checks(world: "PokemonCrystalWorld"):
-    if not world.options.dexsanity: return
-
-
 def fill_wild_encounter_locations(world: "PokemonCrystalWorld"):
     for (name, encounters) in world.generated_wild.grass.items():
         _fill_encounter_area(world, f"WildGrass_{name}", encounters)

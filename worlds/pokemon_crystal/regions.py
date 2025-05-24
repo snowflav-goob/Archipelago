@@ -153,12 +153,10 @@ def create_regions(world: "PokemonCrystalWorld") -> Dict[str, Region]:
 
         if wild_region_data.statics:
             for static_encounter in wild_region_data.statics:
-                tags = set()
-                if static_encounter.name in LOGIC_EXCLUDE_STATICS:
-                    tags |= {"exclude"}
                 region_id = f"Static_{static_encounter.name}"
-                world.available_wild_regions.add(region_id)
-                create_wild_region(parent_region, region_id, [static_encounter], tags)
+                if static_encounter.name not in LOGIC_EXCLUDE_STATICS:
+                    world.available_wild_regions.add(region_id)
+                create_wild_region(parent_region, region_id, [static_encounter])
 
     for region_name, region_data in data.regions.items():
         if should_include_region(region_data):

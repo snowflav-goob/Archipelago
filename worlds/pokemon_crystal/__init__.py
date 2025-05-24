@@ -25,7 +25,7 @@ from .options import PokemonCrystalOptions, JohtoOnly, RandomizeBadges, Goal, HM
     LevelScaling, RedGyaradosAccess, FreeFlyLocation
 from .phone import generate_phone_traps
 from .phone_data import PhoneScript
-from .pokemon import randomize_pokemon_data, randomize_starters, randomize_traded_pokemon, generate_dexsanity_checks, \
+from .pokemon import randomize_pokemon_data, randomize_starters, randomize_traded_pokemon, \
     fill_wild_encounter_locations, generate_breeding_data, generate_evolution_data
 from .regions import create_regions, setup_free_fly_regions
 from .rom import generate_output, PokemonCrystalProcedurePatch
@@ -226,16 +226,17 @@ class PokemonCrystalWorld(World):
 
         self.blocklisted_moves = {move.replace(" ", "_").upper() for move in self.options.move_blocklist.value}
 
-        randomize_wild_pokemon(self)
-        randomize_static_pokemon(self)
-        generate_evolution_data(self)
-        generate_breeding_data(self)
-
     def create_regions(self) -> None:
         if self.options.randomize_starting_town:
             get_random_starting_town(self)
 
         regions = create_regions(self)
+
+        randomize_wild_pokemon(self)
+        randomize_static_pokemon(self)
+        generate_evolution_data(self)
+        generate_breeding_data(self)
+
         create_locations(self, regions)
         self.multiworld.regions.extend(regions.values())
 

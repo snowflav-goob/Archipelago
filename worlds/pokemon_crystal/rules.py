@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import CollectionState
 from worlds.generic.Rules import add_rule, set_rule
+from . import HMBadgeRequirements
 from .data import data, EvolutionType, EvolutionData
 from .options import Goal, JohtoOnly, Route32Condition, UndergroundsRequirePower, Route2Access, \
     BlackthornDarkCaveAccess, \
@@ -20,7 +21,9 @@ def can_map_card_fly(state: CollectionState, world: "PokemonCrystalWorld"):
 
 
 def set_rules(world: "PokemonCrystalWorld") -> None:
-    if world.options.hm_badge_requirements == 0:
+    if (world.options.hm_badge_requirements == HMBadgeRequirements.option_vanilla
+            or world.options.hm_badge_requirements == HMBadgeRequirements.option_regional):
+
         def can_cut(state: CollectionState):
             return state.has("HM01 Cut", world.player) and has_badge(state, "hive")
 
@@ -41,7 +44,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
         def can_waterfall(state: CollectionState):
             return state.has("HM07 Waterfall", world.player) and has_badge(state, "rising") and can_surf(state)
-    elif world.options.hm_badge_requirements == 1:
+    elif world.options.hm_badge_requirements == HMBadgeRequirements.option_no_badges:
         def can_cut(state: CollectionState):
             return state.has("HM01 Cut", world.player)
 
@@ -118,6 +121,29 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     if "Waterfall" in world.options.remove_badge_requirement:
         def can_waterfall(state: CollectionState):
             return state.has("HM07 Waterfall", world.player)
+
+    def can_cut_kanto(state: CollectionState):
+        return can_cut(state)
+
+    def can_surf_kanto(state: CollectionState):
+        return can_surf(state)
+
+    def can_flash_kanto(state: CollectionState):
+        return can_flash(state)
+
+    if world.options.hm_badge_requirements.value == HMBadgeRequirements.option_regional:
+
+        if "Cut" not in world.options.remove_badge_requirement:
+            def can_cut_kanto(state: CollectionState):
+                return state.has("HM01 Cut", world.player) and has_badge(state, "cascade")
+
+        if "Surf" not in world.options.remove_badge_requirement:
+            def can_surf_kanto(state: CollectionState):
+                return state.has("HM03 Surf", world.player) and has_badge(state, "soul")
+
+        if "Flash" not in world.options.remove_badge_requirement:
+            def can_flash_kanto(state: CollectionState):
+                return state.has("HM05 Flash", world.player) and has_badge(state, "boulder")
 
     def can_rocksmash(state: CollectionState):
         return state.has("TM08", world.player)
@@ -974,24 +1000,25 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                  lambda state: state.has("EVENT_BEAT_RIVAL_IN_MT_MOON", world.player))
 
         # Viridian
-        set_rule(get_location("Viridian City - TM42 from Sleepy Guy"), lambda state: can_surf(state) or can_cut(state))
+        set_rule(get_location("Viridian City - TM42 from Sleepy Guy"),
+                 lambda state: can_surf_kanto(state) or can_cut_kanto(state))
 
         set_rule(get_entrance("REGION_VIRIDIAN_CITY -> REGION_VIRIDIAN_GYM"),
                  lambda state: state.has("EVENT_VIRIDIAN_GYM_BLUE", world.player))
 
         # Route 2
         if world.options.route_2_access.value != Route2Access.option_open:
-            set_rule(get_entrance("REGION_ROUTE_2:WEST -> REGION_ROUTE_2:NORTHEAST"), can_cut)
+            set_rule(get_entrance("REGION_ROUTE_2:WEST -> REGION_ROUTE_2:NORTHEAST"), can_cut_kanto)
         if world.options.route_2_access.value == Route2Access.option_vanilla:
-            set_rule(get_entrance("REGION_ROUTE_2:NORTHEAST -> REGION_ROUTE_2:WEST"), can_cut)
+            set_rule(get_entrance("REGION_ROUTE_2:NORTHEAST -> REGION_ROUTE_2:WEST"), can_cut_kanto)
 
-        set_rule(get_entrance("REGION_ROUTE_2:WEST -> REGION_ROUTE_2:SOUTHEAST"), can_cut)
+        set_rule(get_entrance("REGION_ROUTE_2:WEST -> REGION_ROUTE_2:SOUTHEAST"), can_cut_kanto)
 
-        set_rule(get_entrance("REGION_ROUTE_2:SOUTHEAST -> REGION_ROUTE_2:WEST"), can_cut)
+        set_rule(get_entrance("REGION_ROUTE_2:SOUTHEAST -> REGION_ROUTE_2:WEST"), can_cut_kanto)
 
-        set_rule(get_entrance("REGION_ROUTE_2:SOUTHEAST -> REGION_ROUTE_2:NORTHEAST"), can_cut)
+        set_rule(get_entrance("REGION_ROUTE_2:SOUTHEAST -> REGION_ROUTE_2:NORTHEAST"), can_cut_kanto)
 
-        set_rule(get_entrance("REGION_ROUTE_2:NORTHEAST -> REGION_ROUTE_2:SOUTHEAST"), can_cut)
+        set_rule(get_entrance("REGION_ROUTE_2:NORTHEAST -> REGION_ROUTE_2:SOUTHEAST"), can_cut_kanto)
 
         # Route 3
         if world.options.route_3_access.value == Route3Access.option_boulder_badge:
@@ -1004,16 +1031,16 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
             set_rule(get_location("Mount Moon Square - Hidden Item under Rock"), can_rocksmash)
 
         # Cerulean
-        set_rule(get_entrance("REGION_ROUTE_24 -> REGION_CERULEAN_CITY:SURF"), can_surf)
+        set_rule(get_entrance("REGION_ROUTE_24 -> REGION_CERULEAN_CITY:SURF"), can_surf_kanto)
 
-        set_rule(get_entrance("REGION_CERULEAN_CITY -> REGION_ROUTE_9"), can_cut)
+        set_rule(get_entrance("REGION_CERULEAN_CITY -> REGION_ROUTE_9"), can_cut_kanto)
 
-        set_rule(get_entrance("REGION_ROUTE_9 -> REGION_CERULEAN_CITY"), can_cut)
+        set_rule(get_entrance("REGION_ROUTE_9 -> REGION_CERULEAN_CITY"), can_cut_kanto)
         set_rule(get_entrance("REGION_ROUTE_9 -> REGION_ROUTE_10_NORTH"), can_surf)
         set_rule(get_entrance("REGION_ROUTE_10_NORTH -> REGION_ROUTE_9"), can_surf)
 
         # Route 25
-        set_rule(get_location("Route 25 - Item behind Cut Tree"), can_cut)
+        set_rule(get_location("Route 25 - Item behind Cut Tree"), can_cut_kanto)
 
         # Power Plant
         set_rule(get_location("EVENT_RESTORED_POWER_TO_KANTO"), lambda state: state.has("Machine Part", world.player))
@@ -1022,9 +1049,9 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                  lambda state: state.has("EVENT_RESTORED_POWER_TO_KANTO", world.player))
 
         # Rock Tunnel
-        set_rule(get_entrance("REGION_ROUTE_9 -> REGION_ROCK_TUNNEL_1F"), can_flash)
+        set_rule(get_entrance("REGION_ROUTE_9 -> REGION_ROCK_TUNNEL_1F"), can_flash_kanto)
 
-        set_rule(get_entrance("REGION_ROUTE_10_SOUTH -> REGION_ROCK_TUNNEL_1F"), can_flash)
+        set_rule(get_entrance("REGION_ROUTE_10_SOUTH -> REGION_ROCK_TUNNEL_1F"), can_flash_kanto)
 
         # Lavendar
         if pokegear():
@@ -1035,23 +1062,23 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                 "EVENT_RESTORED_POWER_TO_KANTO", world.player))
 
         # Route 12
-        set_rule(get_location("Route 12 - Item behind North Cut Tree"), can_cut)
+        set_rule(get_location("Route 12 - Item behind North Cut Tree"), can_cut_kanto)
 
         set_rule(get_location("Route 12 - Item behind South Cut Tree across Water"),
                  lambda state: can_cut(state) and can_surf(state))
 
         if hidden():
-            set_rule(get_location("Route 12 - Hidden Item on Island"), can_surf)
+            set_rule(get_location("Route 12 - Hidden Item on Island"), can_surf_kanto)
 
         # Route 13
-        set_rule(get_entrance("REGION_ROUTE_13 -> REGION_ROUTE_13:CUT"), can_cut)
+        set_rule(get_entrance("REGION_ROUTE_13 -> REGION_ROUTE_13:CUT"), can_cut_kanto)
 
         # Route 14
-        set_rule(get_entrance("REGION_ROUTE_14 -> REGION_ROUTE_14:CUT"), can_cut)
+        set_rule(get_entrance("REGION_ROUTE_14 -> REGION_ROUTE_14:CUT"), can_cut_kanto)
 
         # Vermilion
         set_rule(get_entrance("REGION_VERMILION_CITY -> REGION_VERMILION_GYM"),
-                 lambda state: can_cut(state) or can_surf(state))
+                 lambda state: can_cut_kanto(state) or can_surf_kanto(state))
 
         set_rule(get_location("Vermilion City - HP Up from Man nowhere near PokeCenter"),
                  lambda state: has_n_badges(state, 16))
@@ -1061,7 +1088,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                      "EVENT_MET_COPYCAT_FOUND_OUT_ABOUT_LOST_ITEM", world.player))
 
         if hidden():
-            set_rule(get_location("Vermilion Port - Hidden Item in Buoy"), can_surf)
+            set_rule(get_location("Vermilion Port - Hidden Item in Buoy"), can_surf_kanto)
 
         set_rule(get_location("EVENT_FOUGHT_SNORLAX"), expn)
 
@@ -1119,15 +1146,15 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                      lambda state: state.has("EVENT_RESTORED_POWER_TO_KANTO", world.player))
 
         # Route 8
-        set_rule(get_entrance("REGION_ROUTE_8 -> REGION_ROUTE_8:CUT"), can_cut)
-        set_rule(get_entrance("REGION_ROUTE_8:CUT -> REGION_ROUTE_8"), can_cut)
+        set_rule(get_entrance("REGION_ROUTE_8 -> REGION_ROUTE_8:CUT"), can_cut_kanto)
+        set_rule(get_entrance("REGION_ROUTE_8:CUT -> REGION_ROUTE_8"), can_cut_kanto)
 
         # Celadon
-        set_rule(get_entrance("REGION_CELADON_CITY -> REGION_CELADON_GYM"), can_cut)
+        set_rule(get_entrance("REGION_CELADON_CITY -> REGION_CELADON_GYM"), can_cut_kanto)
 
         # Route 16
-        set_rule(get_entrance("REGION_ROUTE_16 -> REGION_ROUTE_16:CUT"), can_cut)
-        set_rule(get_entrance("REGION_ROUTE_16:CUT -> REGION_ROUTE_16"), can_cut)
+        set_rule(get_entrance("REGION_ROUTE_16 -> REGION_ROUTE_16:CUT"), can_cut_kanto)
+        set_rule(get_entrance("REGION_ROUTE_16:CUT -> REGION_ROUTE_16"), can_cut_kanto)
 
         # Cycling Road
         set_rule(get_entrance("REGION_ROUTE_16 -> REGION_ROUTE_17"), lambda state: state.has("Bicycle", world.player))
@@ -1136,20 +1163,20 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                  lambda state: state.has("Bicycle", world.player))
 
         # Route 15
-        set_rule(get_location("Route 15 - Item"), can_cut)
+        set_rule(get_location("Route 15 - Item"), can_cut_kanto)
 
         # Fuchsia City
         if world.options.randomize_berry_trees:
-            set_rule(get_location("Fuchsia City - Berry Tree"), can_cut)
+            set_rule(get_location("Fuchsia City - Berry Tree"), can_cut_kanto)
 
         set_rule(get_entrance("REGION_ROUTE_19_FUCHSIA_GATE -> REGION_ROUTE_19"),
-                 lambda state: state.has("EVENT_CINNABAR_ROCKS_CLEARED", world.player) and can_surf(state))
+                 lambda state: state.has("EVENT_CINNABAR_ROCKS_CLEARED", world.player) and can_surf_kanto(state))
 
-        set_rule(get_entrance("REGION_CINNABAR_ISLAND -> REGION_ROUTE_20"), can_surf)
+        set_rule(get_entrance("REGION_CINNABAR_ISLAND -> REGION_ROUTE_20"), can_surf_kanto)
 
-        set_rule(get_entrance("REGION_CINNABAR_ISLAND -> REGION_ROUTE_21"), can_surf)
+        set_rule(get_entrance("REGION_CINNABAR_ISLAND -> REGION_ROUTE_21"), can_surf_kanto)
 
-        set_rule(get_entrance("REGION_PALLET_TOWN -> REGION_ROUTE_21"), can_surf)
+        set_rule(get_entrance("REGION_PALLET_TOWN -> REGION_ROUTE_21"), can_surf_kanto)
 
     if world.options.require_itemfinder:
         for location in world.multiworld.get_locations(world.player):

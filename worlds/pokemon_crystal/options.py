@@ -671,12 +671,15 @@ class HMBadgeRequirements(Choice):
     Vanilla: HMs require their vanilla badges
     No Badges: HMs do not require a badge to use
     Add Kanto: HMs can be used with the Johto or Kanto badge
+    Regional: HMs can be used in Johto with the Johto badge and in Kanto with the Kanto badge
+        This does not apply to Fly which will default to either badge.
     """
     display_name = "HM Badge Requirements"
     default = 0
     option_vanilla = 0
     option_no_badges = 1
     option_add_kanto = 2
+    option_regional = 3
 
 
 class RemoveBadgeRequirement(OptionSet):

@@ -6,7 +6,7 @@ import bsdiff4
 
 from settings import get_settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APPatchExtension
-from . import FreeFlyLocation, APWORLD_VERSION, POKEDEX_OFFSET
+from . import FreeFlyLocation, APWORLD_VERSION, POKEDEX_OFFSET, HMBadgeRequirements
 from .data import data, MiscOption
 from .items import item_const_name_to_id
 from .options import Route32Condition, UndergroundsRequirePower, RequireItemfinder, Goal, Route2Access, \
@@ -449,10 +449,17 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
             mart_address += 2
 
     for hm in world.options.remove_badge_requirement.valid_keys:
-        hm_address = data.rom_addresses["AP_Setting_HMBadges_" + hm] + 1
-        requirement = [1] if hm in world.options.remove_badge_requirement else [
-            world.options.hm_badge_requirements.value]
-        write_bytes(patch, requirement, hm_address)
+        hm_address = data.rom_addresses[f"AP_Setting_HMBadges_{hm}"] + 1
+        requirement = world.options.hm_badge_requirements.value
+        if hm in world.options.remove_badge_requirement:
+            requirement = HMBadgeRequirements.option_no_badges
+        if requirement == HMBadgeRequirements.option_regional and hm == "Fly":
+            requirement = HMBadgeRequirements.option_add_kanto
+        write_bytes(patch, [requirement], hm_address)
+
+    if world.options.hm_badge_requirements.value == HMBadgeRequirements.option_regional:
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_RegionalHMBadges_1"] + 1)
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_RegionalHMBadges_2"] + 1)
 
     exp_modifier_address = data.rom_addresses["AP_Setting_ExpModifier"] + 1
     write_bytes(patch, [world.options.experience_modifier], exp_modifier_address)
