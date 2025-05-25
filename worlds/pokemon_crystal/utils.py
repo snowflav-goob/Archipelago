@@ -52,7 +52,10 @@ def _starting_town_valid(world: "PokemonCrystalWorld", starting_town: StartingTo
 
     immediate_hiddens = world.options.randomize_hidden_items and not world.options.require_itemfinder
 
-    if starting_town.name in ["Cianwood City", "Rock Tunnel"]:
+    if starting_town.name == "Cianwood City":
+        return world.options.trainersanity and immediate_hiddens
+
+    if starting_town.name == "Rock Tunnel":
         return world.options.trainersanity
 
     if starting_town.name in ["Cerulean City", "Celadon City", "Vermilion City"]:
