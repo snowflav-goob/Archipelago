@@ -275,11 +275,16 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     def remove_ilex_cut_tree():
         return world.options.remove_ilex_cut_tree
 
-    def require_badge_for_route_32():
-        return world.options.route_32_condition.value == Route32Condition.option_any_badge
-
-    def require_egg_for_route_32():
-        return world.options.route_32_condition.value == Route32Condition.option_egg_from_aide
+    def route_32_access_rule():
+        if world.options.route_32_condition.value == Route32Condition.option_egg_from_aide:
+            return lambda state: state.has("EVENT_GOT_TOGEPI_EGG_FROM_ELMS_AIDE", world.player)
+        elif world.options.route_32_condition.value == Route32Condition.option_any_badge:
+            return lambda state: has_n_badges(state, 1)
+        elif world.options.route_32_condition.value == Route32Condition.option_any_gym:
+            return lambda state: has_beaten_n_gyms(state, 1)
+        elif world.options.route_32_condition.value == Route32Condition.option_zephyr_badge:
+            return lambda state: has_badge(state, "zephyr")
+        return None
 
     def expn(state: CollectionState):
         if pokegear():
@@ -424,12 +429,10 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
              lambda state: state.has("Rainbow Wing", world.player))
 
     # Route 32
-    if require_badge_for_route_32():
-        set_rule(get_entrance("REGION_ROUTE_32:NORTH -> REGION_ROUTE_32:SOUTH"), lambda state: has_n_badges(state, 1))
-
-    if require_egg_for_route_32():
-        set_rule(get_entrance("REGION_ROUTE_32:NORTH -> REGION_ROUTE_32:SOUTH"),
-                 lambda state: state.has("EVENT_GOT_TOGEPI_EGG_FROM_ELMS_AIDE", world.player))
+    access_rule = route_32_access_rule()
+    if access_rule:
+        set_rule(get_entrance("REGION_ROUTE_32:NORTH -> REGION_ROUTE_32:SOUTH"), access_rule)
+        set_rule(get_entrance("REGION_ROUTE_32:SOUTH -> REGION_ROUTE_32:NORTH"), access_rule)
 
     set_rule(get_location("Route 32 - Miracle Seed from Man in North"), lambda state: has_badge(state, "zephyr"))
     set_rule(get_location("Route 32 - TM05 from Roar Guy"), can_cut)

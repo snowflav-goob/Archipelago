@@ -136,16 +136,20 @@ class RequireItemfinder(Choice):
 
 class Route32Condition(Choice):
     """
-    Sets the condition required to pass into the south part of Route 32
+    Sets the condition required to pass between the north and south parts of Route 32
     Egg from aide: Collect the Egg from the aide in the Violet City Pokemon Center after beating Falkner
     Any badge: Obtain any badge
+    Any gym: Beat any gym
+    Zephyr Badge: Obtain the Zephyr Badge
     None: No requirement
     """
     display_name = "Route 32 Access Condition"
     default = 0
     option_egg_from_aide = 0
     option_any_badge = 1
-    option_none = 2
+    option_any_gym = 2
+    option_zephyr_badge = 3
+    option_none = 4
 
 
 class KantoAccessCondition(Choice):

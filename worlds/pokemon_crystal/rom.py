@@ -9,7 +9,7 @@ from worlds.Files import APProcedurePatch, APTokenMixin, APPatchExtension
 from . import FreeFlyLocation, APWORLD_VERSION, POKEDEX_OFFSET, HMBadgeRequirements
 from .data import data, MiscOption
 from .items import item_const_name_to_id
-from .options import Route32Condition, UndergroundsRequirePower, RequireItemfinder, Goal, Route2Access, \
+from .options import UndergroundsRequirePower, RequireItemfinder, Goal, Route2Access, \
     BlackthornDarkCaveAccess, NationalParkAccess, KantoAccessCondition, Route3Access, EncounterSlotDistribution
 from .utils import convert_to_ingame_text, write_bytes, replace_map_tiles
 
@@ -566,13 +566,10 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         # Lance's room is ID 7
         write_bytes(patch, [0x7], data.rom_addresses["AP_Setting_IndigoPlateauPokecenter1F_E4Warp"] + 4)
 
-    route_32_open = [1] if world.options.route_32_condition.value == Route32Condition.option_none else [0]
-    route_32_badge = [1] if world.options.route_32_condition.value == Route32Condition.option_any_badge else [0]
-    route_32_egg = [1] if world.options.route_32_condition.value == Route32Condition.option_egg_from_aide else [0]
-
-    write_bytes(patch, route_32_open, data.rom_addresses["AP_Setting_Route32Open"] + 2)
-    write_bytes(patch, route_32_badge, data.rom_addresses["AP_Setting_Route32RequiresBadge"] + 1)
-    write_bytes(patch, route_32_egg, data.rom_addresses["AP_Setting_Route32RequiresEgg"] + 1)
+    route_32_flag = world.options.route_32_condition.value
+    write_bytes(patch, [route_32_flag], data.rom_addresses["AP_Setting_Route32_Condition_1"] + 1)
+    write_bytes(patch, [route_32_flag], data.rom_addresses["AP_Setting_Route32_Condition_2"] + 1)
+    write_bytes(patch, [route_32_flag], data.rom_addresses["AP_Setting_Route32_Condition_3"] + 1)
 
     if "North" in world.options.saffron_gatehouse_tea.value:
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_SaffronRoute5Blocked"] + 2)
