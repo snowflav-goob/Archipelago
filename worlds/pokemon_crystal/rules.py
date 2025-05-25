@@ -499,7 +499,8 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         set_rule(get_entrance("REGION_ILEX_FOREST:SOUTH -> REGION_ILEX_FOREST:NORTH"), can_cut)
 
     set_rule(get_location("Celebi"), lambda state: state.has("GS Ball", world.player))
-    set_rule(get_location("Static_Celebi_1"), lambda state: state.has("GS Ball", world.player))
+    if world.options.static_pokemon_required:
+        set_rule(get_location("Static_Celebi_1"), lambda state: state.has("GS Ball", world.player))
 
     add_rule(get_entrance("REGION_ILEX_FOREST:SOUTH -> REGION_ILEX_FOREST:NORTH"),
              lambda state: state.has("EVENT_CLEARED_SLOWPOKE_WELL", world.player))
@@ -661,7 +662,8 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
              lambda state: state.has("Rainbow Wing", world.player))
 
     set_rule(get_location("Ho_Oh"), lambda state: state.has("Rainbow Wing", world.player))
-    set_rule(get_location("Static_Ho_Oh_1"), lambda state: state.has("Rainbow Wing", world.player))
+    if world.options.static_pokemon_required:
+        set_rule(get_location("Static_Ho_Oh_1"), lambda state: state.has("Rainbow Wing", world.player))
 
     set_rule(get_location("Tin Tower 1F - Rainbow Wing"),
              lambda state: state.has("EVENT_BEAT_ELITE_FOUR", world.player))
@@ -735,7 +737,8 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
              lambda state: can_whirlpool(state) and can_flash(state))
 
     set_rule(get_location("Lugia"), lambda state: state.has("Silver Wing", world.player))
-    set_rule(get_location("Static_Lugia_1"), lambda state: state.has("Silver Wing", world.player))
+    if world.options.static_pokemon_required:
+        set_rule(get_location("Static_Lugia_1"), lambda state: state.has("Silver Wing", world.player))
 
     # Cianwood
     set_rule(get_entrance("REGION_CIANWOOD_CITY -> REGION_ROUTE_41"), can_surf)
@@ -1244,7 +1247,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     def breeding_logic(state: CollectionState, breeders: set[str]) -> bool:
         if not state.has("EVENT_UNLOCKED_DAY_CARE", world.player): return False
         if (world.options.breeding_methods_required.value
-                == BreedingMethodsRequired.option_ditto_only and not state.has("DITTO", world.player)):
+                == BreedingMethodsRequired.option_with_ditto and not state.has("DITTO", world.player)):
             return False
 
         for breeder in breeders:

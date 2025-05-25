@@ -21,7 +21,7 @@ def randomize_wild_pokemon(world: "PokemonCrystalWorld"):
 
         world.generated_wooper = get_random_pokemon(world, exclude_unown=True)
 
-        if world.options.breeding_methods_required.value == BreedingMethodsRequired.option_ditto_only:
+        if world.options.breeding_methods_required.value == BreedingMethodsRequired.option_with_ditto:
             priority_pokemon |= {"DITTO"}  # Ensure Ditto appears in the wild at least once if required for breeding
 
         def randomize_encounter_list(encounter_list: list[EncounterMon], exclude_unown=False):

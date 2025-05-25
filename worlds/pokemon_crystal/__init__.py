@@ -413,7 +413,10 @@ class PokemonCrystalWorld(World):
             "kanto_access_badges",
             "route_3_access",
             "vanilla_clair",
+            "wild_encounter_methods_required",
             "evolution_methods_required",
+            "static_pokemon_required",
+            "breeding_methods_required",
             "evolution_gym_levels",
             "rematchsanity"
         )

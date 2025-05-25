@@ -280,13 +280,31 @@ class Dexsanity(NamedRange):
     }
 
 
+class WildEncounterMethodsRequired(OptionSet):
+    """
+    Sets which wild encounter types may be logically required
+
+    Swarms and roamers are NEVER in logic
+    """
+    display_name = "Wild Encounter Methods Required"
+    valid_keys = ["Land", "Water", "Fishing", "Headbutt", "Rock Smash"]
+    default = valid_keys
+
+
 class EvolutionMethodsRequired(OptionSet):
     """
-    Sets which types of evolutions may be logically required.
+    Sets which types of evolutions may be logically required
     """
     display_name = "Evolution Methods Required"
     valid_keys = ["Level", "Level Tyrogue", "Use Item", "Happiness"]
-    default = ["Level", "Level Tyrogue", "Use Item", "Happiness"]
+    default = valid_keys
+
+
+class StaticPokemonRequired(DefaultOnToggle):
+    """
+    Sets whether or not static pokemon may be logically required
+    """
+    display_name = "Static Pokemon Required"
 
 
 class BreedingMethodsRequired(Choice):
@@ -294,9 +312,9 @@ class BreedingMethodsRequired(Choice):
     Specifies which breeding methods may be logically required.
     """
     display_name = "Breeding Method Required"
-    default = 0
+    default = 1
     option_none = 0
-    option_ditto_only = 1
+    option_with_ditto = 1
     option_any = 2
 
 
@@ -982,7 +1000,9 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     trainersanity_alerts: TrainersanityAlerts
     rematchsanity: Rematchsanity
     dexsanity: Dexsanity
+    wild_encounter_methods_required: WildEncounterMethodsRequired
     evolution_methods_required: EvolutionMethodsRequired
+    static_pokemon_required: StaticPokemonRequired
     breeding_methods_required: BreedingMethodsRequired
     evolution_gym_levels: EvolutionGymLevels
     randomize_pokegear: RandomizePokegear
