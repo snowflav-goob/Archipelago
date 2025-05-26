@@ -29,13 +29,23 @@ class JohtoOnly(Choice):
     option_include_silver_cave = 2
 
 
-class EliteFourBadges(Range):
+class EliteFourRequirement(Choice):
     """
-    Number of badges required to enter Victory Road
+    Sets the requirement to enter Victory Road
     """
-    display_name = "Elite Four Badges"
+    display_name = "Elite Four Requirement"
+    default = 0
+    option_badges = 0
+    option_gyms = 1
+
+
+class EliteFourCount(Range):
+    """
+    Sets the number of badges/gyms required to enter Victory Road
+    """
+    display_name = "Elite Four Count"
     default = 8
-    range_start = 1
+    range_start = 0
     range_end = 16
 
 
@@ -995,7 +1005,8 @@ class GameOptions(OptionDict):
 class PokemonCrystalOptions(PerGameCommonOptions):
     goal: Goal
     johto_only: JohtoOnly
-    elite_four_badges: EliteFourBadges
+    elite_four_requirement: EliteFourRequirement
+    elite_four_count: EliteFourCount
     red_badges: RedBadges
     mt_silver_badges: MtSilverBadges
     radio_tower_badges: RadioTowerBadges

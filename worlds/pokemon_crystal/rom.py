@@ -464,10 +464,14 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
     exp_modifier_address = data.rom_addresses["AP_Setting_ExpModifier"] + 1
     write_bytes(patch, [world.options.experience_modifier], exp_modifier_address)
 
-    elite_four_text = convert_to_ingame_text("{:02d}".format(world.options.elite_four_badges.value))
+    elite_four_text = convert_to_ingame_text("{:02d}".format(world.options.elite_four_count.value))
+    write_bytes(patch, [world.options.elite_four_requirement.value],
+                data.rom_addresses["AP_Setting_VictoryRoadRequirement"] + 1)
     write_bytes(patch, elite_four_text, data.rom_addresses["AP_Setting_VictoryRoadBadges_Text"] + 1)
-    write_bytes(patch, [world.options.elite_four_badges - 1],
-                data.rom_addresses["AP_Setting_VictoryRoadBadges"] + 1)
+    write_bytes(patch, elite_four_text, data.rom_addresses["AP_Setting_VictoryRoadGyms_Text"] + 1)
+    write_bytes(patch, [world.options.elite_four_count.value], data.rom_addresses["AP_Setting_VictoryRoadCount_1"] + 1)
+    write_bytes(patch, [world.options.elite_four_count.value], data.rom_addresses["AP_Setting_VictoryRoadCount_2"] + 1)
+
     write_bytes(patch, [world.options.radio_tower_badges - 1], data.rom_addresses["AP_Setting_RocketBadges"] + 1)
 
     mt_silver_text = convert_to_ingame_text("{:02d}".format(world.options.mt_silver_badges.value))
@@ -642,7 +646,8 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_NationalParkBicycle"] + 2)
 
     if world.options.route_3_access == Route3Access.option_boulder_badge:
-        write_bytes(patch, [1], data.rom_addresses["AP_Setting_PewterCityBadgeRequired_1"] + 2)
+        # This is a sprite event, so 0 shows the sprite
+        write_bytes(patch, [0], data.rom_addresses["AP_Setting_PewterCityBadgeRequired_1"] + 2)
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_PewterCityBadgeRequired_2"] + 2)
 
     headbutt_seed = (world.multiworld.seed & 0xFFFF).to_bytes(2, "little")

@@ -22,7 +22,7 @@ from .misc import randomize_mischief, get_misc_spoiler_log
 from .moves import randomize_tms, randomize_move_values, randomize_move_types
 from .music import randomize_music
 from .options import PokemonCrystalOptions, JohtoOnly, RandomizeBadges, Goal, HMBadgeRequirements, Route32Condition, \
-    LevelScaling, RedGyaradosAccess, FreeFlyLocation
+    LevelScaling, RedGyaradosAccess, FreeFlyLocation, EliteFourRequirement
 from .phone import generate_phone_traps
 from .phone_data import PhoneScript
 from .pokemon import randomize_pokemon_data, randomize_starters, randomize_traded_pokemon, \
@@ -171,12 +171,29 @@ class PokemonCrystalWorld(World):
                 self.multiworld.get_player_name(self.player))
 
         if self.options.johto_only:
+
             if self.options.goal == Goal.option_red and self.options.johto_only == JohtoOnly.option_on:
                 self.options.goal.value = Goal.option_elite_four
                 logging.warning(
                     "Pokemon Crystal: Red goal is incompatible with Johto Only "
                     "without Silver Cave. Changing goal to Elite Four for player %s.",
                     self.multiworld.get_player_name(self.player))
+
+            if (self.options.elite_four_requirement == EliteFourRequirement.option_gyms
+                    and self.options.elite_four_count.value > 8):
+                self.options.elite_four_count.value = 8
+                logging.warning(
+                    "Pokemon Crystal: Elite Four Gyms >8 incompatible with Johto Only. "
+                    "Changing Elite Four Gyms to 8 for player %s.",
+                    self.multiworld.get_player_name(self.player))
+
+            if self.options.evolution_gym_levels.value < 8:
+                self.options.evolution_gym_levels.value = 8
+                logging.warning(
+                    "Pokemon Crystal: Evolution Gym Levels <8 incompatible with Johto Only "
+                    "if badges are not completely random. Changing Evolution Gym Levels to 8 for player %s.",
+                    self.multiworld.get_player_name(self.player))
+
             if self.options.randomize_badges != RandomizeBadges.option_completely_random:
                 if self.options.red_badges.value > 8:
                     self.options.red_badges.value = 8
@@ -184,30 +201,28 @@ class PokemonCrystalWorld(World):
                         "Pokemon Crystal: Red Badges >8 incompatible with Johto Only "
                         "if badges are not completely random. Changing Red Badges to 8 for player %s.",
                         self.multiworld.get_player_name(self.player))
-                if self.options.elite_four_badges.value > 8:
-                    self.options.elite_four_badges.value = 8
+
+                if (self.options.elite_four_count.value > 8 and
+                        self.options.elite_four_requirement.value == EliteFourRequirement.option_badges):
+                    self.options.elite_four_count.value = 8
                     logging.warning(
                         "Pokemon Crystal: Elite Four Badges >8 incompatible with Johto Only "
                         "if badges are not completely random. Changing Elite Four Badges to 8 for player %s.",
                         self.multiworld.get_player_name(self.player))
+
                 if self.options.radio_tower_badges.value > 8:
                     self.options.radio_tower_badges.value = 8
                     logging.warning(
                         "Pokemon Crystal: Radio Tower Badges >8 incompatible with Johto Only "
                         "if badges are not completely random. Changing Radio Tower Badges to 8 for player %s.",
                         self.multiworld.get_player_name(self.player))
+
                 if self.options.mt_silver_badges.value > 8:
                     self.options.mt_silver_badges.value = 8
                     logging.warning(
                         "Pokemon Crystal: Mt. Silver Badges >8 incompatible with Johto Only "
                         "if badges are not completely random. Changing Mt. Silver Badges to 8 for player %s.",
                         self.multiworld.get_player_name(self.player))
-            if self.options.evolution_gym_levels.value < 8:
-                self.options.evolution_gym_levels.value = 8
-                logging.warning(
-                    "Pokemon Crystal: Evolution Gym Levels <8 incompatible with Johto Only "
-                    "if badges are not completely random. Changing Evolution Gym Levels to 8 for player %s.",
-                    self.multiworld.get_player_name(self.player))
 
         if (self.options.red_gyarados_access
                 and self.options.randomize_badges.value == RandomizeBadges.option_vanilla
@@ -254,9 +269,15 @@ class PokemonCrystalWorld(World):
         if self.options.randomize_badges.value == RandomizeBadges.option_shuffle:
             item_locations = [location for location in item_locations if "Badge" not in location.tags]
 
-        total_badges = max(self.options.elite_four_badges.value, self.options.radio_tower_badges.value)
+        badge_option_counts = [8]
+        badge_option_counts += [self.options.radio_tower_badges.value]
+        if self.options.elite_four_requirement == EliteFourRequirement.option_badges:
+            badge_option_counts += [self.options.elite_four_count.value]
+
         if self.options.johto_only.value == JohtoOnly.option_include_silver_cave:
-            total_badges = max(total_badges, self.options.mt_silver_badges.value, self.options.red_badges.value)
+            badge_option_counts += [self.options.mt_silver_badges.value, self.options.red_badges.value]
+
+        total_badges = max(badge_option_counts)
 
         add_items = []
         # Extra badges to add to the pool in johto only
@@ -389,7 +410,8 @@ class PokemonCrystalWorld(World):
         slot_data = self.options.as_dict(
             "goal",
             "johto_only",
-            "elite_four_badges",
+            "elite_four_requirement",
+            "elite_four_count",
             "red_badges",
             "randomize_badges",
             "randomize_hidden_items",

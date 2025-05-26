@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import CollectionState
 from worlds.generic.Rules import add_rule, set_rule
-from . import HMBadgeRequirements
+from . import HMBadgeRequirements, EliteFourRequirement
 from .data import data, EvolutionType, EvolutionData
 from .options import Goal, JohtoOnly, Route32Condition, UndergroundsRequirePower, Route2Access, \
     BlackthornDarkCaveAccess, \
@@ -230,8 +230,12 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     def has_rocket_badges(state: CollectionState):
         return has_n_badges(state, world.options.radio_tower_badges.value)
 
-    def has_elite_four_badges(state: CollectionState):
-        return has_n_badges(state, world.options.elite_four_badges.value)
+    if world.options.elite_four_requirement.value == EliteFourRequirement.option_gyms:
+        def has_elite_four_requirement(state: CollectionState):
+            return has_beaten_n_gyms(state, world.options.elite_four_count.value)
+    else:
+        def has_elite_four_requirement(state: CollectionState):
+            return has_n_badges(state, world.options.elite_four_count.value)
 
     def has_red_badges(state: CollectionState):
         return has_n_badges(state, world.options.red_badges.value)
@@ -953,7 +957,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     set_rule(get_entrance("REGION_TOHJO_FALLS:EAST -> REGION_TOHJO_FALLS:WEST"),
              lambda state: can_surf(state) and can_waterfall(state))
 
-    set_rule(get_entrance("REGION_VICTORY_ROAD_GATE -> REGION_VICTORY_ROAD"), has_elite_four_badges)
+    set_rule(get_entrance("REGION_VICTORY_ROAD_GATE -> REGION_VICTORY_ROAD"), has_elite_four_requirement)
 
     # Victory Road
     if johto_only() != JohtoOnly.option_on:
