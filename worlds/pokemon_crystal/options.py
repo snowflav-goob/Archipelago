@@ -412,7 +412,8 @@ class RandomizeWilds(Choice):
     """
     Randomizes species of wild Pokemon
 
-    Base Forms: Ensures that every Pokemon that cannot be obtained through evolution is available in the wild
+    Base Forms: Ensures that at least every Pokemon that cannot be obtained through evolution is available in the wild
+    Evolution Lines: Ensures that at least one Pokemon from each evolutionary line can be obtained in the wild
     Catch 'em All: Ensures that every Pokemon will be obtainable in the wild
     """
     display_name = "Randomize Wilds"
@@ -420,7 +421,8 @@ class RandomizeWilds(Choice):
     option_vanilla = 0
     option_completely_random = 1
     option_base_forms = 2
-    option_catch_em_all = 3
+    option_evolution_lines = 3
+    option_catch_em_all = 4
 
 
 class EncounterGrouping(Choice):

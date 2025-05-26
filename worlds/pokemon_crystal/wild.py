@@ -18,6 +18,22 @@ def randomize_wild_pokemon(world: "PokemonCrystalWorld"):
         elif world.options.randomize_wilds.value == RandomizeWilds.option_base_forms:
             priority_pokemon = set([pokemon_id for pokemon_id, pokemon_data in world.generated_pokemon.items() if
                                     pokemon_data.is_base])
+        elif world.options.randomize_wilds.value == RandomizeWilds.option_evolution_lines:
+            base_pokemon = [pokemon_id for pokemon_id, pokemon_data in world.generated_pokemon.items() if
+                            pokemon_data.is_base]
+
+            evo_lines = list[list[str]]()
+            for base in base_pokemon:
+                line = [base]
+                for evo in world.generated_pokemon[base].evolutions:
+                    line.append(evo.pokemon)
+                    for evo2 in world.generated_pokemon[evo.pokemon].evolutions:
+                        line.append(evo2.pokemon)
+                evo_lines.append(line)
+
+            for evo_line in evo_lines:
+                world.random.shuffle(evo_line)
+                priority_pokemon.add(evo_line.pop())
 
         world.generated_wooper = get_random_pokemon(world, exclude_unown=True)
 
