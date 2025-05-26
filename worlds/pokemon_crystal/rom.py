@@ -10,7 +10,7 @@ from . import FreeFlyLocation, APWORLD_VERSION, POKEDEX_OFFSET, HMBadgeRequireme
 from .data import data, MiscOption
 from .items import item_const_name_to_id
 from .options import UndergroundsRequirePower, RequireItemfinder, Goal, Route2Access, \
-    BlackthornDarkCaveAccess, NationalParkAccess, KantoAccessCondition, Route3Access, EncounterSlotDistribution
+    BlackthornDarkCaveAccess, NationalParkAccess, Route3Access, EncounterSlotDistribution, KantoAccessRequirement
 from .utils import convert_to_ingame_text, write_bytes, replace_map_tiles
 
 if TYPE_CHECKING:
@@ -493,20 +493,23 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
     write_bytes(patch, [world.options.red_count], data.rom_addresses["AP_Setting_RedCount_2"] + 1)
 
     if not world.options.johto_only:
-        kanto_access_become_champion = [1] if (world.options.kanto_access_condition.value
-                                               == KantoAccessCondition.option_become_champion) else [0]
-        write_bytes(patch, kanto_access_become_champion, data.rom_addresses["AP_Setting_KantoAccess_Champion_1"] + 1)
-        write_bytes(patch, kanto_access_become_champion, data.rom_addresses["AP_Setting_KantoAccess_Champion_2"] + 1)
+        kanto_access_become_champion = [1] if (world.options.kanto_access_requirement.value
+                                               == KantoAccessRequirement.option_become_champion) else [0]
+        write_bytes(patch, kanto_access_become_champion, data.rom_addresses["AP_Setting_KantoAccess_Champion"] + 1)
 
-        kanto_access_wake_snorlax = [1] if (world.options.kanto_access_condition.value
-                                            == KantoAccessCondition.option_wake_snorlax) else [0]
-        write_bytes(patch, kanto_access_wake_snorlax, data.rom_addresses["AP_Setting_KantoAccess_Snorlax_1"] + 1)
-        write_bytes(patch, kanto_access_wake_snorlax, data.rom_addresses["AP_Setting_KantoAccess_Snorlax_2"] + 1)
+        kanto_access_wake_snorlax = [1] if (world.options.kanto_access_requirement.value
+                                            == KantoAccessRequirement.option_wake_snorlax) else [0]
+        write_bytes(patch, kanto_access_wake_snorlax, data.rom_addresses["AP_Setting_KantoAccess_Snorlax"] + 1)
 
-        write_bytes(patch, [world.options.kanto_access_badges - 1],
-                    data.rom_addresses["AP_Setting_KantoAccess_Badges"] + 1)
-        kanto_badges_text = convert_to_ingame_text("{:02d}".format(world.options.kanto_access_badges.value))
+        kanto_badges_text = convert_to_ingame_text("{:02d}".format(world.options.kanto_access_count.value))
+        write_bytes(patch, [world.options.kanto_access_requirement.value],
+                    data.rom_addresses["AP_SettingKantoAccess_Requirement"] + 1)
         write_bytes(patch, kanto_badges_text, data.rom_addresses["AP_Setting_KantoAccess_Badges_Text"] + 1)
+        write_bytes(patch, kanto_badges_text, data.rom_addresses["AP_Setting_KantoAccess_Gyms_Text"] + 1)
+        write_bytes(patch, [world.options.kanto_access_count.value],
+                    data.rom_addresses["AP_Setting_KantoAccess_Count_1"] + 1)
+        write_bytes(patch, [world.options.kanto_access_count.value],
+                    data.rom_addresses["AP_Setting_KantoAccess_Count_2"] + 1)
 
     if world.options.trainersanity:
         # prevents disabling gym trainers, among a few others

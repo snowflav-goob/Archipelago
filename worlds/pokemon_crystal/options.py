@@ -182,30 +182,32 @@ class Route32Condition(Choice):
     option_none = 4
 
 
-class KantoAccessCondition(Choice):
+class KantoAccessRequirement(Choice):
     """
-    Sets the condition required to pass between Victory Road gate and Kanto
+    Sets the requirement to pass between Victory Road gate and Kanto
     Wake Snorlax: Wake the Snorlax outside of Diglett's Cave
-    Badge Count: Require the number of badges specified by kanto_access_badges
+    Badge Count: Requires the number of badges specified by kanto_access_count
+    Gym Count: Requires beating the number of gyms specified by kanto_access_count
     Become Champion: Defeat Lance and enter the Hall of Fame
 
     This setting does nothing if Johto Only is enabled
     """
-    display_name = "Kanto Access Condition"
+    display_name = "Kanto Access Requirement"
     default = 0
     option_wake_snorlax = 0
     option_badge_count = 1
-    option_become_champion = 2
+    option_gym_count = 2
+    option_become_champion = 3
 
 
-class KantoAccessBadges(Range):
+class KantoAccessCount(Range):
     """
-    Sets the number of badges required to pass between Victory Road gate and Kanto
-    Only applies if Kanto Access Condition is set to badge_count
+    Sets the number of badges/gyms required to pass between Victory Road gate and Kanto
+    Only applies if Kanto Access Condition is set to badge_count or gym_count
     """
-    display_name = "Kanto Access Badges"
+    display_name = "Kanto Access Count"
     default = 8
-    range_start = 1
+    range_start = 0
     range_end = 16
 
 
@@ -1039,8 +1041,8 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     randomize_hidden_items: RandomizeHiddenItems
     require_itemfinder: RequireItemfinder
     route_32_condition: Route32Condition
-    kanto_access_condition: KantoAccessCondition
-    kanto_access_badges: KantoAccessBadges
+    kanto_access_requirement: KantoAccessRequirement
+    kanto_access_count: KantoAccessCount
     red_gyarados_access: RedGyaradosAccess
     route_2_access: Route2Access
     route_3_access: Route3Access

@@ -22,7 +22,8 @@ from .misc import randomize_mischief, get_misc_spoiler_log
 from .moves import randomize_tms, randomize_move_values, randomize_move_types
 from .music import randomize_music
 from .options import PokemonCrystalOptions, JohtoOnly, RandomizeBadges, Goal, HMBadgeRequirements, Route32Condition, \
-    LevelScaling, RedGyaradosAccess, FreeFlyLocation, EliteFourRequirement, MtSilverRequirement, RedRequirement
+    LevelScaling, RedGyaradosAccess, FreeFlyLocation, EliteFourRequirement, MtSilverRequirement, RedRequirement, \
+    EarlyFly
 from .phone import generate_phone_traps
 from .phone_data import PhoneScript
 from .pokemon import randomize_pokemon_data, randomize_starters, randomize_traded_pokemon, \
@@ -250,6 +251,16 @@ class PokemonCrystalWorld(World):
                             "compatible, setting Red Gyarados access to vanilla for player %s.",
                             self.multiworld.get_player_name(self.player))
 
+        if (self.options.early_fly
+                and self.options.randomize_starting_town
+                and self.options.randomize_badges.value != RandomizeBadges.option_completely_random
+                and "Fly" not in self.options.remove_badge_requirement
+                and self.options.hm_badge_requirements != HMBadgeRequirements.option_no_badges):
+            self.options.early_fly.value = EarlyFly.option_false
+            logging.warning("Pokemon Crystal: Early fly is not compatible with Random Starting Town if Badges are "
+                            "not completely random. Disabling Early Fly for player %s",
+                            self.multiworld.get_player_name(self.player))
+
         # In race mode we don't patch any item location information into the ROM
         if self.multiworld.is_race and not self.options.remote_items:
             logging.warning("Pokemon Crystal: Forcing Player %s (%s) to use remote items due to race mode.",
@@ -453,8 +464,8 @@ class PokemonCrystalWorld(World):
             "route_2_access",
             "blackthorn_dark_cave_access",
             "national_park_access",
-            "kanto_access_condition",
-            "kanto_access_badges",
+            "kanto_access_requirement",
+            "kanto_access_count",
             "route_3_access",
             "vanilla_clair",
             "wild_encounter_methods_required",
