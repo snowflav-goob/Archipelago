@@ -999,7 +999,7 @@ class GameOptions(OptionDict):
         speedy: No battle animations play and many delays are removed to make battles faster
     sound: mono/stereo - Sets the sound mode
     menu_account: on/off - Sets whether your start menu selection is remembered
-    text_frame: 1-8 - Sets the textbox frame
+    text_frame: 1-8 - Sets the textbox frame, "random" will pick a random frame
     bike_music: on/off - Sets whether the bike music will play
     surf_music: on/off - Sets whether the surf music will play
     skip_nicknames: off/on - Sets whether you are asked to nickname a Pokemon upon receiving it
@@ -1018,7 +1018,7 @@ class GameOptions(OptionDict):
     turbo_button: none/a/b/a_or_b - Sets which buttons auto advance text
     low_hp_beep: on/off - Sets whether the low HP beep is played in battle
     time_of_day: auto/morn/day/nite - Sets a time of day override, auto follows the clock
-    battle_move_stats: off/on - Sets whether or not to display power and accuracy for moves in battle
+    battle_move_stats: off/on - Sets whether or not to display power and accuracy of moves in battle
     short_fanfares: off/on - Sets whether item receive fanfares are shortened
     dex_area_beep: off/on - Sets whether the Pokedex beeps for land and Surf encounters in the current area
     skip_dex_registration: off/on - Sets whether the Pokedex registration screen is skipped
