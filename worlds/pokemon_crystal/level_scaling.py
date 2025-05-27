@@ -1,4 +1,5 @@
 import logging
+from dataclasses import replace
 
 from BaseClasses import CollectionState, MultiWorld
 from .locations import PokemonCrystalLocation
@@ -211,16 +212,16 @@ def perform_level_scaling(multiworld: MultiWorld):
                     new_level = round(min((new_base_level * pokemon.level / old_base_level),
                                           (new_base_level + pokemon.level - old_base_level)))
                     new_level = bound(new_level, 1, 100)
-                    new_pokemon.append(pokemon._replace(level=new_level))
+                    new_pokemon.append(replace(pokemon, level=new_level))
                     logging.debug(
                         f"Setting level {new_level} {pokemon.pokemon} for {trainer_location.name} for {world.player_name}")
-                world.generated_trainers[trainer_location.name] = trainer_data._replace(pokemon=new_pokemon)
+                world.generated_trainers[trainer_location.name] = replace(trainer_data, pokemon=new_pokemon)
 
             for encounter_location in encounter_locations:
                 new_base_level = world.encounter_level_list.pop(0)
 
                 pokemon_data = world.generated_static[encounter_location.name]
-                new_pokemon = pokemon_data._replace(level=new_base_level)
+                new_pokemon = replace(pokemon_data, level=new_base_level)
                 world.generated_static[encounter_location.name] = new_pokemon
                 logging.debug(
                     f"Setting level {new_base_level} for static {pokemon_data.pokemon} for {world.player_name}")

@@ -1,4 +1,5 @@
 import copy
+from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from BaseClasses import ItemClassification
@@ -31,7 +32,10 @@ def randomize_pokemon_data(world: "PokemonCrystalWorld"):
 
             new_types = get_random_types(world.random)
             for pokemon in evolution_line_list:
-                world.generated_pokemon[pokemon] = world.generated_pokemon[pokemon]._replace(types=new_types)
+                world.generated_pokemon[pokemon] = replace(
+                    world.generated_pokemon[pokemon],
+                    types=new_types
+                )
 
     for pkmn_name, pkmn_data in world.generated_pokemon.items():
         new_base_stats = pkmn_data.base_stats
@@ -56,9 +60,12 @@ def randomize_pokemon_data(world: "PokemonCrystalWorld"):
         if world.options.tm_compatibility.value or world.options.hm_compatibility.value:
             new_tm_hms = get_tmhm_compatibility(world, pkmn_name)
 
-        world.generated_pokemon[pkmn_name] = world.generated_pokemon[pkmn_name]._replace(tm_hm=new_tm_hms,
-                                                                                         learnset=new_learnset,
-                                                                                         base_stats=new_base_stats)
+        world.generated_pokemon[pkmn_name] = replace(
+            world.generated_pokemon[pkmn_name],
+            tm_hm=new_tm_hms,
+            learnset=new_learnset,
+            base_stats=new_base_stats
+        )
 
 
 def randomize_starters(world: "PokemonCrystalWorld"):
@@ -70,9 +77,12 @@ def randomize_starters(world: "PokemonCrystalWorld"):
 
     def set_rival_fight_starter(rival_name, rival, new_pokemon):
         # starter is always the last pokemon
-        rival_pkmn = rival.pokemon[-1]._replace(pokemon=new_pokemon)
+        rival_pkmn = replace(rival.pokemon[-1], pokemon=new_pokemon)
         new_party = rival.pokemon[:-1] + [rival_pkmn]
-        world.generated_trainers[rival_name] = world.generated_trainers[rival_name]._replace(pokemon=new_party)
+        world.generated_trainers[rival_name] = replace(
+            world.generated_trainers[rival_name],
+            pokemon=new_party
+        )
 
     generated_starters = []
     base_only = world.options.randomize_starters.value == RandomizeStarters.option_unevolved_only
@@ -129,7 +139,8 @@ def randomize_traded_pokemon(world: "PokemonCrystalWorld"):
         received_pokemon = get_random_pokemon(world) if randomize_received else trade.received_pokemon
 
         new_trades.append(
-            trade._replace(
+            replace(
+                trade,
                 requested_gender=0,  # no gender
                 held_item=get_random_filler_item(world.random) if received_pokemon != "ABRA" else "TM_9",
                 requested_pokemon=get_random_pokemon(world) if randomize_requested else trade.requested_pokemon,

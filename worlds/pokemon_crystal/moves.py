@@ -1,4 +1,5 @@
 import copy
+from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from .data import data as crystal_data, LearnsetData, TMHMData
@@ -177,9 +178,13 @@ def randomize_move_values(world: "PokemonCrystalWorld"):
                 else:
                     # 30 is 76,5 so actual lowest accuracy is a bit lower than 30
                     new_acc = world.random.randint(30, 100)
-        world.generated_moves[move_name] = world.generated_moves[move_name]._replace(power=new_power,
-                                                                                     accuracy=new_acc,
-                                                                                     pp=new_pp)
+
+        world.generated_moves[move_name] = replace(
+            world.generated_moves[move_name],
+            power=new_power,
+            accuracy=new_acc,
+            pp=new_pp
+        )
 
 
 def randomize_move_types(world: "PokemonCrystalWorld"):
@@ -190,4 +195,7 @@ def randomize_move_types(world: "PokemonCrystalWorld"):
         if move_name in ["NO_MOVE", "CURSE"]:
             continue
         new_type = world.random.choice(data_types)
-        world.generated_moves[move_name] = world.generated_moves[move_name]._replace(type=new_type)
+        world.generated_moves[move_name] = replace(
+            world.generated_moves[move_name],
+            type=new_type
+        )

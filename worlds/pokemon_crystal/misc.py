@@ -1,3 +1,4 @@
+from dataclasses import replace
 from math import floor
 from typing import TYPE_CHECKING
 
@@ -17,7 +18,7 @@ def randomize_mischief(world: "PokemonCrystalWorld"):
     upper_count = floor(len(all_mischief) * 0.75)
     mischief_count = world.random.randint(lower_count, upper_count)
 
-    world.generated_misc = world.generated_misc._replace(selected=world.random.sample(all_mischief, mischief_count))
+    world.generated_misc = replace(world.generated_misc, selected=world.random.sample(all_mischief, mischief_count))
 
     if MiscOption.RadioTowerQuestions.value in world.generated_misc.selected:
         # Randomize Yes/No answers for Radio Card quiz
@@ -52,9 +53,9 @@ def randomize_mischief(world: "PokemonCrystalWorld"):
 
         new_mom_items = []
         for item in world.generated_misc.mom_items:
-            new_mom_items.append(item._replace(item=world.random.choice(good_items)))
+            new_mom_items.append(replace(item, item=world.random.choice(good_items)))
 
-        world.generated_misc = world.generated_misc._replace(mom_items=new_mom_items)
+        world.generated_misc = replace(world.generated_misc, mom_items=new_mom_items)
 
 
 def get_misc_spoiler_log(world: "PokemonCrystalWorld", write):

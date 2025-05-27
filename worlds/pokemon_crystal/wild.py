@@ -1,4 +1,5 @@
 from collections import defaultdict
+from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from .data import FishData, TreeMonData, EncounterMon
@@ -46,7 +47,7 @@ def randomize_wild_pokemon(world: "PokemonCrystalWorld"):
                 pokemon = get_random_pokemon(world, priority_pokemon=priority_pokemon, exclude_unown=exclude_unown)
                 priority_pokemon.discard(pokemon)
                 for encounter in encounter_list:
-                    new_encounters.append(encounter._replace(pokemon=pokemon))
+                    new_encounters.append(replace(encounter, pokemon=pokemon))
             elif world.options.encounter_grouping.value == EncounterGrouping.option_one_to_one:
                 distribution = defaultdict[str, list[int]](lambda: [])
                 new_encounters = [encounter for encounter in encounter_list]
@@ -56,12 +57,12 @@ def randomize_wild_pokemon(world: "PokemonCrystalWorld"):
                     pokemon = get_random_pokemon(world, priority_pokemon=priority_pokemon, exclude_unown=exclude_unown)
                     priority_pokemon.discard(pokemon)
                     for slot in slots:
-                        new_encounters[slot] = new_encounters[slot]._replace(pokemon=pokemon)
+                        new_encounters[slot] = replace(new_encounters[slot], pokemon=pokemon)
             else:
                 for encounter in encounter_list:
                     pokemon = get_random_pokemon(world, priority_pokemon=priority_pokemon, exclude_unown=exclude_unown)
                     priority_pokemon.discard(pokemon)
-                    new_encounters.append(encounter._replace(pokemon=pokemon))
+                    new_encounters.append(replace(encounter, pokemon=pokemon))
             return new_encounters
 
         for grass_name, grass_encounters in world.generated_wild.grass.items():
@@ -116,8 +117,10 @@ def randomize_wild_pokemon(world: "PokemonCrystalWorld"):
 def randomize_static_pokemon(world: "PokemonCrystalWorld"):
     if world.options.randomize_static_pokemon:
         for static_name, pkmn_data in world.generated_static.items():
-            world.generated_static[static_name] = pkmn_data._replace(
-                pokemon=get_random_pokemon(world, exclude_unown=True))
+            world.generated_static[static_name] = replace(
+                world.generated_static[static_name],
+                pokemon=get_random_pokemon(world, exclude_unown=True)
+            )
 
     static_pokemon = set()
 

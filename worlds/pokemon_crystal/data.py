@@ -1,7 +1,7 @@
 import pkgutil
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
-from typing import NamedTuple, Any
+from typing import Any
 
 import orjson
 import yaml
@@ -12,7 +12,8 @@ APWORLD_VERSION = "4.0.0"
 POKEDEX_OFFSET = 10000
 
 
-class ItemData(NamedTuple):
+@dataclass
+class ItemData:
     label: str
     item_id: int
     item_const: str
@@ -20,7 +21,8 @@ class ItemData(NamedTuple):
     tags: frozenset[str]
 
 
-class LocationData(NamedTuple):
+@dataclass
+class LocationData:
     name: str
     label: str
     parent_region: str
@@ -31,26 +33,30 @@ class LocationData(NamedTuple):
     script: str
 
 
-class EventData(NamedTuple):
+@dataclass
+class EventData:
     name: str
     parent_region: str
 
 
-class TrainerPokemon(NamedTuple):
+@dataclass
+class TrainerPokemon:
     level: int
     pokemon: str
     item: str | None
     moves: list[str]
 
 
-class TrainerData(NamedTuple):
+@dataclass
+class TrainerData:
     name: str
     trainer_type: str
     pokemon: list[TrainerPokemon]
     name_length: int
 
 
-class LearnsetData(NamedTuple):
+@dataclass
+class LearnsetData:
     level: int
     move: str
 
@@ -72,7 +78,8 @@ class EvolutionType(Enum):
         raise ValueError(f"Invalid evolution type: {evo_type_string}")
 
 
-class EvolutionData(NamedTuple):
+@dataclass
+class EvolutionData:
     evo_type: EvolutionType
     level: int | None
     condition: str | None
@@ -80,7 +87,8 @@ class EvolutionData(NamedTuple):
     length: int
 
 
-class PokemonData(NamedTuple):
+@dataclass
+class PokemonData:
     id: int
     friendly_name: str
     base_stats: list[int]
@@ -94,7 +102,8 @@ class PokemonData(NamedTuple):
     gender_ratio: str
 
 
-class MoveData(NamedTuple):
+@dataclass
+class MoveData:
     id: str
     rom_id: int
     type: str
@@ -105,7 +114,8 @@ class MoveData(NamedTuple):
     name: str
 
 
-class TMHMData(NamedTuple):
+@dataclass
+class TMHMData:
     id: str
     tm_num: int
     type: str
@@ -132,66 +142,77 @@ class MiscOption(Enum):
         return list(map(lambda c: c.value, MiscOption))
 
 
-class MiscWarp(NamedTuple):
+@dataclass
+class MiscWarp:
     coords: list[int]
     id: int
 
 
-class MiscSaffronWarps(NamedTuple):
+@dataclass
+class MiscSaffronWarps:
     warps: dict[str, MiscWarp]
     pairs: list[list[str]]
 
 
-class MiscMomItem(NamedTuple):
+@dataclass
+class MiscMomItem:
     index: int
     item: str
 
 
-class MiscData(NamedTuple):
+@dataclass
+class MiscData:
     fuchsia_gym_trainers: list[list[int]]
     radio_tower_questions: list[str]
     saffron_gym_warps: MiscSaffronWarps
     radio_channel_addresses: list[int]
     mom_items: list[MiscMomItem]
-    selected: list[MiscOption] = MiscOption.all()
+    selected: list[MiscOption] = field(default_factory=lambda: MiscOption.all())
 
 
-class MusicConst(NamedTuple):
+@dataclass
+class MusicConst:
     id: int
     loop: bool
 
 
-class MusicData(NamedTuple):
+@dataclass
+class MusicData:
     consts: dict[str, MusicConst]
     maps: dict[str, str]
     encounters: list[str]
     scripts: dict[str, str]
 
 
-class EncounterMon(NamedTuple):
+@dataclass
+class EncounterMon:
     level: int
     pokemon: str
 
 
-class FishData(NamedTuple):
+@dataclass
+class FishData:
     old: list[EncounterMon]
     good: list[EncounterMon]
     super: list[EncounterMon]
 
 
-class TreeMonData(NamedTuple):
+@dataclass
+class TreeMonData:
     common: list[EncounterMon]
     rare: list[EncounterMon]
 
 
-class WildData(NamedTuple):
+@dataclass
+class WildData:
     grass: dict[str, list[EncounterMon]]
     water: dict[str, list[EncounterMon]]
     fish: dict[str, FishData]
     tree: dict[str, TreeMonData]
 
 
-class StaticPokemon(NamedTuple):
+@dataclass
+class StaticPokemon:
     name: str
     pokemon: str
     addresses: list[str]
@@ -200,7 +221,8 @@ class StaticPokemon(NamedTuple):
     level_address: str | None
 
 
-class TradeData(NamedTuple):
+@dataclass
+class TradeData:
     index: int
     requested_pokemon: str
     received_pokemon: str
@@ -208,6 +230,7 @@ class TradeData(NamedTuple):
     held_item: str
 
 
+@dataclass()
 class RegionWildEncounterData:
     grass: str | None
     surfing: str | None
@@ -216,6 +239,7 @@ class RegionWildEncounterData:
     rock_smash: bool
 
 
+@dataclass
 class RegionData:
     name: str
     johto: bool
@@ -248,7 +272,7 @@ class StartingTown:
     restrictive_start: bool = False
 
 
-@dataclass()
+@dataclass
 class FlyRegion:
     id: int
     name: str
@@ -257,18 +281,15 @@ class FlyRegion:
     exclude_vanilla_start: bool = False
 
 
+@dataclass
 class PhoneScriptData:
     name: str
     caller: str
     script: list[str]
 
-    def __init__(self, name: str, caller: str, script: list[str]):
-        self.name = name
-        self.caller = caller
-        self.script = script
 
-
-class PokemonCrystalGameSetting(NamedTuple):
+@dataclass
+class PokemonCrystalGameSetting:
     option_byte_index: int
     offset: int
     length: int
@@ -332,7 +353,8 @@ class PokemonCrystalData:
         self.moves = {}
 
 
-class PokemonCrystalMapSizeData(NamedTuple):
+@dataclass
+class PokemonCrystalMapSizeData:
     width: int
     height: int
 
@@ -462,12 +484,13 @@ def _init() -> None:
 
         if "wild_encounters" in region_json:
             wild_encounter_data = region_json["wild_encounters"]
-            new_region.wild_encounters = RegionWildEncounterData()
-            new_region.wild_encounters.grass = wild_encounter_data.get("grass")
-            new_region.wild_encounters.surfing = wild_encounter_data.get("surfing")
-            new_region.wild_encounters.fishing = wild_encounter_data.get("fishing")
-            new_region.wild_encounters.headbutt = wild_encounter_data.get("headbutt")
-            new_region.wild_encounters.rock_smash = wild_encounter_data.get("rock_smash")
+            new_region.wild_encounters = RegionWildEncounterData(
+                wild_encounter_data.get("grass"),
+                wild_encounter_data.get("surfing"),
+                wild_encounter_data.get("fishing"),
+                wild_encounter_data.get("headbutt"),
+                wild_encounter_data.get("rock_smash")
+            )
 
         data.regions[region_name] = new_region
 

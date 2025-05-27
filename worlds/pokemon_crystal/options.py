@@ -1023,6 +1023,31 @@ class GameOptions(OptionDict):
     dex_area_beep: off/on - Sets whether the Pokedex beeps for land and Surf encounters in the current area
     """
     display_name = "Game Options"
+    default = {
+        "text_speed": "mid",
+        "battle_shift": "shift",
+        "battle_animations": "all",
+        "sound": "mono",
+        "menu_account": "on",
+        "text_frame": 1,
+        "bike_music": "on",
+        "surf_music": "on",
+        "skip_nicknames": "off",
+        "auto_run": "off",
+        "spinners": "normal",
+        "fast_egg_hatch": "off",
+        "fast_egg_make": "off",
+        "rods_always_work": "off",
+        "exp_distribution": "gen2",
+        "catch_exp": "off",
+        "poison_flicker": "on",
+        "turbo_button": "none",
+        "low_hp_beep": "on",
+        "time_of_day": "auto",
+        "battle_move_stats": "off",
+        "short_fanfares": "off",
+        "dex_area_beep": "off"
+    }
 
 
 @dataclass

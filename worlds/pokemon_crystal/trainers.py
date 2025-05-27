@@ -1,3 +1,4 @@
+from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from .data import data as crystal_data
@@ -65,8 +66,8 @@ def randomize_trainers(world: "PokemonCrystalWorld"):
                 new_item = get_random_filler_item(world.random)
             if len(pkmn_data.moves):
                 new_moves = randomize_trainer_pokemon_moves(world, pkmn_data, new_pokemon)
-            new_party[i] = pkmn_data._replace(pokemon=new_pokemon, item=new_item, moves=new_moves)
-        world.generated_trainers[trainer_name] = world.generated_trainers[trainer_name]._replace(pokemon=new_party)
+            new_party[i] = replace(pkmn_data, pokemon=new_pokemon, item=new_item, moves=new_moves)
+        world.generated_trainers[trainer_name] = replace(world.generated_trainers[trainer_name], pokemon=new_party)
 
 
 def vanilla_trainer_movesets(world: "PokemonCrystalWorld"):
@@ -79,8 +80,8 @@ def vanilla_trainer_movesets(world: "PokemonCrystalWorld"):
         new_party = trainer_data.pokemon
         for i, pkmn_data in enumerate(trainer_data.pokemon):
             new_moves = randomize_trainer_pokemon_moves(world, pkmn_data, pkmn_data.pokemon)
-            new_party[i] = pkmn_data._replace(moves=new_moves)
-        world.generated_trainers[trainer_name] = world.generated_trainers[trainer_name]._replace(pokemon=new_party)
+            new_party[i] = replace(pkmn_data, moves=new_moves)
+        world.generated_trainers[trainer_name] = replace(world.generated_trainers[trainer_name], pokemon=new_party)
 
 
 def randomize_trainer_pokemon_moves(world, pkmn_data, new_pokemon):
@@ -106,5 +107,8 @@ def boost_trainer_pokemon(world: "PokemonCrystalWorld"):
             elif world.options.boost_trainers == BoostTrainerPokemonLevels.option_set_min_level:
                 if new_level < world.options.trainer_level_boost:
                     new_level = world.options.trainer_level_boost
-            new_party.append(trainer_mon._replace(level=new_level))
-        world.generated_trainers[trainer_name] = world.generated_trainers[trainer_name]._replace(pokemon=new_party)
+            new_party.append(replace(trainer_mon, level=new_level))
+        world.generated_trainers[trainer_name] = replace(
+            world.generated_trainers[trainer_name],
+            pokemon=new_party
+        )
