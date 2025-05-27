@@ -116,11 +116,11 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
     if "Whirlpool" in world.options.remove_badge_requirement:
         def can_whirlpool(state: CollectionState):
-            return state.has("HM06 Whirlpool", world.player)
+            return state.has("HM06 Whirlpool", world.player) and can_surf(state)
 
     if "Waterfall" in world.options.remove_badge_requirement:
         def can_waterfall(state: CollectionState):
-            return state.has("HM07 Waterfall", world.player)
+            return state.has("HM07 Waterfall", world.player) and can_surf(state)
 
     def can_cut_kanto(state: CollectionState):
         return can_cut(state)
@@ -807,8 +807,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                          lambda state: state.has("EVENT_RESTORED_POWER_TO_KANTO", world.player))
 
     # Mt Mortar
-    set_rule(get_entrance("REGION_MOUNT_MORTAR_1F_OUTSIDE:CENTER -> REGION_MOUNT_MORTAR_2F_OUTSIDE"),
-             lambda state: can_surf(state) and can_waterfall(state))
+    set_rule(get_entrance("REGION_MOUNT_MORTAR_1F_OUTSIDE:CENTER -> REGION_MOUNT_MORTAR_2F_OUTSIDE"), can_waterfall)
 
     # 1F Inside Front
     set_rule(get_entrance("REGION_MOUNT_MORTAR_1F_INSIDE:FRONT -> REGION_MOUNT_MORTAR_1F_INSIDE:STRENGTH"),
@@ -821,7 +820,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
     # Behind boulder, need to come down from 2F for this
     set_rule(get_entrance("REGION_MOUNT_MORTAR_B1F:BACK -> REGION_MOUNT_MORTAR_B1F"),
-             lambda state: can_strength(state) and can_surf(state) and can_waterfall(state))
+             lambda state: can_strength(state) and can_waterfall(state))
 
     # Mahogany Town
     set_rule(get_entrance("REGION_MAHOGANY_TOWN -> REGION_MAHOGANY_MART_1F"),
@@ -859,8 +858,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
     # Lake of Rage
     if world.options.red_gyarados_access:
-        set_rule(get_entrance("REGION_LAKE_OF_RAGE -> REGION_LAKE_OF_RAGE:WATER"),
-                 lambda state: can_surf(state) and can_whirlpool(state))
+        set_rule(get_entrance("REGION_LAKE_OF_RAGE -> REGION_LAKE_OF_RAGE:WATER"), can_whirlpool)
     else:
         set_rule(get_entrance("REGION_LAKE_OF_RAGE -> REGION_LAKE_OF_RAGE:WATER"), can_surf)
 
@@ -952,7 +950,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     set_rule(get_location("Route 27 - East Item behind Whirlpool"),
              lambda state: can_surf(state) and can_whirlpool(state))
     if trainersanity():
-        set_rule(get_location("Route 27 - Bird Keeper Jose"), lambda state: can_surf(state) and can_whirlpool(state))
+        set_rule(get_location("Route 27 - Bird Keeper Jose"), can_whirlpool)
 
     if rematchsanity():
         if world.options.goal == Goal.option_red:
@@ -969,10 +967,8 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
     set_rule(get_location("Tohjo Falls - Item"), can_surf)
 
-    set_rule(get_entrance("REGION_TOHJO_FALLS:WEST -> REGION_TOHJO_FALLS:EAST"),
-             lambda state: can_surf(state) and can_waterfall(state))
-    set_rule(get_entrance("REGION_TOHJO_FALLS:EAST -> REGION_TOHJO_FALLS:WEST"),
-             lambda state: can_surf(state) and can_waterfall(state))
+    set_rule(get_entrance("REGION_TOHJO_FALLS:WEST -> REGION_TOHJO_FALLS:EAST"), can_waterfall)
+    set_rule(get_entrance("REGION_TOHJO_FALLS:EAST -> REGION_TOHJO_FALLS:WEST"), can_waterfall)
 
     set_rule(get_entrance("REGION_VICTORY_ROAD_GATE -> REGION_VICTORY_ROAD"), has_elite_four_requirement)
 
@@ -996,13 +992,11 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         if hidden():
             set_rule(get_location("Outside Silver Cave - Hidden Item across Water"), can_surf)
 
-        set_rule(get_location("Silver Cave 2F - Northeast Item"),
-                 lambda state: can_surf(state) and can_waterfall(state))
+        set_rule(get_location("Silver Cave 2F - Northeast Item"), can_waterfall)
 
-        set_rule(get_location("Silver Cave 2F - West Item"), lambda state: can_surf(state) and can_waterfall(state))
+        set_rule(get_location("Silver Cave 2F - West Item"), can_waterfall)
 
-        set_rule(get_entrance("REGION_SILVER_CAVE_ROOM_2 -> REGION_SILVER_CAVE_ITEM_ROOMS"),
-                 lambda state: can_surf(state) and can_waterfall(state))
+        set_rule(get_entrance("REGION_SILVER_CAVE_ROOM_2 -> REGION_SILVER_CAVE_ITEM_ROOMS"), can_waterfall)
 
     if not johto_only():
 
@@ -1078,7 +1072,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         set_rule(get_location("Route 12 - Item behind North Cut Tree"), can_cut_kanto)
 
         set_rule(get_location("Route 12 - Item behind South Cut Tree across Water"),
-                 lambda state: can_cut(state) and can_surf(state))
+                 lambda state: can_cut_kanto(state) and can_surf_kanto(state))
 
         if hidden():
             set_rule(get_location("Route 12 - Hidden Item on Island"), can_surf_kanto)
@@ -1097,8 +1091,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                  lambda state: has_n_badges(state, 16))
 
         set_rule(get_location("Vermilion City - Lost Item from Guy in Fan Club"),
-                 lambda state: state.has("EVENT_RESTORED_POWER_TO_KANTO", world.player) and state.has(
-                     "EVENT_MET_COPYCAT_FOUND_OUT_ABOUT_LOST_ITEM", world.player))
+                 lambda state: state.has("EVENT_RESTORED_POWER_TO_KANTO", world.player))
 
         if hidden():
             set_rule(get_location("Vermilion Port - Hidden Item in Buoy"), can_surf_kanto)
@@ -1228,11 +1221,10 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                 required_gyms = max(1, evo.level // world.options.evolution_gym_levels)
                 if has_beaten_n_gyms(state, required_gyms): return True
             if evo.evo_type is EvolutionType.Item:
-                if state.has("EVENT_GOLDENROD_EVOLUTION_ITEMS", world.player) or state.has(
-                        "EVENT_CELADON_EVOLUTION_ITEMS", world.player): return True
+                if state.has_any(["EVENT_GOLDENROD_EVOLUTION_ITEMS", "EVENT_CELADON_EVOLUTION_ITEMS"], world.player):
+                    return True
             if evo.evo_type is EvolutionType.Happiness:
-                if state.has("EVENT_DAISY_GROOMING", world.player) or state.has(
-                        "EVENT_HAIRCUT_BROTHERS", world.player): return True
+                if state.has_any(["EVENT_DAISY_GROOMING", "EVENT_HAIRCUT_BROTHERS"], world.player): return True
 
         return False
 
