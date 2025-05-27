@@ -79,6 +79,8 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
 
     if world.options.dexsanity:
         pokemon_items = list(world.logically_available_pokemon)
+        pokemon_items = [pokemon_id for pokemon_id in pokemon_items if
+                         world.generated_pokemon[pokemon_id].friendly_name not in world.options.dexsanity_blocklist]
         world.random.shuffle(pokemon_items)
         for _ in range(min(world.options.dexsanity.value, len(pokemon_items))):
             world.generated_dexsanity.add(pokemon_items.pop())

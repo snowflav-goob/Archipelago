@@ -316,6 +316,14 @@ class Dexsanity(NamedRange):
     }
 
 
+class DexsanityBlocklist(OptionSet):
+    """
+    These Pokemon will never be Dexsanity checks, this may cause you to get less Dexsanity checks than you request
+    """
+    display_name = "Dexsanity Blocklist"
+    valid_keys = sorted([pokemon.friendly_name for pokemon in data.pokemon.values()])
+
+
 class WildEncounterMethodsRequired(OptionSet):
     """
     Sets which wild encounter types may be logically required
@@ -1081,6 +1089,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     trainersanity_alerts: TrainersanityAlerts
     rematchsanity: Rematchsanity
     dexsanity: Dexsanity
+    dexsanity_blocklist: DexsanityBlocklist
     wild_encounter_methods_required: WildEncounterMethodsRequired
     evolution_methods_required: EvolutionMethodsRequired
     static_pokemon_required: StaticPokemonRequired
