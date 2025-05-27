@@ -1021,6 +1021,7 @@ class GameOptions(OptionDict):
     battle_move_stats: off/on - Sets whether or not to display power and accuracy for moves in battle
     short_fanfares: off/on - Sets whether item receive fanfares are shortened
     dex_area_beep: off/on - Sets whether the Pokedex beeps for land and Surf encounters in the current area
+    skip_dex_registration: off/on - Sets whether the Pokedex registration screen is skipped
     """
     display_name = "Game Options"
     default = {
@@ -1046,7 +1047,8 @@ class GameOptions(OptionDict):
         "time_of_day": "auto",
         "battle_move_stats": "off",
         "short_fanfares": "off",
-        "dex_area_beep": "off"
+        "dex_area_beep": "off",
+        "skip_dex_registration": "off"
     }
 
 

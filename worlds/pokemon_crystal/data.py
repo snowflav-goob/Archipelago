@@ -723,8 +723,8 @@ def _init() -> None:
     data.game_settings = {
         "text_speed": PokemonCrystalGameSetting(0, 0, 2, {"instant": 0, "fast": 1, "mid": 2, "slow": 3}, 2),
         "battle_shift": PokemonCrystalGameSetting(0, 3, 1, {"shift": 1, "set": 0}, 1),
-        "battle_animations": PokemonCrystalGameSetting(0, 4, 2, {"all": 0, "no_scene": 1, "no_bars": 2, "speedy": 3},
-                                                       0),
+        "battle_animations": PokemonCrystalGameSetting(0, 4, 2,
+                                                       {"all": 0, "no_scene": 1, "no_bars": 2, "speedy": 3}, 0),
         "sound": PokemonCrystalGameSetting(0, 6, 1, {"mono": 0, "stereo": 1}, 0),
         "menu_account": PokemonCrystalGameSetting(0, 7, 1, ON_OFF, 1),
 
@@ -747,7 +747,9 @@ def _init() -> None:
         "exp_distribution": PokemonCrystalGameSetting(3, 2, 2, {"gen2": 0, "gen6": 1, "gen8": 2, "no_exp": 3}, 0),
         "turbo_button": PokemonCrystalGameSetting(3, 4, 2, {"none": 0, "a": 1, "b": 2, "a_or_b": 3}, 0),
         "short_fanfares": PokemonCrystalGameSetting(3, 6, 1, ON_OFF, 0),
-        "dex_area_beep": PokemonCrystalGameSetting(3, 7, 1, ON_OFF, 0)
+        "dex_area_beep": PokemonCrystalGameSetting(3, 7, 1, ON_OFF, 0),
+
+        "skip_dex_registration": PokemonCrystalGameSetting(4, 0, 1, ON_OFF, 0)
     }
 
     data.map_sizes = {}
