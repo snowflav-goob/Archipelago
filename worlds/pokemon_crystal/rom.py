@@ -157,7 +157,8 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
     if world.options.randomize_starters:
         for j, pokemon in enumerate(["CYNDAQUIL_", "TOTODILE_", "CHIKORITA_"]):
             pokemon_id = data.pokemon[world.generated_starters[j][0]].id
-            starter_text = convert_to_ingame_text(world.generated_starters[j][0])
+            starter_name = world.generated_pokemon[world.generated_starters[j][0]].friendly_name.upper()
+            starter_text = convert_to_ingame_text(starter_name)
             for i in range(1, 9):
                 cur_address = data.rom_addresses["AP_Starter_" + pokemon + str(i)] + 1
                 write_bytes(patch, [pokemon_id], cur_address)
