@@ -407,10 +407,6 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
             write_bytes(patch, [13, 3], data.rom_addresses["AP_Misc_IcePathWarp_1"])
             write_bytes(patch, [13, 13], data.rom_addresses["AP_Misc_IcePathWarp_2"])
 
-    if world.options.blind_trainers:
-        address = data.rom_addresses["AP_Setting_Blind_Trainers"]
-        write_bytes(patch, [0xC9], address)  # 0xC9 = ret
-
     if not world.options.item_receive_sound:
         address = data.rom_addresses["AP_Setting_ItemSFX"] + 1
         write_bytes(patch, [0], address)
@@ -674,6 +670,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         write_bytes(patch, [town_id], data.rom_addresses["AP_Setting_RandomStartTown_1"] + 1)
         write_bytes(patch, [town_id], data.rom_addresses["AP_Setting_RandomStartTown_2"] + 1)
         write_bytes(patch, [town_id], data.rom_addresses["AP_Setting_RandomStartTown_3"] + 1)
+        write_bytes(patch, [town_id], data.rom_addresses["AP_Setting_RandomStartTown_4"] + 1)
 
     if world.options.randomize_starting_town or world.options.dexsanity:
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_StartWithPokedex_1"] + 2)

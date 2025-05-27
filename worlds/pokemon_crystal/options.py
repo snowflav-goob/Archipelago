@@ -324,6 +324,16 @@ class DexsanityBlocklist(OptionSet):
     valid_keys = sorted([pokemon.friendly_name for pokemon in data.pokemon.values()])
 
 
+class DexsanityStarters(Choice):
+    """
+    Controls how Dexsanity treats starter Pokemon
+    """
+    display_name = "Dexsanity Starters"
+    default = 0
+    option_allow = 0
+    option_block = 1
+
+
 class WildEncounterMethodsRequired(OptionSet):
     """
     Sets which wild encounter types may be logically required
@@ -817,13 +827,6 @@ class MinimumCatchRate(Range):
     range_end = 255
 
 
-class BlindTrainers(Toggle):
-    """
-    Trainers have no vision and will not start battles unless interacted with
-    """
-    display_name = "Blind Trainers"
-
-
 class SkipEliteFour(Toggle):
     """
     Go straight to Lance when challenging the Elite Four
@@ -1030,6 +1033,7 @@ class GameOptions(OptionDict):
     short_fanfares: off/on - Sets whether item receive fanfares are shortened
     dex_area_beep: off/on - Sets whether the Pokedex beeps for land and Surf encounters in the current area
     skip_dex_registration: off/on - Sets whether the Pokedex registration screen is skipped
+    blind_trainers: off/on - Sets whether trainers will see you without talking to them directly
     """
     display_name = "Game Options"
     default = {
@@ -1056,7 +1060,8 @@ class GameOptions(OptionDict):
         "battle_move_stats": "off",
         "short_fanfares": "off",
         "dex_area_beep": "off",
-        "skip_dex_registration": "off"
+        "skip_dex_registration": "off",
+        "blind_trainers": "off"
     }
 
 
@@ -1090,6 +1095,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     rematchsanity: Rematchsanity
     dexsanity: Dexsanity
     dexsanity_blocklist: DexsanityBlocklist
+    dexsanity_starters: DexsanityStarters
     wild_encounter_methods_required: WildEncounterMethodsRequired
     evolution_methods_required: EvolutionMethodsRequired
     static_pokemon_required: StaticPokemonRequired
@@ -1134,7 +1140,6 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     reusable_tms: ReusableTMs
     guaranteed_catch: GuaranteedCatch
     minimum_catch_rate: MinimumCatchRate
-    blind_trainers: BlindTrainers
     skip_elite_four: SkipEliteFour
     better_marts: BetterMarts
     experience_modifier: ExpModifier

@@ -749,7 +749,8 @@ def _init() -> None:
         "short_fanfares": PokemonCrystalGameSetting(3, 6, 1, ON_OFF, 0),
         "dex_area_beep": PokemonCrystalGameSetting(3, 7, 1, ON_OFF, 0),
 
-        "skip_dex_registration": PokemonCrystalGameSetting(4, 0, 1, ON_OFF, 0)
+        "skip_dex_registration": PokemonCrystalGameSetting(4, 0, 1, ON_OFF, 0),
+        "blind_trainers": PokemonCrystalGameSetting(4, 1, 1, ON_OFF, 0)
     }
 
     data.map_sizes = {}

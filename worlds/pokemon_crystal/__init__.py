@@ -277,6 +277,7 @@ class PokemonCrystalWorld(World):
 
         randomize_wild_pokemon(self)
         randomize_static_pokemon(self)
+        randomize_starters(self)
         generate_evolution_data(self)
         generate_breeding_data(self)
 
@@ -424,7 +425,6 @@ class PokemonCrystalWorld(World):
         randomize_mischief(self)
         randomize_tms(self)
         randomize_pokemon_data(self)
-        randomize_starters(self)
 
         generate_phone_traps(self)
 

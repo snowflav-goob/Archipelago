@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Dict
 
 from BaseClasses import Location, Region, LocationProgressType
 from .data import data, POKEDEX_OFFSET
-from .options import Goal
+from .options import Goal, DexsanityStarters
 from .utils import evolution_in_logic, evolution_location_name
 
 if TYPE_CHECKING:
@@ -79,6 +79,10 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
 
     if world.options.dexsanity:
         pokemon_items = list(world.logically_available_pokemon)
+        blocklist = [pokemon_id for pokemon_id, pokemon_data in world.generated_pokemon.items() if
+                     pokemon_data.friendly_name in world.options.dexsanity_blocklist]
+        if world.options.dexsanity_starters.value == DexsanityStarters.option_block:
+            blocklist += [starter[0] for starter in world.generated_starters]
         pokemon_items = [pokemon_id for pokemon_id in pokemon_items if
                          world.generated_pokemon[pokemon_id].friendly_name not in world.options.dexsanity_blocklist]
         world.random.shuffle(pokemon_items)
