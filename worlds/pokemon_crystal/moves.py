@@ -118,7 +118,7 @@ def randomize_tms(world: "PokemonCrystalWorld"):
 
     ignored_moves = ["ROCK_SMASH", "NO_MOVE", "STRUGGLE"]
     if world.options.dexsanity:
-        ignored_moves += ["HEADBUTT", "SWEET_SCENT"]
+        ignored_moves.extend(["HEADBUTT", "SWEET_SCENT"])
     global_move_pool = [move_data for move_name, move_data in world.generated_moves.items() if
                         not move_data.is_hm
                         and move_name not in ignored_moves]
@@ -144,8 +144,8 @@ def get_random_move_from_learnset(world: "PokemonCrystalWorld", pokemon, level):
                  learn_move.level <= level and learn_move.move != "NO_MOVE"]
     # double learnset pool to dilute HMs slightly
     # exclude beat up as it can softlock the game if an enemy trainer uses it
-    move_pool.extend([world.generated_tms[tm].id for tm in world.generated_pokemon[pokemon].tm_hm if
-                      world.generated_tms[tm].id != "BEAT_UP"])
+    move_pool.extend(world.generated_tms[tm].id for tm in world.generated_pokemon[pokemon].tm_hm if
+                     world.generated_tms[tm].id != "BEAT_UP")
     return world.random.choice(move_pool)
 
 

@@ -335,18 +335,17 @@ class PokemonCrystalWorld(World):
         if self.options.randomize_badges.value == RandomizeBadges.option_shuffle:
             item_locations = [location for location in item_locations if "Badge" not in location.tags]
 
-        badge_option_counts = [8]
-        badge_option_counts += [self.options.radio_tower_badges.value]
+        badge_option_counts = [8, self.options.radio_tower_badges.value]
         if self.options.elite_four_requirement == EliteFourRequirement.option_badges:
-            badge_option_counts += [self.options.elite_four_count.value]
+            badge_option_counts.append(self.options.elite_four_count.value)
         if self.options.route_44_access_requirement.value == Route44AccessRequirement.option_badges:
-            badge_option_counts += [self.options.route_44_access_count.value]
+            badge_option_counts.append(self.options.route_44_access_count.value)
 
         if self.options.johto_only.value == JohtoOnly.option_include_silver_cave:
             if self.options.mt_silver_requirement.value == MtSilverRequirement.option_badges:
-                badge_option_counts += [self.options.mt_silver_count.value]
+                badge_option_counts.append(self.options.mt_silver_count.value)
             if self.options.red_requirement.value == RedRequirement.option_badges:
-                badge_option_counts += [self.options.red_count.value]
+                badge_option_counts.append(self.options.red_count.value)
 
         required_badges = max(badge_option_counts)
 

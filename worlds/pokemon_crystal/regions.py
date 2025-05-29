@@ -224,11 +224,11 @@ def create_regions(world: "PokemonCrystalWorld") -> Dict[str, Region]:
 
                 # Make the lists for level_scaling.py to use
                 trainer_name_level_list.sort(key=lambda i: i[1])
-                world.trainer_name_list += [i[0] for i in trainer_name_level_list]
-                world.trainer_level_list += [i[1] for i in trainer_name_level_list]
+                world.trainer_name_list.extend(i[0] for i in trainer_name_level_list)
+                world.trainer_level_list.extend(i[1] for i in trainer_name_level_list)
                 encounter_name_level_list.sort(key=lambda i: i[1])
-                world.encounter_name_list += [i[0] for i in encounter_name_level_list]
-                world.encounter_level_list += [i[1] for i in encounter_name_level_list]
+                world.encounter_name_list.extend(i[0] for i in encounter_name_level_list)
+                world.encounter_level_list.extend(i[1] for i in encounter_name_level_list)
                 # End level scaling in regions.py
 
             for region_exit in region_data.exits:
