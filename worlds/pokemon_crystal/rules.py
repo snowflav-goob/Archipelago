@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import CollectionState
 from worlds.generic.Rules import add_rule, set_rule
-from . import HMBadgeRequirements, EliteFourRequirement, RedRequirement, Route44AccessRequirement
+from . import HMBadgeRequirements, EliteFourRequirement, RedRequirement, Route44AccessRequirement, RandomizeBadges
 from .data import data, EvolutionType, EvolutionData
 from .options import Goal, JohtoOnly, Route32Condition, UndergroundsRequirePower, Route2Access, \
     BlackthornDarkCaveAccess, \
@@ -165,7 +165,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     def has_super_rod(state: CollectionState):
         return state.has("Super Rod", world.player)
 
-    if world.options.randomize_badges.value == 0:
+    if world.options.randomize_badges.value == RandomizeBadges.option_vanilla:
         badge_items = {"zephyr": "EVENT_ZEPHYR_BADGE_FROM_FALKNER",
                        "hive": "EVENT_HIVE_BADGE_FROM_BUGSY",
                        "plain": "EVENT_PLAIN_BADGE_FROM_WHITNEY",
@@ -290,9 +290,6 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     def hidden():
         return world.options.randomize_hidden_items
 
-    def pokegear():
-        return world.options.randomize_pokegear
-
     def johto_only():
         return world.options.johto_only.value
 
@@ -305,26 +302,27 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     def remove_ilex_cut_tree():
         return world.options.remove_ilex_cut_tree
 
-    def route_32_access_rule():
-        if world.options.route_32_condition.value == Route32Condition.option_egg_from_aide:
-            return lambda state: state.has("EVENT_GOT_TOGEPI_EGG_FROM_ELMS_AIDE", world.player)
-        elif world.options.route_32_condition.value == Route32Condition.option_any_badge:
-            return lambda state: has_n_badges(state, 1)
-        elif world.options.route_32_condition.value == Route32Condition.option_any_gym:
-            return lambda state: has_beaten_n_gyms(state, 1)
-        elif world.options.route_32_condition.value == Route32Condition.option_zephyr_badge:
-            return lambda state: has_badge(state, "zephyr")
-        return None
+    if world.options.route_32_condition.value == Route32Condition.option_egg_from_aide:
+        def route_32_access_rule(state: CollectionState):
+            return state.has("EVENT_GOT_TOGEPI_EGG_FROM_ELMS_AIDE", world.player)
+    elif world.options.route_32_condition.value == Route32Condition.option_any_badge:
+        def route_32_access_rule(state: CollectionState):
+            return has_n_badges(state, 1)
+    elif world.options.route_32_condition.value == Route32Condition.option_any_gym:
+        def route_32_access_rule(state: CollectionState):
+            return has_beaten_n_gyms(state, 1)
+    elif world.options.route_32_condition.value == Route32Condition.option_zephyr_badge:
+        def route_32_access_rule(state: CollectionState):
+            return has_badge(state, "zephyr")
+    else:
+        route_32_access_rule = None
 
-    def expn(state: CollectionState):
-        if pokegear():
-            return (state.has("Pokegear", world.player)
-                    and state.has("Radio Card", world.player)
-                    and state.has("EXPN Card", world.player))
-        else:
-            return (state.has("EVENT_GOT_POKEGEAR", world.player)
-                    and state.has("EVENT_GOT_RADIO_CARD", world.player)
-                    and state.has("EVENT_GOT_EXPN_CARD", world.player))
+    if world.options.randomize_pokegear:
+        def expn(state: CollectionState):
+            return state.has_all(["Pokegear", "Radio Card", "EXPN Card"], world.player)
+    else:
+        def expn(state: CollectionState):
+            return state.has_all(["EVENT_GOT_POKEGEAR", "EVENT_GOT_RADIO_CARD", "EVENT_GOT_EXPN_CARD"], world.player)
 
     # Free Fly
     set_rule(get_entrance("Fly"), can_fly)
@@ -464,10 +462,9 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
              lambda state: state.has("Rainbow Wing", world.player))
 
     # Route 32
-    access_rule = route_32_access_rule()
-    if access_rule:
-        set_rule(get_entrance("REGION_ROUTE_32:NORTH -> REGION_ROUTE_32:SOUTH"), access_rule)
-        set_rule(get_entrance("REGION_ROUTE_32:SOUTH -> REGION_ROUTE_32:NORTH"), access_rule)
+    if route_32_access_rule:
+        set_rule(get_entrance("REGION_ROUTE_32:NORTH -> REGION_ROUTE_32:SOUTH"), route_32_access_rule)
+        set_rule(get_entrance("REGION_ROUTE_32:SOUTH -> REGION_ROUTE_32:NORTH"), route_32_access_rule)
 
     set_rule(get_location("Route 32 - Miracle Seed from Man in North"), lambda state: has_badge(state, "zephyr"))
     set_rule(get_location("Route 32 - TM05 from Roar Guy"), can_cut)
@@ -657,18 +654,13 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                          lambda state: state.has("EVENT_RESTORED_POWER_TO_KANTO", world.player))
 
     # Sudowoodo
-    set_rule(get_entrance("REGION_ROUTE_36:EAST -> REGION_ROUTE_37"),
-             lambda state: state.has("Squirtbottle", world.player))
-    set_rule(get_entrance("REGION_ROUTE_36:EAST -> REGION_ROUTE_36:WEST"),
-             lambda state: state.has("Squirtbottle", world.player))
-    set_rule(get_entrance("REGION_ROUTE_36:WEST -> REGION_ROUTE_36:EAST"),
-             lambda state: state.has("Squirtbottle", world.player))
-    set_rule(get_entrance("REGION_ROUTE_36:WEST -> REGION_ROUTE_37"),
-             lambda state: state.has("Squirtbottle", world.player))
-    set_rule(get_entrance("REGION_ROUTE_37 -> REGION_ROUTE_36:EAST"),
-             lambda state: state.has("Squirtbottle", world.player))
-    set_rule(get_entrance("REGION_ROUTE_37 -> REGION_ROUTE_36:WEST"),
-             lambda state: state.has("Squirtbottle", world.player))
+    has_squirtbottle = lambda state: state.has("Squirtbottle", world.player)
+    set_rule(get_entrance("REGION_ROUTE_36:EAST -> REGION_ROUTE_37"), has_squirtbottle)
+    set_rule(get_entrance("REGION_ROUTE_36:EAST -> REGION_ROUTE_36:WEST"), has_squirtbottle)
+    set_rule(get_entrance("REGION_ROUTE_36:WEST -> REGION_ROUTE_36:EAST"), has_squirtbottle)
+    set_rule(get_entrance("REGION_ROUTE_36:WEST -> REGION_ROUTE_37"), has_squirtbottle)
+    set_rule(get_entrance("REGION_ROUTE_37 -> REGION_ROUTE_36:EAST"), has_squirtbottle)
+    set_rule(get_entrance("REGION_ROUTE_37 -> REGION_ROUTE_36:WEST"), has_squirtbottle)
 
     # Route 36
     set_rule(get_entrance("REGION_ROUTE_35 -> REGION_ROUTE_36:WEST"), can_cut)
@@ -688,7 +680,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                 set_rule(get_location("SCHOOLBOY_ALAN_POWER"),
                          lambda state: state.has("EVENT_RESTORED_POWER_TO_KANTO", world.player))
 
-    set_rule(get_location("Route 36 - TM08 from Rock Smash Guy"), lambda state: state.has("Squirtbottle", world.player))
+    set_rule(get_location("Route 36 - TM08 from Rock Smash Guy"), has_squirtbottle)
 
     # Ecruteak City
     set_rule(get_entrance("REGION_ECRUTEAK_CITY -> REGION_ECRUTEAK_GYM"),
@@ -1079,7 +1071,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         set_rule(get_entrance("REGION_ROUTE_10_SOUTH -> REGION_ROCK_TUNNEL_1F"), can_flash_kanto)
 
         # Lavendar
-        if pokegear():
+        if world.options.randomize_pokegear:
             set_rule(get_location("Lavender Radio Tower - EXPN Card"), lambda state: state.has(
                 "EVENT_RESTORED_POWER_TO_KANTO", world.player))
         else:
