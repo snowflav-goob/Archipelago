@@ -3,7 +3,7 @@ import logging
 import pkgutil
 from collections import defaultdict
 from threading import Event
-from typing import List, ClassVar, Dict, Any, Tuple
+from typing import ClassVar, Any
 
 import settings
 from BaseClasses import Tutorial, ItemClassification, MultiWorld
@@ -85,34 +85,34 @@ class PokemonCrystalWorld(World):
 
     starting_town: StartingTown
 
-    generated_moves: Dict[str, MoveData]
-    generated_pokemon: Dict[str, PokemonData]
+    generated_moves: dict[str, MoveData]
+    generated_pokemon: dict[str, PokemonData]
 
-    generated_trainers: Dict[str, TrainerData]
+    generated_trainers: dict[str, TrainerData]
 
-    generated_tms: Dict[str, TMHMData]
+    generated_tms: dict[str, TMHMData]
     generated_wild: WildData
-    generated_static: Dict[str, StaticPokemon]
-    generated_trades: List[TradeData]
+    generated_static: dict[str, StaticPokemon]
+    generated_trades: list[TradeData]
 
     generated_dexsanity: set[str]
     generated_wooper: str
-    generated_starters: Tuple[List[str], List[str], List[str]]
-    generated_starter_helditems: Tuple[str, str, str]
-    generated_palettes: Dict[str, List[int]]
+    generated_starters: tuple[list[str], list[str], list[str]]
+    generated_starter_helditems: tuple[str, str, str]
+    generated_palettes: dict[str, list[int]]
     generated_breeding: dict[str, set[str]]
 
     generated_music: MusicData
     generated_misc: MiscData
 
-    generated_phone_traps: List[PhoneScript]
-    generated_phone_indices: List[int]
+    generated_phone_traps: list[PhoneScript]
+    generated_phone_indices: list[int]
 
-    encounter_name_list: List[str]
-    encounter_level_list: List[int]
-    trainer_name_list: List[str]
-    trainer_level_list: List[int]
-    trainer_name_level_dict: Dict[str, int]
+    encounter_name_list: list[str]
+    encounter_level_list: list[int]
+    trainer_name_list: list[str]
+    trainer_level_list: list[int]
+    trainer_name_level_dict: dict[str, int]
 
     blocklisted_moves: set
 
@@ -475,7 +475,7 @@ class PokemonCrystalWorld(World):
         patch.write_file("basepatch11.bsdiff4", pkgutil.get_data(__name__, "data/basepatch11.bsdiff4"))
         generate_output(self, output_directory, patch)
 
-    def fill_slot_data(self) -> Dict[str, Any]:
+    def fill_slot_data(self) -> dict[str, Any]:
         slot_data = self.options.as_dict(
             "goal",
             "johto_only",
@@ -554,7 +554,7 @@ class PokemonCrystalWorld(World):
 
         return slot_data
 
-    def modify_multidata(self, multidata: Dict[str, Any]):
+    def modify_multidata(self, multidata: dict[str, Any]):
         import base64
         multidata["connect_names"][base64.b64encode(self.auth).decode("ascii")] \
             = multidata["connect_names"][self.player_name]

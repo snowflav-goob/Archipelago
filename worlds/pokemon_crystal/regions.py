@@ -1,5 +1,5 @@
 import logging
-from typing import TYPE_CHECKING, Dict, List, Tuple
+from typing import TYPE_CHECKING
 
 from BaseClasses import Region, ItemClassification, Entrance
 from . import StaticPokemon
@@ -73,9 +73,9 @@ E4_LOCKED = list(set(CHAMPION_LOCKED + KANTO_LOCKED))
 REMATCHES = list(set(MAP_LOCKED + ROCKETHQ_LOCKED + RADIO_LOCKED + E4_LOCKED + KANTO_LOCKED))
 
 
-def create_regions(world: "PokemonCrystalWorld") -> Dict[str, Region]:
-    regions: Dict[str, Region] = {}
-    connections: List[Tuple[str, str, str]] = []
+def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
+    regions: dict[str, Region] = {}
+    connections: list[tuple[str, str, str]] = []
     johto_only = world.options.johto_only.value
 
     def should_include_region(region):
@@ -94,7 +94,7 @@ def create_regions(world: "PokemonCrystalWorld") -> Dict[str, Region]:
         else:
             return False
 
-    def create_wild_region(parent_region: Region, region_id: str, wilds: List[EncounterMon | StaticPokemon],
+    def create_wild_region(parent_region: Region, region_id: str, wilds: list[EncounterMon | StaticPokemon],
                            tags: set[str] | None = None):
         if region_id not in regions:
             wild_region = Region(region_id, world.player, world.multiworld)
@@ -173,8 +173,8 @@ def create_regions(world: "PokemonCrystalWorld") -> Dict[str, Region]:
 
             # Level Scaling
             if world.options != LevelScaling.option_off:
-                trainer_name_level_list: List[Tuple[str, int]] = []
-                encounter_name_level_list: List[Tuple[str, int]] = []
+                trainer_name_level_list: list[tuple[str, int]] = []
+                encounter_name_level_list: list[tuple[str, int]] = []
 
                 # Create plando locations for the trainers in their regions.
                 for trainer in region_data.trainers:

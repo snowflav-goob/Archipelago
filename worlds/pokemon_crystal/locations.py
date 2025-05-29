@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 from BaseClasses import Location, Region, LocationProgressType
 from .data import data, POKEDEX_OFFSET
@@ -142,7 +142,7 @@ def create_location_label_to_id_map() -> dict[str, int]:
     """
     Creates a map from location labels to their AP location id (address)
     """
-    label_to_id_map: Dict[str, int] = {}
+    label_to_id_map: dict[str, int] = {}
     for region_data in data.regions.values():
         for location_name in region_data.locations:
             location_data = data.locations[location_name]

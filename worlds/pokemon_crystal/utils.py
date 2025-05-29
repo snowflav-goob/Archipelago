@@ -3,7 +3,8 @@ from random import Random
 from typing import TYPE_CHECKING
 
 from .data import data, EvolutionData, EvolutionType, StartingTown
-from .options import FreeFlyLocation, Route32Condition, JohtoOnly, RandomizeBadges
+from .options import FreeFlyLocation, Route32Condition, JohtoOnly, RandomizeBadges, UndergroundsRequirePower, \
+    Route3Access
 from ..Files import APTokenTypes
 
 if TYPE_CHECKING:
@@ -55,10 +56,13 @@ def _starting_town_valid(world: "PokemonCrystalWorld", starting_town: StartingTo
     if starting_town.name == "Cianwood City":
         return world.options.trainersanity and immediate_hiddens
 
+    if starting_town.name in ["Pallet Town", "Viridian City", "Pewter City"]:
+        return immediate_hiddens or world.options.route_3_access.value == Route3Access.option_vanilla
     if starting_town.name == "Rock Tunnel":
-        return world.options.trainersanity
+        return world.options.trainersanity and not world.options.dexsanity
     if starting_town.name == "Vermilion City":
-        return "South" not in world.options.saffron_gatehouse_tea or immediate_hiddens
+        return "South" not in world.options.saffron_gatehouse_tea or world.options.undergrounds_require_power.value not in [
+            UndergroundsRequirePower.option_both, UndergroundsRequirePower.option_north_south]
     if starting_town.name == "Cerulean City":
         return "North" not in world.options.saffron_gatehouse_tea or immediate_hiddens
     if starting_town.name == "Celadon City":

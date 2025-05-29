@@ -1,14 +1,10 @@
-import copy
-from typing import List, Union
-
 from BaseClasses import Location
 from .data import PhoneScriptData
 from .utils import convert_to_ingame_text
 
-import orjson
 
 class ScriptLine:
-    contents: List[Union[str, int]]
+    contents: list[str | int]
 
     def __init__(self, contents):
         self.contents = contents
@@ -25,7 +21,7 @@ class ScriptLine:
 
 class PhoneScript:
     caller_id: int
-    lines: List[ScriptLine]
+    lines: list[ScriptLine]
 
     def __init__(self, caller_id, lines):
         self.caller_id = caller_id
@@ -36,6 +32,7 @@ class PhoneScript:
         for line in self.lines:
             out_bytes += line.get_bytes()
         return out_bytes
+
 
 caller_none = 0x00
 caller_mom = 0x01
@@ -86,6 +83,7 @@ cmd_line_size = {
     rival_cmd: 7,
 }
 
+
 def script_line_to_blocks(first_cmd: int, line: str):
     blocks = [first_cmd]
     size = 0
@@ -130,7 +128,8 @@ def data_to_script(data: PhoneScriptData):
 
     for paragraph in data.script:
         if not isinstance(paragraph, str):
-            raise ValueError(f"Invalid script data encountered in phone script '{data.name}': Expected string, got {type(paragraph).__name__}")
+            raise ValueError(
+                f"Invalid script data encountered in phone script '{data.name}': Expected string, got {type(paragraph).__name__}")
 
         lines = paragraph.rstrip("\n").split("\n")
         if len(lines) > 3:
@@ -244,7 +243,7 @@ def template_call_filler_hint(location, world):
     ])
 
 
-def get_shuffled_basic_calls(random, phone_scripts) -> List[PhoneScript]:
+def get_shuffled_basic_calls(random, phone_scripts) -> list[PhoneScript]:
     basic_calls = []
     for phone_data in phone_scripts:
         basic_calls.append(data_to_script(phone_data))
