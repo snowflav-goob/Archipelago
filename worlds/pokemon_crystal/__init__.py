@@ -523,11 +523,13 @@ class PokemonCrystalWorld(World):
         slot_data["tea_west"] = 1 if "West" in self.options.saffron_gatehouse_tea.value else 0
         slot_data["dexsanity_count"] = len(self.generated_dexsanity)
         slot_data["dexsanity_pokemon"] = [self.generated_pokemon[poke].id for poke in self.generated_dexsanity]
-        wild_encounters = defaultdict[int, list[str]](lambda: [])
+        wild_encounters = dict[int, list[str]]()  # This should be defaultdict but pickle doesn't like it
         slot_data["wild_encounters"] = wild_encounters
         for location in self.get_locations():
             if "wild encounter" in location.tags:
                 dex_id = self.generated_pokemon[location.item.name].id
+                if dex_id not in wild_encounters:
+                    wild_encounters[dex_id] = []
                 wild_encounters[dex_id].append(location.name)
 
         for hm in self.options.remove_badge_requirement.valid_keys:
