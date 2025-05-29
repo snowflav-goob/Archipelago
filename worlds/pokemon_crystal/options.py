@@ -522,6 +522,7 @@ class EncounterSlotDistribution(Choice):
 class RandomizeStaticPokemon(Toggle):
     """
     Randomizes species of static Pokemon encounters
+    This includes overworld Pokemon, Gift Pokémon and Egg Pokémon
     """
     display_name = "Randomize Static Pokemon"
 
