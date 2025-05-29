@@ -332,7 +332,7 @@ class Dexsanity(NamedRange):
     range_start = 0
     range_end = 251
     special_range_names = {
-        "off": default,
+        "none": default,
         "full": range_end
     }
 
@@ -495,7 +495,7 @@ class ForceFullyEvolved(NamedRange):
     range_end = 100
     default = 0
     special_range_names = {
-        "off": 0
+        "disabled": 0
     }
 
 
