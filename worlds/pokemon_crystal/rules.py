@@ -1206,23 +1206,37 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
     def set_encounter_rule(region_id: str, count: int, rule):
         for i in range(count):
-            try:
-                set_rule(get_location(f"{region_id}_{i + 1}"), rule)
-            except KeyError:
-                pass
+            set_rule(get_location(f"{region_id}_{i + 1}"), rule)
 
-    for (name, encounters) in world.generated_wild.water.items():
-        set_encounter_rule(f"WildWater_{name}", len(encounters), can_surf)
-    for (name, encounters) in world.generated_wild.fish.items():
-        set_encounter_rule(f"WildFish_{name}_Old", len(encounters.old), has_old_rod)
-        set_encounter_rule(f"WildFish_{name}_Good", len(encounters.good), has_good_rod)
-        set_encounter_rule(f"WildFish_{name}_Super", len(encounters.super), has_super_rod)
-    for (name, encounters) in world.generated_wild.tree.items():
-        if name == "Rock":
-            set_encounter_rule(f"WildRockSmash", len(encounters.common), can_rocksmash)
-        else:
-            set_encounter_rule(f"WildTree_{name}_Common", len(encounters.common), can_headbutt)
-            set_encounter_rule(f"WildTree_{name}_Rare", len(encounters.rare), can_headbutt)
+    for region_id, region_data in data.regions.items():
+        if world.options.johto_only and not region_data.johto: return
+        if (world.options.johto_only.value == JohtoOnly.option_include_silver_cave
+                and not region_data.silver_cave and not region_data.johto): return
+        if not region_data.wild_encounters: continue
+
+        if region_data.wild_encounters.surfing and "Water" in world.options.wild_encounter_methods_required:
+            set_encounter_rule(f"WildWater_{region_data.wild_encounters.surfing}",
+                               len(world.generated_wild.water[region_data.wild_encounters.surfing]),
+                               can_surf if region_data.johto else can_surf_kanto)
+
+        if region_data.wild_encounters.fishing and "Fishing" in world.options.wild_encounter_methods_required:
+            set_encounter_rule(f"WildFish_{region_data.wild_encounters.fishing}_Old",
+                               len(world.generated_wild.fish[region_data.wild_encounters.fishing].old), has_old_rod)
+            set_encounter_rule(f"WildFish_{region_data.wild_encounters.fishing}_Good",
+                               len(world.generated_wild.fish[region_data.wild_encounters.fishing].good), has_good_rod)
+            set_encounter_rule(f"WildFish_{region_data.wild_encounters.fishing}_Super",
+                               len(world.generated_wild.fish[region_data.wild_encounters.fishing].super), has_super_rod)
+
+        if region_data.wild_encounters.headbutt and "Headbutt" in world.options.wild_encounter_methods_required:
+            set_encounter_rule(f"WildTree_{region_data.wild_encounters.headbutt}_Common",
+                               len(world.generated_wild.tree[region_data.wild_encounters.headbutt].common),
+                               can_headbutt)
+            set_encounter_rule(f"WildTree_{region_data.wild_encounters.headbutt}_Rare",
+                               len(world.generated_wild.tree[region_data.wild_encounters.headbutt].rare),
+                               can_headbutt)
+
+        if region_data.wild_encounters.rock_smash and "Rock Smash" in world.options.wild_encounter_methods_required:
+            set_encounter_rule(f"WildRockSmash", len(world.generated_wild.tree["Rock"].common), can_rocksmash)
 
     def evolution_logic(state: CollectionState, evolved_from: str, evolutions: list[EvolutionData]) -> bool:
         if not state.has(evolved_from, world.player): return False
