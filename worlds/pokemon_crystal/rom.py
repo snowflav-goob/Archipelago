@@ -551,8 +551,12 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
     write_bytes(patch, phone_location_bytes, phone_location_address)
 
     start_inventory_address = data.rom_addresses["AP_Start_Inventory"]
-    start_inventory = copy.deepcopy(world.options.start_inventory.value)
-    start_inventory |= copy.deepcopy(world.options.start_inventory_from_pool.value)
+    start_inventory = copy.copy(world.options.start_inventory.value)
+    for item, quantity in world.options.start_inventory_from_pool.value.items():
+        if item in start_inventory:
+            start_inventory[item] += quantity
+        else:
+            start_inventory[item] = quantity
     for item, quantity in start_inventory.items():
         if quantity == 0:
             quantity = 1

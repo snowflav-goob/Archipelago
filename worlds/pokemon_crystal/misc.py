@@ -36,14 +36,21 @@ def randomize_mischief(world: "PokemonCrystalWorld"):
             world.random.shuffle(numbers)
             shuffled_saffron_warps[direction] = numbers
 
+        new_pairs = []
         for pair in world.generated_misc.saffron_gym_warps.pairs:
+            new_pair = []
             for i in range(0, 2):
                 if pair[i] in ["START", "END"]:
+                    new_pair.append(pair[i])
                     continue
                 direction = pair[i].split("_")[0]
                 number = int(pair[i].split("_")[1])
                 new_number = shuffled_saffron_warps[direction][number - 1]
-                pair[i] = f"{direction}_{new_number}"
+                new_pair.append(f"{direction}_{new_number}")
+            new_pairs.append(new_pair)
+        world.generated_misc = replace(world.generated_misc,
+                                       saffron_gym_warps=replace(world.generated_misc.saffron_gym_warps,
+                                                                 pairs=new_pairs))
 
     if MiscOption.RadioChannels.value in world.generated_misc.selected:
         world.random.shuffle(world.generated_misc.radio_channel_addresses)

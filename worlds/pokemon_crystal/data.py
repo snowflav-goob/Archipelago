@@ -347,12 +347,13 @@ def load_yaml_data(data_name: str) -> list[Any] | dict[str, Any]:
     return yaml.safe_load(pkgutil.get_data(__name__, "data/" + data_name).decode('utf-8-sig'))
 
 
+data: PokemonCrystalData
+
+
 def _init() -> None:
     location_data = load_json_data("locations.json")
     regions_json = load_json_data("regions.json")
-
     items_json = load_json_data("items.json")
-
     data_json = load_json_data("data.json")
     rom_address_data = data_json["rom_addresses"]
     ram_address_data = data_json["ram_addresses"]
