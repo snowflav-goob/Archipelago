@@ -869,13 +869,6 @@ class ReusableTMs(Toggle):
     display_name = "Reusable TMs"
 
 
-class GuaranteedCatch(Toggle):
-    """
-    Balls have a 100% success rate
-    """
-    display_name = "Guaranteed Catch"
-
-
 class MinimumCatchRate(Range):
     """
     Sets a minimum catch rate for wild Pokemon
@@ -1093,6 +1086,7 @@ class GameOptions(OptionDict):
     dex_area_beep: off/on - Sets whether the Pokedex beeps for land and Surf encounters in the current area
     skip_dex_registration: off/on - Sets whether the Pokedex registration screen is skipped
     blind_trainers: off/on - Sets whether trainers will see you without talking to them directly
+    guaranteed_catch: off/on - Sets whether balls have a 100% success rate
     """
     display_name = "Game Options"
     default = {
@@ -1120,7 +1114,8 @@ class GameOptions(OptionDict):
         "short_fanfares": "off",
         "dex_area_beep": "off",
         "skip_dex_registration": "off",
-        "blind_trainers": "off"
+        "blind_trainers": "off",
+        "guaranteed_catch": "off"
     }
 
 
@@ -1202,7 +1197,6 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     east_west_underground: EastWestUnderground
     undergrounds_require_power: UndergroundsRequirePower
     reusable_tms: ReusableTMs
-    guaranteed_catch: GuaranteedCatch
     minimum_catch_rate: MinimumCatchRate
     skip_elite_four: SkipEliteFour
     better_marts: BetterMarts

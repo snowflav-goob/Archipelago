@@ -415,10 +415,6 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         address = data.rom_addresses["AP_Setting_ReusableTMs"] + 1
         write_bytes(patch, [1], address)
 
-    if world.options.guaranteed_catch:
-        address = data.rom_addresses["AP_Setting_GuaranteedCatch"] + 1
-        write_bytes(patch, [1], address)
-
     if world.options.minimum_catch_rate > 0:
         address = data.rom_addresses["AP_Setting_MinCatchrate"] + 1
         write_bytes(patch, [world.options.minimum_catch_rate], address)
