@@ -12,7 +12,7 @@ APWORLD_VERSION = "4.0.0"
 POKEDEX_OFFSET = 10000
 
 
-@dataclass
+@dataclass(frozen=True)
 class ItemData:
     label: str
     item_id: int
@@ -21,7 +21,7 @@ class ItemData:
     tags: frozenset[str]
 
 
-@dataclass
+@dataclass(frozen=True)
 class LocationData:
     name: str
     label: str
@@ -33,13 +33,13 @@ class LocationData:
     script: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class EventData:
     name: str
     parent_region: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class TrainerPokemon:
     level: int
     pokemon: str
@@ -47,7 +47,7 @@ class TrainerPokemon:
     moves: list[str]
 
 
-@dataclass
+@dataclass(frozen=True)
 class TrainerData:
     name: str
     trainer_type: str
@@ -55,7 +55,7 @@ class TrainerData:
     name_length: int
 
 
-@dataclass
+@dataclass(frozen=True)
 class LearnsetData:
     level: int
     move: str
@@ -78,7 +78,7 @@ class EvolutionType(Enum):
         raise ValueError(f"Invalid evolution type: {evo_type_string}")
 
 
-@dataclass
+@dataclass(frozen=True)
 class EvolutionData:
     evo_type: EvolutionType
     level: int | None
@@ -87,7 +87,7 @@ class EvolutionData:
     length: int
 
 
-@dataclass
+@dataclass(frozen=True)
 class PokemonData:
     id: int
     friendly_name: str
@@ -102,7 +102,7 @@ class PokemonData:
     gender_ratio: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class MoveData:
     id: str
     rom_id: int
@@ -114,7 +114,7 @@ class MoveData:
     name: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class TMHMData:
     id: str
     tm_num: int
@@ -142,25 +142,25 @@ class MiscOption(Enum):
         return list(map(lambda c: c.value, MiscOption))
 
 
-@dataclass
+@dataclass(frozen=True)
 class MiscWarp:
     coords: list[int]
     id: int
 
 
-@dataclass
+@dataclass(frozen=True)
 class MiscSaffronWarps:
     warps: dict[str, MiscWarp]
     pairs: list[list[str]]
 
 
-@dataclass
+@dataclass(frozen=True)
 class MiscMomItem:
     index: int
     item: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class MiscData:
     fuchsia_gym_trainers: list[list[int]]
     radio_tower_questions: list[str]
@@ -170,13 +170,13 @@ class MiscData:
     selected: list[MiscOption] = field(default_factory=lambda: MiscOption.all())
 
 
-@dataclass
+@dataclass(frozen=True)
 class MusicConst:
     id: int
     loop: bool
 
 
-@dataclass
+@dataclass(frozen=True)
 class MusicData:
     consts: dict[str, MusicConst]
     maps: dict[str, str]
@@ -184,26 +184,26 @@ class MusicData:
     scripts: dict[str, str]
 
 
-@dataclass
+@dataclass(frozen=True)
 class EncounterMon:
     level: int
     pokemon: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class FishData:
     old: list[EncounterMon]
     good: list[EncounterMon]
     super: list[EncounterMon]
 
 
-@dataclass
+@dataclass(frozen=True)
 class TreeMonData:
     common: list[EncounterMon]
     rare: list[EncounterMon]
 
 
-@dataclass
+@dataclass(frozen=True)
 class WildData:
     grass: dict[str, list[EncounterMon]]
     water: dict[str, list[EncounterMon]]
@@ -211,7 +211,7 @@ class WildData:
     tree: dict[str, TreeMonData]
 
 
-@dataclass
+@dataclass(frozen=True)
 class StaticPokemon:
     name: str
     pokemon: str
@@ -221,7 +221,7 @@ class StaticPokemon:
     level_address: str | None
 
 
-@dataclass
+@dataclass(frozen=True)
 class TradeData:
     index: int
     requested_pokemon: str
@@ -230,7 +230,7 @@ class TradeData:
     held_item: str
 
 
-@dataclass()
+@dataclass(frozen=True)
 class RegionWildEncounterData:
     grass: str | None
     surfing: str | None
@@ -239,31 +239,20 @@ class RegionWildEncounterData:
     rock_smash: bool
 
 
-@dataclass
+@dataclass(frozen=True)
 class RegionData:
     name: str
     johto: bool
     silver_cave: bool
     exits: list[str]
-    warps: list[str]
     trainers: list[TrainerData]
     statics: list[StaticPokemon]
     locations: list[str]
     events: list[EventData]
     wild_encounters: RegionWildEncounterData | None
 
-    def __init__(self, name: str):
-        self.name = name
-        self.exits = []
-        self.warps = []
-        self.trainers = []
-        self.statics = []
-        self.locations = []
-        self.events = []
-        self.wild_encounters = None
 
-
-@dataclass
+@dataclass(frozen=True)
 class StartingTown:
     id: int
     name: str
@@ -272,7 +261,7 @@ class StartingTown:
     restrictive_start: bool = False
 
 
-@dataclass
+@dataclass(frozen=True)
 class FlyRegion:
     id: int
     name: str
@@ -281,14 +270,14 @@ class FlyRegion:
     exclude_vanilla_start: bool = False
 
 
-@dataclass
+@dataclass(frozen=True)
 class PhoneScriptData:
     name: str
     caller: str
     script: list[str]
 
 
-@dataclass
+@dataclass(frozen=True)
 class PokemonCrystalGameSetting:
     option_byte_index: int
     offset: int
@@ -316,6 +305,13 @@ ON_OFF = {"off": 0, "on": 1}
 INVERTED_ON_OFF = {"off": 1, "on": 0}
 
 
+@dataclass
+class PokemonCrystalMapSizeData:
+    width: int
+    height: int
+
+
+@dataclass(frozen=True)
 class PokemonCrystalData:
     rom_version: int
     rom_version_11: int
@@ -339,24 +335,8 @@ class PokemonCrystalData:
     fly_regions: list[FlyRegion]
     starting_towns: list[StartingTown]
     game_settings: dict[str, PokemonCrystalGameSetting]
-
-    def __init__(self) -> None:
-        self.rom_addresses = {}
-        self.ram_addresses = {}
-        self.event_flags = {}
-        self.regions = {}
-        self.locations = {}
-        self.items = {}
-        self.trainers = {}
-        self.pokemon = {}
-        self.trades = []
-        self.moves = {}
-
-
-@dataclass
-class PokemonCrystalMapSizeData:
-    width: int
-    height: int
+    phone_scripts: list[PhoneScriptData]
+    map_sizes: dict[str, PokemonCrystalMapSizeData]
 
 
 def load_json_data(data_name: str) -> list[Any] | dict[str, Any]:
@@ -365,9 +345,6 @@ def load_json_data(data_name: str) -> list[Any] | dict[str, Any]:
 
 def load_yaml_data(data_name: str) -> list[Any] | dict[str, Any]:
     return yaml.safe_load(pkgutil.get_data(__name__, "data/" + data_name).decode('utf-8-sig'))
-
-
-data = PokemonCrystalData()
 
 
 def _init() -> None:
@@ -392,12 +369,9 @@ def _init() -> None:
     tmhm_data = data_json["tmhm"]
     map_size_data = data_json["map_sizes"]
 
-    data.rom_version = data_json["rom_version"]
-    data.rom_version_11 = data_json["rom_version11"]
-
     claimed_locations: set[str] = set()
 
-    data.trainers = {}
+    trainers = {}
 
     for trainer_name, trainer_attributes in trainer_data.items():
         trainer_type = trainer_attributes["trainer_type"]
@@ -412,14 +386,14 @@ def _init() -> None:
             else:
                 pokemon.append(TrainerPokemon(int(poke[0]), poke[1], poke[2], poke[3:]))
 
-        data.trainers[trainer_name] = TrainerData(
+        trainers[trainer_name] = TrainerData(
             trainer_name,
             trainer_type,
             pokemon,
             trainer_attributes["name_length"]
         )
 
-    data.static = {}
+    statics = {}
     for static_name, static_data in data_json["static"].items():
         level_type = static_data["type"]
         if level_type == "loadwildmon" or level_type == "givepoke":
@@ -428,7 +402,7 @@ def _init() -> None:
             level_address = static_data["level_address"]
         else:
             level_address = None
-        data.static[static_name] = StaticPokemon(
+        statics[static_name] = StaticPokemon(
             static_name,
             static_data["pokemon"],
             static_data["addresses"],
@@ -437,12 +411,13 @@ def _init() -> None:
             level_address
         )
 
-    data.regions = {}
+    regions = {}
+    locations = {}
 
     for region_name, region_json in regions_json.items():
-        new_region = RegionData(region_name)
 
-        # Locations
+        region_locations = []
+
         for location_name in region_json["locations"]:
             if location_name in claimed_locations:
                 raise AssertionError(f"Location [{location_name}] was claimed by multiple regions")
@@ -457,46 +432,35 @@ def _init() -> None:
                 frozenset(location_json["tags"]),
                 location_json["script"]
             )
-            new_region.locations.append(location_name)
-            data.locations[location_name] = new_location
+            region_locations.append(location_name)
+            locations[location_name] = new_location
             claimed_locations.add(location_name)
 
-        new_region.locations.sort()
-        # events
-        for event in region_json["events"]:
-            new_region.events.append(EventData(event, region_name))
+        region_locations.sort()
 
-        # trainers
-        if "trainers" in region_json:
-            for trainer in region_json["trainers"]:  #
-                new_region.trainers.append(data.trainers[trainer])
-        #
-        # statics
-        if "statics" in region_json:
-            for static in region_json["statics"]:
-                new_region.statics.append(data.static[static])
+        new_region = RegionData(
+            name=region_name,
+            johto=region_json["johto"],
+            silver_cave=region_json["silver_cave"] if "silver_cave" in region_json else False,
+            exits=[region_exit for region_exit in region_json["exits"]],
+            statics=[statics[static] for static in region_json.get("statics", [])],
+            trainers=[trainers[trainer] for trainer in region_json.get("trainers", [])],
+            events=[EventData(event, region_name) for event in region_json["events"]],
+            locations=region_locations,
+            wild_encounters=RegionWildEncounterData(
+                region_json["wild_encounters"].get("grass"),
+                region_json["wild_encounters"].get("surfing"),
+                region_json["wild_encounters"].get("fishing"),
+                region_json["wild_encounters"].get("headbutt"),
+                region_json["wild_encounters"].get("rock_smash")
+            ) if "wild_encounters" in region_json else None
+        )
 
-        # Exits
-        for region_exit in region_json["exits"]:
-            new_region.exits.append(region_exit)
-        new_region.johto = region_json["johto"]
-        new_region.silver_cave = region_json["silver_cave"] if "silver_cave" in region_json else False
-
-        if "wild_encounters" in region_json:
-            wild_encounter_data = region_json["wild_encounters"]
-            new_region.wild_encounters = RegionWildEncounterData(
-                wild_encounter_data.get("grass"),
-                wild_encounter_data.get("surfing"),
-                wild_encounter_data.get("fishing"),
-                wild_encounter_data.get("headbutt"),
-                wild_encounter_data.get("rock_smash")
-            )
-
-        data.regions[region_name] = new_region
+        regions[region_name] = new_region
 
     # items
 
-    data.items = {}
+    items = {}
     for item_constant_name, attributes in items_json.items():
         item_classification = None
         if attributes["classification"] == "PROGRESSION":
@@ -511,7 +475,7 @@ def _init() -> None:
             item_classification = ItemClassification.filler
             # raise ValueError(f"Unknown classification {attributes['classification']} for item {item_constant_name}")
 
-        data.items[item_codes[item_constant_name]] = ItemData(
+        items[item_codes[item_constant_name]] = ItemData(
             attributes["name"],
             item_codes[item_constant_name],
             item_constant_name,
@@ -519,19 +483,7 @@ def _init() -> None:
             frozenset(attributes["tags"])
         )
 
-    data.ram_addresses = {}
-    for address_name, address in ram_address_data.items():
-        data.ram_addresses[address_name] = address
-
-    data.rom_addresses = {}
-    for address_name, address in rom_address_data.items():
-        data.rom_addresses[address_name] = address
-
-    data.event_flags = {}
-    for event_name, event_number in event_flag_data.items():
-        data.event_flags[event_name] = event_number
-
-    data.pokemon = {}
+    pokemon = {}
     for pokemon_name, pokemon_data in data_json["pokemon"].items():
         evolutions = []
         for evo in pokemon_data["evolutions"]:
@@ -542,7 +494,7 @@ def _init() -> None:
                 evolutions.append(EvolutionData(evo_type, int(evo[1]), None, evo[2], len(evo)))
             else:
                 evolutions.append(EvolutionData(evo_type, None, evo[1], evo[2], len(evo)))
-        data.pokemon[pokemon_name] = PokemonData(
+        pokemon[pokemon_name] = PokemonData(
             pokemon_data["id"],
             pokemon_data["friendly_name"],
             pokemon_data["base_stats"],
@@ -556,9 +508,9 @@ def _init() -> None:
             pokemon_data["gender_ratio"]
         )
 
-    data.moves = {}
+    moves = {}
     for move_name, move_attributes in move_data.items():
-        data.moves[move_name] = MoveData(
+        moves[move_name] = MoveData(
             move_name,
             move_attributes["id"],
             move_attributes["type"],
@@ -619,7 +571,7 @@ def _init() -> None:
                 rare_list.append(tree_encounter)
         tree_dict[tree_name] = TreeMonData(common_list, rare_list)
 
-    data.wild = WildData(grass_dict, water_dict, fish_dict, tree_dict)
+    wild = WildData(grass_dict, water_dict, fish_dict, tree_dict)
 
     saffron_warps = {}
     for warp_name, warp_data in saffron_data["warps"].items():
@@ -629,15 +581,15 @@ def _init() -> None:
 
     mom_items = [MiscMomItem(item["index"], item["item"]) for item in mom_items_data]
 
-    data.misc = MiscData(fuchsia_data, radio_tower_data, MiscSaffronWarps(saffron_warps, saffron_data["pairs"]),
-                         radio_addr_data, mom_items)
+    misc = MiscData(fuchsia_data, radio_tower_data, MiscSaffronWarps(saffron_warps, saffron_data["pairs"]),
+                    radio_addr_data, mom_items)
 
-    data.types = type_data["types"]
-    data.type_ids = type_data["ids"]
+    types = type_data["types"]
+    type_ids = type_data["ids"]
 
-    data.tmhm = {}
+    tmhm = {}
     for tm_name, tm_data in tmhm_data.items():
-        data.tmhm[tm_name] = TMHMData(
+        tmhm[tm_name] = TMHMData(
             tm_name,
             tm_data["tm_num"],
             tm_data["type"],
@@ -653,21 +605,21 @@ def _init() -> None:
     for map_name in data_json["music"]["maps"]:
         music_maps[map_name] = ""
 
-    data.music = MusicData(music_consts,
-                           music_maps,
-                           data_json["music"]["encounters"],
-                           data_json["music"]["scripts"])
+    music = MusicData(music_consts,
+                      music_maps,
+                      data_json["music"]["encounters"],
+                      data_json["music"]["scripts"])
 
-    data.trades = []
+    trades = []
     for trade_data in data_json["trade"]:
-        data.trades.append(
+        trades.append(
             TradeData(trade_data["index"],
                       trade_data["requested_pokemon"],
                       trade_data["received_pokemon"],
                       trade_data["requested_gender"],
                       trade_data["held_item"]))
 
-    data.starting_towns = [
+    starting_towns = [
         StartingTown(2, "Pallet Town", "REGION_PALLET_TOWN", False),
         StartingTown(3, "Viridian City", "REGION_VIRIDIAN_CITY", False),
         StartingTown(4, "Pewter City", "REGION_PEWTER_CITY", False),
@@ -694,7 +646,7 @@ def _init() -> None:
         StartingTown(25, "Blackthorn City", "REGION_BLACKTHORN_CITY", True)
     ]
 
-    data.fly_regions = [
+    fly_regions = [
         FlyRegion(2, "Pallet Town", "REGION_PALLET_TOWN", False),
         FlyRegion(3, "Viridian City", "REGION_VIRIDIAN_CITY", False),
         FlyRegion(4, "Pewter City", "REGION_PEWTER_CITY", False),
@@ -720,7 +672,7 @@ def _init() -> None:
         FlyRegion(26, "Silver Cave", "REGION_SILVER_CAVE_OUTSIDE", True)
     ]
 
-    data.game_settings = {
+    game_settings = {
         "text_speed": PokemonCrystalGameSetting(0, 0, 2, {"instant": 0, "fast": 1, "mid": 2, "slow": 3}, 2),
         "battle_shift": PokemonCrystalGameSetting(0, 3, 1, {"shift": 1, "set": 0}, 1),
         "battle_animations": PokemonCrystalGameSetting(0, 4, 2,
@@ -753,19 +705,47 @@ def _init() -> None:
         "blind_trainers": PokemonCrystalGameSetting(4, 1, 1, ON_OFF, 0)
     }
 
-    data.map_sizes = {}
+    map_sizes = {}
 
     for map_name, map_size in map_size_data.items():
-        data.map_sizes[map_name] = PokemonCrystalMapSizeData(map_size[0], map_size[1])
+        map_sizes[map_name] = PokemonCrystalMapSizeData(map_size[0], map_size[1])
 
-    data.phone_scripts = []
+    phone_scripts = []
     phone_yaml = load_yaml_data("phone_data.yaml")
     for script_name, script_data in phone_yaml.items():
         try:
-            data.phone_scripts.append(
+            phone_scripts.append(
                 PhoneScriptData(script_name, script_data.get("caller"), script_data.get("script")))
         except Exception as ex:
             raise ValueError(f"Error processing phone script '{script_name}': {ex}") from ex
+
+    global data
+    data = PokemonCrystalData(
+        rom_version=data_json["rom_version"],
+        rom_version_11=data_json["rom_version11"],
+        ram_addresses=ram_address_data,
+        rom_addresses=rom_address_data,
+        event_flags=event_flag_data,
+        regions=regions,
+        locations=locations,
+        items=items,
+        trainers=trainers,
+        pokemon=pokemon,
+        moves=moves,
+        wild=wild,
+        types=types,
+        type_ids=type_ids,
+        tmhm=tmhm,
+        misc=misc,
+        music=music,
+        static=statics,
+        trades=trades,
+        fly_regions=fly_regions,
+        starting_towns=starting_towns,
+        game_settings=game_settings,
+        phone_scripts=phone_scripts,
+        map_sizes=map_sizes
+    )
 
 
 _init()
