@@ -1122,9 +1122,9 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     dexsanity_starters: DexsanityStarters
     wild_encounter_methods_required: WildEncounterMethodsRequired
     evolution_methods_required: EvolutionMethodsRequired
+    evolution_gym_levels: EvolutionGymLevels
     static_pokemon_required: StaticPokemonRequired
     breeding_methods_required: BreedingMethodsRequired
-    evolution_gym_levels: EvolutionGymLevels
     randomize_pokegear: RandomizePokegear
     randomize_berry_trees: RandomizeBerryTrees
     randomize_starters: RandomizeStarters
