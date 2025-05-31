@@ -53,7 +53,7 @@ def randomize_pokemon_data(world: "PokemonCrystalWorld"):
             else:
                 new_base_stats = get_random_base_stats(world.random)
 
-        if world.options.randomize_learnsets:
+        if world.options.randomize_learnsets or world.options.metronome_only:
             new_learnset = randomize_learnset(world, pkmn_name)
 
         if world.options.tm_compatibility.value or world.options.hm_compatibility.value:

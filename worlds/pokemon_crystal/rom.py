@@ -688,6 +688,10 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
     for i, byte in enumerate(start_money):
         write_bytes(patch, [byte], data.rom_addresses[f"AP_Setting_StartMoney_{i + 1}"] + 1)
 
+    if world.options.metronome_only:
+        for i in range(3):
+            write_bytes(patch, [1], data.rom_addresses[f"AP_Setting_MetronomeOnly_{i + 1}"] + 1)
+
     # Set slot auth
     ap_version_text = convert_to_ingame_text(APWORLD_VERSION)[:19]
     ap_version_text.append(0x50)

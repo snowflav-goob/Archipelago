@@ -36,25 +36,32 @@ def randomize_learnset(world: "PokemonCrystalWorld", pkmn_name):
             learn_levels.insert(0, 1)
 
     for level in learn_levels:
-        move_type = None
+        if world.options.metronome_only:
+            new_learnset.append(LearnsetData(level, "METRONOME"))
+        else:
+            move_type = None
 
-        if world.options.learnset_type_bias > -1:  # checks if user put an option for Move Type bias (default is -1)
-            pkmn_types = pkmn_data.types
-            if world.random.randint(1, 100) <= world.options.learnset_type_bias:  # rolls for the chance
-                # chooses one of the pokemons types to give to move generation function
-                move_type = world.random.choice(pkmn_types)
-            else:  # chooses one of the types other than the pokemons to give to move generation function
-                rem_types = [type for type in crystal_data.types if type not in pkmn_types]
-                move_type = world.random.choice(rem_types)
-        new_learnset.append(LearnsetData(level, get_random_move(world, move_type=move_type, cur_learnset=new_learnset)))
-    # All moves available at Lv.1 that do damage (and don't faint the user)
-    start_attacking = [learnset for learnset in new_learnset if
-                       world.generated_moves[learnset.move].power > 0
-                       and learnset.move not in BAD_DAMAGING_MOVES
-                       and learnset.level == 1]
+            if world.options.learnset_type_bias > -1:  # checks if user put an option for Move Type bias (default is -1)
+                pkmn_types = pkmn_data.types
+                if world.random.randint(1, 100) <= world.options.learnset_type_bias:  # rolls for the chance
+                    # chooses one of the pokemons types to give to move generation function
+                    move_type = world.random.choice(pkmn_types)
+                else:  # chooses one of the types other than the pokemons to give to move generation function
+                    rem_types = [type for type in crystal_data.types if type not in pkmn_types]
+                    move_type = world.random.choice(rem_types)
+            new_learnset.append(
+                LearnsetData(level, get_random_move(world, move_type=move_type, cur_learnset=new_learnset)))
 
-    if not start_attacking:  # if there are no attacking moves at Lv.1, add one
-        new_learnset[0] = LearnsetData(1, get_random_move(world, attacking=True))  # overwrites whatever the 1st move is
+    if not world.options.metronome_only:
+        # All moves available at Lv.1 that do damage (and don't faint the user)
+        start_attacking = [learnset for learnset in new_learnset if
+                           world.generated_moves[learnset.move].power > 0
+                           and learnset.move not in BAD_DAMAGING_MOVES
+                           and learnset.level == 1]
+
+        if not start_attacking:  # if there are no attacking moves at Lv.1, add one
+            new_learnset[0] = LearnsetData(1, get_random_move(world,
+                                                              attacking=True))  # overwrites whatever the 1st move is
 
     return new_learnset
 
@@ -112,11 +119,11 @@ def get_tmhm_compatibility(world: "PokemonCrystalWorld", pkmn_name):
 
 
 def randomize_tms(world: "PokemonCrystalWorld"):
-    if not world.options.randomize_tm_moves: return
+    if not world.options.randomize_tm_moves and not world.options.metronome_only: return
 
-    ignored_moves = ["ROCK_SMASH", "NO_MOVE", "STRUGGLE"]
+    ignored_moves = ["ROCK_SMASH", "NO_MOVE", "STRUGGLE", "HEADBUTT"]
     if world.options.dexsanity:
-        ignored_moves.extend(["HEADBUTT", "SWEET_SCENT"])
+        ignored_moves.append("SWEET_SCENT")
     global_move_pool = [move_data for move_name, move_data in world.generated_moves.items() if
                         not move_data.is_hm
                         and move_name not in ignored_moves]
@@ -129,7 +136,9 @@ def randomize_tms(world: "PokemonCrystalWorld"):
     for tm_name, tm_data in world.generated_tms.items():
         if tm_data.is_hm or tm_name in ignored_moves:
             continue
-        if not filtered_move_pool:
+        if world.options.metronome_only:
+            new_move = world.generated_moves["METRONOME"]
+        elif not filtered_move_pool:
             new_move = global_move_pool.pop()
         else:
             new_move = filtered_move_pool.pop()

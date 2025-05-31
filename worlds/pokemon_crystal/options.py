@@ -642,6 +642,14 @@ class RandomizeLearnsets(Choice):
     option_start_with_four_moves = 2
 
 
+class MetronomeOnly(Toggle):
+    """
+    Only Metronome is usable in battle, PP is infinite
+    You can still teach HMs and useful TMs
+    """
+    display_name = "Metronome Only"
+
+
 class LearnsetTypeBias(NamedRange):
     """
     This option will have an effect only if Randomize Learnset option is enabled.
@@ -1169,6 +1177,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     boost_trainers: BoostTrainerPokemonLevels
     trainer_level_boost: TrainerLevelBoostValue
     randomize_learnsets: RandomizeLearnsets
+    metronome_only: MetronomeOnly
     learnset_type_bias: LearnsetTypeBias
     randomize_move_values: RandomizeMoveValues
     randomize_move_types: RandomizeMoveTypes
