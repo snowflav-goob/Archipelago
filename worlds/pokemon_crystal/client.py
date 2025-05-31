@@ -77,7 +77,8 @@ TRACKER_EVENT_FLAGS = [
     "EVENT_EXPLODING_TRAP_20",
     "EVENT_EXPLODING_TRAP_21",
     "EVENT_EXPLODING_TRAP_22",
-    "EVENT_UNION_CAVE_B2F_LAPRAS"
+    "EVENT_UNION_CAVE_B2F_LAPRAS",
+    "EVENT_MET_BILL"
 ]
 EVENT_FLAG_MAP = {data.event_flags[event]: event for event in TRACKER_EVENT_FLAGS}
 
@@ -110,6 +111,9 @@ TRACKER_KEY_ITEM_FLAGS = [
 ]
 KEY_ITEM_FLAG_MAP = {data.event_flags[event]: event for event in TRACKER_KEY_ITEM_FLAGS}
 
+DEATH_LINK_MASK = 0b00010000
+DEATH_LINK_SETTING_ADDR = data.ram_addresses["wArchipelagoOptions"] + 4
+
 
 class PokemonCrystalClient(BizHawkClient):
     game = "Pokemon Crystal"
@@ -120,6 +124,7 @@ class PokemonCrystalClient(BizHawkClient):
     local_found_key_items: dict[str, bool]
     phone_trap_locations: list[int]
     current_map: list[int]
+    last_death_link: float
 
     def __init__(self) -> None:
         super().__init__()
@@ -129,6 +134,7 @@ class PokemonCrystalClient(BizHawkClient):
         self.local_found_key_items = {}
         self.phone_trap_locations = []
         self.current_map = [0, 0]
+        self.last_death_link = 0
 
     async def validate_rom(self, ctx: "BizHawkClientContext") -> bool:
         from CommonClient import logger
@@ -336,6 +342,8 @@ class PokemonCrystalClient(BizHawkClient):
                 }])
                 self.local_found_key_items = local_found_key_items
 
+            await self.handle_death_link(ctx, overworld_guard)
+
             read_result = await bizhawk.guarded_read(
                 ctx.bizhawk_ctx,
                 [(data.ram_addresses["wMapGroup"], 2, "WRAM")],  # Current Map
@@ -353,3 +361,36 @@ class PokemonCrystalClient(BizHawkClient):
         except bizhawk.RequestFailedError:
             # Exit handler and return to main loop to reconnect
             pass
+
+    async def handle_death_link(self, ctx: "BizHawkClientContext", guard):
+
+        death_link_setting_status = await bizhawk.guarded_read(
+            ctx.bizhawk_ctx,
+            [(DEATH_LINK_SETTING_ADDR, 1, "WRAM")],
+            [guard]
+        )
+
+        if death_link_setting_status and death_link_setting_status[0][0] & DEATH_LINK_MASK:
+
+            if "DeathLink" not in ctx.tags:
+                await ctx.update_death_link(True)
+                self.last_death_link = ctx.last_death_link
+                await bizhawk.write(ctx.bizhawk_ctx,
+                                    [(data.ram_addresses["wArchipelagoDeathLink"], [0], "WRAM")])
+            death_link_status = await bizhawk.guarded_read(
+                ctx.bizhawk_ctx,
+                [(data.ram_addresses["wArchipelagoDeathLink"], 1, "WRAM")], [guard])
+            if death_link_status and death_link_status[0][0] == 1:
+                await ctx.send_death(ctx.player_names[ctx.slot] + " is out of usable Pokémon! "
+                                     + ctx.player_names[ctx.slot] + " whited out!")
+                await bizhawk.write(ctx.bizhawk_ctx,
+                                    [(data.ram_addresses["wArchipelagoDeathLink"], [0], "WRAM")])
+                self.last_death_link = ctx.last_death_link
+            elif ctx.last_death_link > self.last_death_link and not death_link_status[0][0]:
+                self.last_death_link = ctx.last_death_link
+                await bizhawk.write(ctx.bizhawk_ctx,
+                                    [(data.ram_addresses["wArchipelagoDeathLink"], [2], "WRAM")])
+
+        elif "DeathLink" in ctx.tags:
+            await ctx.update_death_link(False)
+            self.last_death_link = 0

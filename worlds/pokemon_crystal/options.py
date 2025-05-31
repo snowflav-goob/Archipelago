@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from Options import Toggle, Choice, DefaultOnToggle, Range, PerGameCommonOptions, NamedRange, OptionSet, \
-    StartInventoryPool, OptionDict, Visibility
+    StartInventoryPool, OptionDict, Visibility, DeathLink
 from .data import data
 
 
@@ -1121,6 +1121,10 @@ class GameOptions(OptionDict):
     }
 
 
+class PokemonCrystalDeathLink(DeathLink):
+    __doc__ = DeathLink.__doc__ + "\n\n    In Pokemon Crystal, whiting out sends a death and receiving a death causes you to white out."
+
+
 @dataclass
 class PokemonCrystalOptions(PerGameCommonOptions):
     goal: Goal
@@ -1216,3 +1220,4 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     game_options: GameOptions
     enable_mischief: EnableMischief
     start_inventory_from_pool: StartInventoryPool
+    death_link: PokemonCrystalDeathLink
