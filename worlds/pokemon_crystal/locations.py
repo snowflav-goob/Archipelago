@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from BaseClasses import Location, Region, LocationProgressType
-from .data import data, POKEDEX_OFFSET
+from .data import data, POKEDEX_OFFSET, POKEDEX_COUNT_OFFSET
 from .options import Goal, DexsanityStarters
 from .pokemon import pokemon_convert_friendly_to_ids
 from .utils import evolution_in_logic, evolution_location_name
@@ -96,10 +96,45 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
                 world.player,
                 f"Pokedex - {pokemon_data.friendly_name}",
                 pokedex_region,
+                rom_address=pokemon_data.id,
                 flag=POKEDEX_OFFSET + pokemon_data.id,
                 tags=frozenset({"dexsanity"})
             )
             pokedex_region.locations.append(new_location)
+
+    if world.options.dexcountsanity:
+        total_pokemon = len(world.logically_available_pokemon)
+        dexcountsanity_total = min(world.options.dexcountsanity.value, total_pokemon)
+        dexcountsanity_step = world.options.dexcountsanity_step
+
+        world.generated_dexcountsanity = [i for i in
+                                          range(dexcountsanity_step, dexcountsanity_total, dexcountsanity_step)]
+
+        if dexcountsanity_total not in world.generated_dexcountsanity:
+            world.generated_dexcountsanity.append(dexcountsanity_total)
+
+        pokedex_region = regions["Pokedex"]
+
+        for dexcountsanity_count in world.generated_dexcountsanity[:-1]:
+            new_location = PokemonCrystalLocation(
+                world.player,
+                f"Pokedex - Catch {dexcountsanity_count} Pokemon",
+                pokedex_region,
+                rom_address=dexcountsanity_count,
+                flag=POKEDEX_COUNT_OFFSET + dexcountsanity_count,
+                tags=frozenset({"dexcountsanity"})
+            )
+            pokedex_region.locations.append(new_location)
+
+        new_location = PokemonCrystalLocation(
+            world.player,
+            "Pokedex - Final Catch",
+            pokedex_region,
+            rom_address=len(world.generated_dexcountsanity),
+            flag=POKEDEX_COUNT_OFFSET + len(data.pokemon),
+            tags=frozenset({"dexcountsanity"})
+        )
+        pokedex_region.locations.append(new_location)
 
     if world.options.evolution_methods_required:
         evolution_region = regions["Evolutions"]
@@ -149,5 +184,10 @@ def create_location_label_to_id_map() -> dict[str, int]:
 
     for pokemon in data.pokemon.values():
         label_to_id_map[f"Pokedex - {pokemon.friendly_name}"] = pokemon.id + POKEDEX_OFFSET
+
+    for i in range(1, len(data.pokemon)):
+        label_to_id_map[f"Pokedex - Catch {i} Pokemon"] = i + POKEDEX_COUNT_OFFSET
+
+    label_to_id_map["Pokedex - Final Catch"] = len(data.pokemon) + POKEDEX_COUNT_OFFSET
 
     return label_to_id_map

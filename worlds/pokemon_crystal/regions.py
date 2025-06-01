@@ -253,7 +253,7 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
         regions["REGION_DARK_CAVE_BLACKTHORN_ENTRANCE:SOUTH_WEST"].connect(
             regions["REGION_DARK_CAVE_BLACKTHORN_ENTRANCE:NORTH_WEST"])
 
-    if world.options.dexsanity:
+    if world.options.dexsanity or world.options.dexcountsanity:
         pokedex_region = Region("Pokedex", world.player, world.multiworld)
         regions["Pokedex"] = pokedex_region
         regions["Menu"].connect(regions["Pokedex"])

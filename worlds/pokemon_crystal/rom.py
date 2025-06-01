@@ -7,7 +7,7 @@ import bsdiff4
 from settings import get_settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APPatchExtension
 from . import FreeFlyLocation, APWORLD_VERSION, POKEDEX_OFFSET, HMBadgeRequirements
-from .data import data, MiscOption
+from .data import data, MiscOption, POKEDEX_COUNT_OFFSET
 from .items import item_const_name_to_id
 from .options import UndergroundsRequirePower, RequireItemfinder, Goal, Route2Access, \
     BlackthornDarkCaveAccess, NationalParkAccess, Route3Access, EncounterSlotDistribution, KantoAccessRequirement
@@ -66,8 +66,12 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         if location.address is None:
             continue
 
-        location_address = location.rom_address if location.address < POKEDEX_OFFSET \
-            else data.rom_addresses["AP_DexsanityItems"] + (location.address - POKEDEX_OFFSET) - 1
+        if location.address > POKEDEX_COUNT_OFFSET:
+            location_address = data.rom_addresses["AP_DexcountsanityItems"] + location.rom_address - 1
+        elif location.address > POKEDEX_OFFSET:
+            location_address = data.rom_addresses["AP_DexsanityItems"] + location.rom_address - 1
+        else:
+            location_address = location.rom_address
 
         if not world.options.remote_items and location.item and location.item.player == world.player:
             item_id = location.item.code
@@ -680,7 +684,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         write_bytes(patch, [town_id], data.rom_addresses["AP_Setting_RandomStartTown_3"] + 1)
         write_bytes(patch, [town_id], data.rom_addresses["AP_Setting_RandomStartTown_4"] + 1)
 
-    if world.options.randomize_starting_town or world.options.dexsanity:
+    if world.options.randomize_starting_town or world.options.dexsanity or world.options.dexcountsanity:
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_StartWithPokedex_1"] + 2)
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_StartWithPokedex_2"] + 2)
 

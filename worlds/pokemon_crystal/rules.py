@@ -17,6 +17,8 @@ if TYPE_CHECKING:
 
 
 def set_rules(world: "PokemonCrystalWorld") -> None:
+    all_pokemon = world.generated_pokemon.keys()
+
     if world.options.randomize_pokegear:
         def can_map_card_fly(state: CollectionState):
             return state.has_all(["EVENT_GOT_MAP_CARD", "EVENT_GOT_POKEGEAR"], world.player)
@@ -229,6 +231,9 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
     def has_n_badges(state: CollectionState, n: int) -> bool:
         return state.has_from_list_unique(badge_items.values(), world.player, n)
+
+    def has_n_pokemon(state: CollectionState, n: int):
+        return state.has_from_list_unique(all_pokemon, world.player, n)
 
     if world.options.radio_tower_requirement.value == RadioTowerRequirement.option_badges:
         def has_rockets_requirement(state: CollectionState):
@@ -1209,6 +1214,18 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         pokemon_data = world.generated_pokemon[pokemon_id]
         set_rule(get_location(f"Pokedex - {pokemon_data.friendly_name}"),
                  lambda state, species_id=pokemon_id: state.has(species_id, world.player))
+
+    logically_available_pokemon = len(world.logically_available_pokemon)
+
+    for dexcountsanity_count in world.generated_dexcountsanity[:-1]:
+        logical_count = min(logically_available_pokemon, dexcountsanity_count + world.options.dexcountsanity_leniency)
+        set_rule(get_location(f"Pokedex - Catch {dexcountsanity_count} Pokemon"),
+                 lambda state: has_n_pokemon(state, logical_count))
+
+    if world.generated_dexcountsanity:
+        logical_count = min(logically_available_pokemon,
+                            world.generated_dexcountsanity[-1] + world.options.dexcountsanity_leniency)
+        set_rule(get_location("Pokedex - Final Catch"), lambda state: has_n_pokemon(state, logical_count))
 
     def set_encounter_rule(region_id: str, count: int, rule):
         for i in range(count):

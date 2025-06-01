@@ -95,6 +95,7 @@ class PokemonCrystalWorld(World):
     generated_trades: list[TradeData]
 
     generated_dexsanity: set[str]
+    generated_dexcountsanity: list[int]
     generated_wooper: str
     generated_starters: tuple[list[str], list[str], list[str]]
     generated_starter_helditems: tuple[str, str, str]
@@ -127,6 +128,7 @@ class PokemonCrystalWorld(World):
         self.generated_static = crystal_data.static.copy()
         self.generated_trades = crystal_data.trades.copy()
         self.generated_dexsanity = set()
+        self.generated_dexcountsanity = list()
         self.generated_wooper = "WOOPER"
         self.generated_starters = (["CYNDAQUIL", "QUILAVA", "TYPHLOSION"],
                                    ["TOTODILE", "CROCONAW", "FERALIGATR"],
@@ -251,6 +253,10 @@ class PokemonCrystalWorld(World):
         if self.options.dexsanity:
             default_itempool.extend(self.create_item_by_const_name(get_random_ball(self.random)) for _ in
                                     range(len(self.generated_dexsanity)))
+
+        if self.generated_dexcountsanity:
+            default_itempool.extend(self.create_item_by_const_name(get_random_ball(self.random)) for _ in
+                                    self.generated_dexcountsanity)
 
         if self.options.johto_only.value != JohtoOnly.option_off:
             # Replace the S.S. Ticket with the Silver Wing for Johto only seeds
@@ -413,6 +419,8 @@ class PokemonCrystalWorld(World):
         slot_data["starting_town"] = 0
         if self.options.randomize_starting_town:
             slot_data["starting_town"] = self.starting_town.id
+
+        slot_data["dexcountsanity"] = self.generated_dexcountsanity
 
         return slot_data
 

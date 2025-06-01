@@ -35,8 +35,8 @@ def get_item_classification(item_code: int) -> ItemClassification:
 
 def item_const_name_to_id(const_name):
     ids = [item_id for item_id, item_data in data.items.items() if item_data.item_const == const_name]
-    if len(ids):
-        return ids[0] if ids[0] < 256 else ids[0] - 256
+    if ids:
+        return ids[0]
     return 0
 
 

@@ -347,6 +347,47 @@ class Dexsanity(NamedRange):
     }
 
 
+class Dexcountsanity(NamedRange):
+    """
+    Adds checks for completing Pokedex milestones
+    This setting specifies number of caught Pokemon on which you'll get your last check
+    """
+    display_name = "Dexcountsanity"
+    default = 0
+    range_start = 0
+    range_end = 251
+    special_range_names = {
+        "none": default,
+        "full": range_end
+    }
+
+
+class DexcountsanityStep(Range):
+    """
+    If Dexcountsanity is enabled, specifies the step interval at which your checks are placed.
+    For example, if you have Dexcountsanity 50 and Dexcountsanity Step 10, you will have checks at
+    10, 20, 30, 40 and 50 total Pokemon caught.
+    """
+    display_name = "Dexcountsanity Step"
+    default = 1
+    range_start = 1
+    range_end = 251
+
+
+class DexcountsanityLeniency(Range):
+    """
+    If Dexcountsanity is enabled, specifies the logic leniency for checks.
+    For example, if you set Dexcountsanity Leniency to 5 and have a Dexcountsanity check at 10, you will not be
+    logically required to obtain this check until 15 pokemon are logically obtainable
+
+    Checks that would go over the total number of logically available Pokemon will be clamped to that limit
+    """
+    display_name = "Dexcountsanity Leniency"
+    default = 0
+    range_start = 0
+    range_end = 251
+
+
 class DexsanityBlocklist(OptionSet):
     """
     These Pokemon will never be Dexsanity checks, this may cause you to get less Dexsanity checks than you request
@@ -1169,6 +1210,9 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     dexsanity: Dexsanity
     dexsanity_blocklist: DexsanityBlocklist
     dexsanity_starters: DexsanityStarters
+    dexcountsanity: Dexcountsanity
+    dexcountsanity_step: DexcountsanityStep
+    dexcountsanity_leniency: DexcountsanityLeniency
     wild_encounter_methods_required: WildEncounterMethodsRequired
     evolution_methods_required: EvolutionMethodsRequired
     evolution_gym_levels: EvolutionGymLevels

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import worlds._bizhawk as bizhawk
 from NetUtils import ClientStatus
 from worlds._bizhawk.client import BizHawkClient
-from .data import data, APWORLD_VERSION, POKEDEX_OFFSET
+from .data import data, APWORLD_VERSION, POKEDEX_OFFSET, POKEDEX_COUNT_OFFSET
 
 if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext
@@ -113,6 +113,7 @@ KEY_ITEM_FLAG_MAP = {data.event_flags[event]: event for event in TRACKER_KEY_ITE
 
 DEATH_LINK_MASK = 0b00010000
 DEATH_LINK_SETTING_ADDR = data.ram_addresses["wArchipelagoOptions"] + 4
+COUNT_ALL_POKEMON = len(data.pokemon)
 
 
 class PokemonCrystalClient(BizHawkClient):
@@ -273,6 +274,20 @@ class PokemonCrystalClient(BizHawkClient):
                             location_id = dex_number + POKEDEX_OFFSET
                             if location_id in ctx.server_locations:
                                 local_checked_locations.add(location_id)
+
+            if ctx.slot_data["dexcountsanity"]:
+                dex_count = int.from_bytes(pokedex_caught_bytes).bit_count()
+                check_counts = ctx.slot_data["dexcountsanity"]
+
+                for count in check_counts[:-1]:
+                    location_id = count + POKEDEX_COUNT_OFFSET
+                    if dex_count >= count and location_id in ctx.server_locations:
+                        local_checked_locations.add(location_id)
+
+                if dex_count >= check_counts[-1]:
+                    location_id = COUNT_ALL_POKEMON + POKEDEX_COUNT_OFFSET
+                    if location_id in ctx.server_locations:
+                        local_checked_locations.add(location_id)
 
             if local_checked_locations != self.local_checked_locations:
                 await ctx.send_msgs([{
