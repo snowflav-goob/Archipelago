@@ -588,7 +588,7 @@ class RandomizeTrainerParties(Choice):
 
 class TrainerPartyBlocklist(OptionSet):
     """
-    These Pokemon will not appear in enemy trainer parties, this requires trainer parties to be randomized
+    These Pokemon will not appear in enemy trainer parties
     Does nothing if trainer parties are not randomized
     You can use "_Legendaries" as a shortcut for all legendary Pokemon
     Blocklists are best effort, other constraints may cause them to be ignored
