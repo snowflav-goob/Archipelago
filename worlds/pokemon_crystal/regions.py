@@ -128,7 +128,7 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
 
             if wild_region_data.wild_encounters.surfing:
                 region_id = f"WildWater_{wild_region_data.wild_encounters.surfing}"
-                if "Water" in world.options.wild_encounter_methods_required:
+                if "Surfing" in world.options.wild_encounter_methods_required:
                     world.generated_wild_region_types[region_id] = WildRegionType.InLogic
                     create_wild_region(parent_region, region_id,
                                        world.generated_wild.water[wild_region_data.wild_encounters.surfing])

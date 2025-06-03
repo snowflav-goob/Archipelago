@@ -410,7 +410,7 @@ class WildEncounterMethodsRequired(OptionSet):
     Swarms and roamers are NEVER in logic
     """
     display_name = "Wild Encounter Methods Required"
-    valid_keys = ["Land", "Water", "Fishing", "Headbutt", "Rock Smash"]
+    valid_keys = ["Land", "Surfing", "Fishing", "Headbutt", "Rock Smash"]
     default = valid_keys
 
 

@@ -1244,7 +1244,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                 and not region_data.silver_cave and not region_data.johto): return
         if not region_data.wild_encounters: continue
 
-        if region_data.wild_encounters.surfing and "Water" in world.options.wild_encounter_methods_required:
+        if region_data.wild_encounters.surfing and "Surfing" in world.options.wild_encounter_methods_required:
             set_encounter_rule(f"WildWater_{region_data.wild_encounters.surfing}",
                                world.generated_wild.water[region_data.wild_encounters.surfing],
                                can_surf if (region_data.johto or region_data.silver_cave) else can_surf_kanto)
