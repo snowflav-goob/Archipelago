@@ -393,8 +393,8 @@ class DexsanityStarters(Choice):
     Controls how Dexsanity treats starter Pokemon
     Allow: Starter Pokemon will be allowed as Dexsanity checks
     Block: Starter Pokemon will not be allowed as Dexsanity Checks
-    Available Early: Starter Pokemon will all be obtainable immediately, unless there is nowhere to obtain wild Pokemon
-    immedately
+    Available Early: Starter Pokemon will all be obtainable in the wild immediately, unless there is nowhere to obtain
+    wild Pokemon immediately
     """
     display_name = "Dexsanity Starters"
     default = 0
