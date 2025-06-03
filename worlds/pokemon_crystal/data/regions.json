@@ -4180,8 +4180,7 @@
     "wild_encounters": {
       "grass": "ROUTE_34",
       "surfing": "ROUTE_34",
-      "fishing": "Shore",
-      "headbutt": "Route"
+      "fishing": "Shore"
     }
   },
   "REGION_ROUTE_34:WATER": {
@@ -4253,8 +4252,7 @@
     "wild_encounters": {
       "grass": "ROUTE_35",
       "surfing": "ROUTE_35",
-      "fishing": "Pond",
-      "headbutt": "Route"
+      "fishing": "Pond"
     }
   },
   "REGION_ROUTE_35:FRUITTREE": {
