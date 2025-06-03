@@ -374,8 +374,6 @@ class PokemonCrystalWorld(World):
             "kanto_access_count",
             "route_3_access",
             "vanilla_clair",
-            "wild_encounter_methods_required",
-            "evolution_methods_required",
             "static_pokemon_required",
             "breeding_methods_required",
             "evolution_gym_levels",
@@ -419,6 +417,17 @@ class PokemonCrystalWorld(World):
             slot_data["starting_town"] = self.starting_town.id
 
         slot_data["dexcountsanity"] = self.generated_dexcountsanity
+
+        slot_data["encmethod_land"] = 1 if "Land" in self.options.wild_encounter_methods_required else 0
+        slot_data["encmethod_water"] = 1 if "Surfing" in self.options.wild_encounter_methods_required else 0
+        slot_data["encmethod_fishing"] = 1 if "Fishing" in self.options.wild_encounter_methods_required else 0
+        slot_data["encmethod_headbutt"] = 1 if "Headbutt" in self.options.wild_encounter_methods_required else 0
+        slot_data["encmethod_rocksmash"] = 1 if "Rock Smash" in self.options.wild_encounter_methods_required else 0
+
+        slot_data["evomethod_happiness"] = 1 if "Happiness" in self.options.evolution_methods_required else 0
+        slot_data["evomethod_level"] = 1 if "Level" in self.options.evolution_methods_required else 0
+        slot_data["evomethod_tyrogue"] = 1 if "Level Tyrogue" in self.options.evolution_methods_required else 0
+        slot_data["evomethod_useitem"] = 1 if "Use Item" in self.options.evolution_methods_required else 0
 
         return slot_data
 
