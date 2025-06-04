@@ -254,7 +254,7 @@ class PokemonCrystalWorld(World):
 
         if self.options.dexsanity:
             default_itempool.extend(self.create_item_by_const_name(get_random_ball(self.random)) for _ in
-                                    range(len(self.generated_dexsanity)))
+                                    self.generated_dexsanity)
 
         if self.generated_dexcountsanity:
             default_itempool.extend(self.create_item_by_const_name(get_random_ball(self.random)) for _ in
@@ -313,15 +313,6 @@ class PokemonCrystalWorld(World):
         fill_wild_encounter_locations(self)
 
     def generate_basic(self) -> None:
-        # Create auth
-        self.auth = self.random.randbytes(16)
-
-    @classmethod
-    def stage_generate_output(cls, multiworld: MultiWorld, output_directory: str):
-        perform_level_scaling(multiworld)
-
-    def generate_output(self, output_directory: str) -> None:
-
         randomize_move_values(self)
         randomize_move_types(self)
         randomize_traded_pokemon(self)
@@ -329,8 +320,14 @@ class PokemonCrystalWorld(World):
         randomize_mischief(self)
         randomize_tms(self)
 
-        generate_phone_traps(self)
+        self.auth = self.random.randbytes(16)
 
+    @classmethod
+    def stage_generate_output(cls, multiworld: MultiWorld, output_directory: str):
+        perform_level_scaling(multiworld)
+
+    def generate_output(self, output_directory: str) -> None:
+        generate_phone_traps(self)
         self.finished_level_scaling.wait()
 
         randomize_trainers(self)
@@ -401,12 +398,12 @@ class PokemonCrystalWorld(World):
         slot_data["free_fly_location"] = 0
         slot_data["map_card_fly_location"] = 0
 
-        if self.options.free_fly_location.value in [FreeFlyLocation.option_free_fly,
-                                                    FreeFlyLocation.option_free_fly_and_map_card]:
+        if self.options.free_fly_location.value in (FreeFlyLocation.option_free_fly,
+                                                    FreeFlyLocation.option_free_fly_and_map_card):
             slot_data["free_fly_location"] = self.free_fly_location.id
 
-        if self.options.free_fly_location.value in [FreeFlyLocation.option_free_fly_and_map_card,
-                                                    FreeFlyLocation.option_map_card]:
+        if self.options.free_fly_location.value in (FreeFlyLocation.option_free_fly_and_map_card,
+                                                    FreeFlyLocation.option_map_card):
             slot_data["map_card_fly_location"] = self.map_card_fly_location.id
 
         slot_data["enable_mischief"] = 1 if (self.options.enable_mischief
@@ -445,14 +442,14 @@ class PokemonCrystalWorld(World):
                 types_2 = ", ".join(self.generated_pokemon[evo[2]].types)
                 spoiler_handle.write(f"{evo[0]} ({types_0}) -> {evo[1]} ({types_1}) -> {evo[2]} ({types_2})\n")
 
-        if self.options.free_fly_location.value in [FreeFlyLocation.option_free_fly,
-                                                    FreeFlyLocation.option_free_fly_and_map_card]:
+        if self.options.free_fly_location.value in (FreeFlyLocation.option_free_fly,
+                                                    FreeFlyLocation.option_free_fly_and_map_card):
             spoiler_handle.write(f"\n\n")
             spoiler_handle.write(f"Free Fly Location ({self.multiworld.player_name[self.player]}): "
                                  f"{self.free_fly_location.name}\n")
 
-        if self.options.free_fly_location.value in [FreeFlyLocation.option_free_fly_and_map_card,
-                                                    FreeFlyLocation.option_map_card]:
+        if self.options.free_fly_location.value in (FreeFlyLocation.option_free_fly_and_map_card,
+                                                    FreeFlyLocation.option_map_card):
             spoiler_handle.write(f"Map Card Fly Location ({self.multiworld.player_name[self.player]}): "
                                  f"{self.map_card_fly_location.name}\n")
 

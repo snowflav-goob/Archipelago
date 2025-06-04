@@ -80,7 +80,7 @@ def vanilla_trainer_movesets(world: "PokemonCrystalWorld"):
     # if trainers parties are vanilla but learnsets are randomized,
     # we need to change the predefined trainer movesets to account for this
     for trainer_name, trainer_data in world.generated_trainers.items():
-        if trainer_data.trainer_type not in ["TRAINERTYPE_MOVES", "TRAINERTYPE_ITEM_MOVES"]:
+        if trainer_data.trainer_type not in ("TRAINERTYPE_MOVES", "TRAINERTYPE_ITEM_MOVES"):
             # if there's no predefined moveset, skip
             continue
         new_party = trainer_data.pokemon

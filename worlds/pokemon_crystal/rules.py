@@ -341,8 +341,8 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
     # Free Fly
     set_rule(get_entrance("Fly"), can_fly)
-    if world.options.free_fly_location.value in [FreeFlyLocation.option_free_fly_and_map_card,
-                                                 FreeFlyLocation.option_map_card]:
+    if world.options.free_fly_location.value in (FreeFlyLocation.option_free_fly_and_map_card,
+                                                 FreeFlyLocation.option_map_card):
         map_card_fly_entrance = f"REGION_FLY -> {world.map_card_fly_location.region_id}"
         add_rule(get_entrance(map_card_fly_entrance), can_map_card_fly)
 
@@ -1158,8 +1158,8 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
             set_rule(get_entrance("REGION_ROUTE_7_SAFFRON_GATE -> REGION_SAFFRON_CITY"), has_tea)
 
         # Underground Paths
-        if world.options.undergrounds_require_power.value in [UndergroundsRequirePower.option_north_south,
-                                                              UndergroundsRequirePower.option_both]:
+        if world.options.undergrounds_require_power.value in (UndergroundsRequirePower.option_north_south,
+                                                              UndergroundsRequirePower.option_both):
             set_rule(get_entrance("REGION_ROUTE_5 -> REGION_ROUTE_5_UNDERGROUND_PATH_ENTRANCE"),
                      lambda state: state.has("EVENT_RESTORED_POWER_TO_KANTO", world.player))
 
@@ -1167,9 +1167,9 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                      lambda state: state.has("EVENT_RESTORED_POWER_TO_KANTO", world.player))
 
         if (world.options.east_west_underground
-                and world.options.undergrounds_require_power.value in [
-                    UndergroundsRequirePower.option_east_west,
-                    UndergroundsRequirePower.option_both]):
+                and world.options.undergrounds_require_power.value in (
+                        UndergroundsRequirePower.option_east_west,
+                        UndergroundsRequirePower.option_both)):
             set_rule(get_entrance("REGION_ROUTE_7 -> REGION_ROUTE_8"),
                      lambda state: state.has("EVENT_RESTORED_POWER_TO_KANTO", world.player))
 

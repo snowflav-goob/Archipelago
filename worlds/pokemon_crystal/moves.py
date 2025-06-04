@@ -76,7 +76,7 @@ def get_random_move(world: "PokemonCrystalWorld", move_type=None, attacking=None
     move_pool = [move_name for move_name, move_data in world.generated_moves.items() if
                  not move_data.is_hm
                  # exclude beat up as it can softlock the game if an enemy trainer uses it
-                 and move_name not in ["STRUGGLE", "BEAT_UP", "NO_MOVE"]
+                 and move_name not in ("STRUGGLE", "BEAT_UP", "NO_MOVE")
                  and move_name not in existing_moves
                  and (not move_type or move_data.type == move_type)]
 
@@ -161,7 +161,7 @@ def randomize_move_values(world: "PokemonCrystalWorld"):
 
     acc100 = 70  # Moves have a 70% chance to get 100% accuracy
     for move_name, move_data in world.generated_moves.items():
-        if move_name in ["NO_MOVE", "CURSE", "DRAGON_RAGE", "SONICBOOM"]:
+        if move_name in ("NO_MOVE", "CURSE", "DRAGON_RAGE", "SONICBOOM"):
             continue
         new_power = move_data.power
         new_acc = move_data.accuracy
@@ -198,7 +198,7 @@ def randomize_move_types(world: "PokemonCrystalWorld"):
     if not world.options.randomize_move_types: return
 
     for move_name, move_data in world.generated_moves.items():
-        if move_name in ["NO_MOVE", "CURSE"]:
+        if move_name in ("NO_MOVE", "CURSE"):
             continue
         new_type = world.random.choice(crystal_data.types)
         world.generated_moves[move_name] = replace(

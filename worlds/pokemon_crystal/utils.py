@@ -241,18 +241,18 @@ def _starting_town_valid(world: "PokemonCrystalWorld", starting_town: StartingTo
     if starting_town.name == "Cianwood City":
         return world.options.trainersanity and immediate_hiddens
 
-    if starting_town.name in ["Pallet Town", "Viridian City", "Pewter City"]:
+    if starting_town.name in ("Pallet Town", "Viridian City", "Pewter City"):
         return immediate_hiddens or world.options.route_3_access.value == Route3Access.option_vanilla
     if starting_town.name == "Rock Tunnel":
         return world.options.trainersanity and not world.options.dexsanity
     if starting_town.name == "Vermilion City":
-        return "South" not in world.options.saffron_gatehouse_tea or world.options.undergrounds_require_power.value not in [
-            UndergroundsRequirePower.option_both, UndergroundsRequirePower.option_north_south]
+        return "South" not in world.options.saffron_gatehouse_tea or world.options.undergrounds_require_power.value not in (
+            UndergroundsRequirePower.option_both, UndergroundsRequirePower.option_north_south)
     if starting_town.name == "Cerulean City":
         return "North" not in world.options.saffron_gatehouse_tea or immediate_hiddens
     if starting_town.name == "Celadon City":
         return "West" not in world.options.saffron_gatehouse_tea or immediate_hiddens
-    if starting_town.name in ["Lavender Town", "Fuchsia City"]:
+    if starting_town.name in ("Lavender Town", "Fuchsia City"):
         return "East" not in world.options.saffron_gatehouse_tea or (
                 immediate_hiddens and world.options.randomize_berry_trees)
 
@@ -267,7 +267,7 @@ def get_free_fly_locations(world: "PokemonCrystalWorld"):
             [region for region in location_pool if not region.exclude_vanilla_start]
         if world.options.route_32_condition.value != Route32Condition.option_any_badge:
             # Azalea, Goldenrod
-            location_pool = [region for region in location_pool if region.name not in ["Azalea Town", "Goldenrod City"]]
+            location_pool = [region for region in location_pool if region.name not in ("Azalea Town", "Goldenrod City")]
         if not world.options.remove_ilex_cut_tree and world.options.route_32_condition.value != Route32Condition.option_any_badge:
             # Goldenrod
             location_pool = [region for region in location_pool if region.name != "Goldenrod City"]
@@ -294,11 +294,11 @@ def get_free_fly_locations(world: "PokemonCrystalWorld"):
             location_pool = location_pool_after_blocklist
 
     world.random.shuffle(location_pool)
-    if world.options.free_fly_location.value in [FreeFlyLocation.option_free_fly,
-                                                 FreeFlyLocation.option_free_fly_and_map_card]:
+    if world.options.free_fly_location.value in (FreeFlyLocation.option_free_fly,
+                                                 FreeFlyLocation.option_free_fly_and_map_card):
         world.free_fly_location = location_pool.pop()
-    if world.options.free_fly_location.value in [FreeFlyLocation.option_free_fly_and_map_card,
-                                                 FreeFlyLocation.option_map_card]:
+    if world.options.free_fly_location.value in (FreeFlyLocation.option_free_fly_and_map_card,
+                                                 FreeFlyLocation.option_map_card):
         world.map_card_fly_location = location_pool.pop()
 
 

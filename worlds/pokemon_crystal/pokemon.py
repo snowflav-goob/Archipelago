@@ -25,7 +25,7 @@ def randomize_pokemon_data(world: "PokemonCrystalWorld"):
             if world.options.randomize_types.value == RandomizeTypes.option_follow_evolutions:
                 # skip evolved pokemon if follow_evolutions
                 if (not pkmn_data.is_base
-                        and pkmn_name not in ["FLAREON", "JOLTEON", "VAPOREON", "ESPEON", "UMBREON"]):
+                        and pkmn_name not in ("FLAREON", "JOLTEON", "VAPOREON", "ESPEON", "UMBREON")):
                     continue
                 for evo in pkmn_data.evolutions:
                     evolution_line_list.append(evo.pokemon)
@@ -134,10 +134,10 @@ def randomize_traded_pokemon(world: "PokemonCrystalWorld"):
 
     new_trades = []
     for trade in world.generated_trades:
-        randomize_received = world.options.randomize_trades.value in [RandomizeTrades.option_received,
-                                                                      RandomizeTrades.option_both]
-        randomize_requested = world.options.randomize_trades.value in [RandomizeTrades.option_requested,
-                                                                       RandomizeTrades.option_both]
+        randomize_received = world.options.randomize_trades.value in (RandomizeTrades.option_received,
+                                                                      RandomizeTrades.option_both)
+        randomize_requested = world.options.randomize_trades.value in (RandomizeTrades.option_requested,
+                                                                       RandomizeTrades.option_both)
 
         received_pokemon = get_random_pokemon(world) if randomize_received else trade.received_pokemon
 
@@ -261,7 +261,7 @@ def generate_breeding_data(world: "PokemonCrystalWorld"):
         evolution_data = world.generated_pokemon[evolution]
         if "EGG_NONE" in evolution_data.egg_groups or evolution_data.gender_ratio == "GENDER_UNKNOWN": return
         if (world.options.breeding_methods_required.value == BreedingMethodsRequired.option_any
-                and evolution_data.gender_ratio in ["GENDER_F100", "GENDER_F0"]): return
+                and evolution_data.gender_ratio in ("GENDER_F100", "GENDER_F0")): return
         world.generated_breeding[base].add(evolution)
 
     for pokemon_id, pokemon_data in world.generated_pokemon.items():

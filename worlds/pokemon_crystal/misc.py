@@ -31,7 +31,7 @@ def randomize_mischief(world: "PokemonCrystalWorld"):
 
     if MiscOption.SaffronGym.value in world.generated_misc.selected:
         shuffled_saffron_warps = {}
-        for direction in ["NW", "N", "NE", "W", "E", "SW", "SE"]:
+        for direction in ("NW", "N", "NE", "W", "E", "SW", "SE"):
             numbers = [1, 2, 3, 4]
             world.random.shuffle(numbers)
             shuffled_saffron_warps[direction] = numbers
@@ -40,7 +40,7 @@ def randomize_mischief(world: "PokemonCrystalWorld"):
         for pair in world.generated_misc.saffron_gym_warps.pairs:
             new_pair = []
             for i in range(0, 2):
-                if pair[i] in ["START", "END"]:
+                if pair[i] in ("START", "END"):
                     new_pair.append(pair[i])
                     continue
                 direction = pair[i].split("_")[0]
@@ -77,7 +77,7 @@ def get_misc_spoiler_log(world: "PokemonCrystalWorld", write):
         saffron_map = []
         # draw the walls in saffron gym
         for y in range(0, 17):
-            saffron_map.append(["█" if x in [7, 15] or y in [5, 11] else " " for x in range(0, 23)])
+            saffron_map.append(["█" if x in (7, 15) or y in (5, 11) else " " for x in range(0, 23)])
 
         character = ord("A")  # we will increment this while drawing the warps
         for pair in world.generated_misc.saffron_gym_warps.pairs:

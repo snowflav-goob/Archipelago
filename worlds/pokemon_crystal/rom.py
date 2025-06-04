@@ -144,7 +144,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
             cur_address = data.rom_addresses[address] + 1
             write_bytes(patch, [pokemon_id], cur_address)
         if pkmn_data.level_address is not None:
-            if pkmn_data.level_type in ["givepoke", "loadwildmon"]:
+            if pkmn_data.level_type in ("givepoke", "loadwildmon"):
                 write_bytes(patch, [pkmn_data.level], data.rom_addresses[pkmn_data.level_address] + 2)
             elif pkmn_data.level_type == "custom":
                 write_bytes(patch, [pkmn_data.level], data.rom_addresses[pkmn_data.level_address] + 1)
@@ -209,7 +209,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
 
     for fish_name, fish_data in world.generated_wild.fish.items():
         cur_address = data.rom_addresses["AP_FishMons_" + fish_name]
-        for rod_type in [fish_data.old, fish_data.good, fish_data.super]:
+        for rod_type in (fish_data.old, fish_data.good, fish_data.super):
             for i, encounter in enumerate(rod_type):
                 if world.options.encounter_slot_distribution.value == EncounterSlotDistribution.option_equal:
                     # fishing encounter rates are stored as an increasing fraction of 255
@@ -231,7 +231,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
 
     for tree_name, tree_data in world.generated_wild.tree.items():
         cur_address = data.rom_addresses["TreeMonSet_" + tree_name]
-        for rarity in [tree_data.common, tree_data.rare]:
+        for rarity in (tree_data.common, tree_data.rare):
             for i, encounter in enumerate(rarity):
                 if tree_encounter_rates:
                     write_bytes(patch, [tree_encounter_rates[i]], cur_address)
@@ -281,7 +281,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
 
     if world.options.randomize_move_values or world.options.randomize_move_types:
         for move_name, move in world.generated_moves.items():  # effect modification is also possible but not included
-            if move_name in ["NO_MOVE", "CURSE"]:
+            if move_name in ("NO_MOVE", "CURSE"):
                 continue
             if world.options.randomize_move_types:
                 address = data.rom_addresses["AP_MoveData_Type_" + move_name]
@@ -367,7 +367,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
             write_bytes(patch, [2, 5], address)
 
         if MiscOption.OhkoMoves.value in world.generated_misc.selected:
-            for move in ["GUILLOTINE", "HORN_DRILL", "FISSURE"]:
+            for move in ("GUILLOTINE", "HORN_DRILL", "FISSURE"):
                 address = data.rom_addresses["AP_MoveData_Effect_" + move]
                 write_bytes(patch, [0x65], address)  # false swipe effect
                 address = data.rom_addresses["AP_MoveData_Power_" + move]
@@ -456,7 +456,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         better_mart_bytes = better_mart_address.to_bytes(2, "little")
         for i in range(33):
             # skip goldenrod and celadon
-            if i not in [6, 7, 8, 9, 10, 11, 12, 24, 25, 26, 27, 28]:
+            if i not in (6, 7, 8, 9, 10, 11, 12, 24, 25, 26, 27, 28):
                 write_bytes(patch, better_mart_bytes, mart_address)
             mart_address += 2
 
@@ -588,14 +588,14 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
                 quantity = 0
             start_inventory_address += 2
 
-    if world.options.free_fly_location.value in [FreeFlyLocation.option_free_fly,
-                                                 FreeFlyLocation.option_free_fly_and_map_card]:
+    if world.options.free_fly_location.value in (FreeFlyLocation.option_free_fly,
+                                                 FreeFlyLocation.option_free_fly_and_map_card):
         free_fly_write = [0, 0, 0, 0]
         free_fly_write[int(world.free_fly_location.id / 8)] = 1 << (world.free_fly_location.id % 8)
         write_bytes(patch, free_fly_write, data.rom_addresses["AP_Setting_FreeFly"])
 
-    if world.options.free_fly_location.value in [FreeFlyLocation.option_free_fly_and_map_card,
-                                                 FreeFlyLocation.option_map_card]:
+    if world.options.free_fly_location.value in (FreeFlyLocation.option_free_fly_and_map_card,
+                                                 FreeFlyLocation.option_map_card):
         map_fly_offset = int(world.map_card_fly_location.id / 8).to_bytes(2, "little")
         map_fly_byte = 1 << (world.map_card_fly_location.id % 8)
         write_bytes(patch, [map_fly_byte], data.rom_addresses["AP_Setting_MapCardFreeFly_Byte"] + 1)
@@ -629,13 +629,13 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
     if world.options.east_west_underground.value:
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_EastWestUndergroundEnabled"] + 1)
 
-    if world.options.undergrounds_require_power.value in [UndergroundsRequirePower.option_neither,
-                                                          UndergroundsRequirePower.option_east_west]:
+    if world.options.undergrounds_require_power.value in (UndergroundsRequirePower.option_neither,
+                                                          UndergroundsRequirePower.option_east_west):
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_NorthSouthUndergroundOpen"] + 2)
 
     if (world.options.east_west_underground.value and
-            world.options.undergrounds_require_power.value in [UndergroundsRequirePower.option_neither,
-                                                               UndergroundsRequirePower.option_north_south]):
+            world.options.undergrounds_require_power.value in (UndergroundsRequirePower.option_neither,
+                                                               UndergroundsRequirePower.option_north_south)):
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_EastWestUndergroundOpen"] + 2)
 
     if world.options.remote_items:
