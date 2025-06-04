@@ -168,8 +168,8 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         for j, pokemon in enumerate(["CYNDAQUIL_", "TOTODILE_", "CHIKORITA_"]):
             pokemon_id = data.pokemon[world.generated_starters[j][0]].id
             starter_name = world.generated_pokemon[world.generated_starters[j][0]].friendly_name.upper()
-            starter_name = "Nidoran ♀" if starter_name == "Nidoran F" else starter_name
-            starter_name = "Nidoran ♂" if starter_name == "Nidoran M" else starter_name
+            starter_name = "NIDORAN ♀" if starter_name == "NIDORAN F" else starter_name
+            starter_name = "NIDORAN ♂" if starter_name == "NIDORAN M" else starter_name
             starter_text = convert_to_ingame_text(starter_name)
             for i in range(1, 9):
                 cur_address = data.rom_addresses["AP_Starter_" + pokemon + str(i)] + 1
