@@ -95,7 +95,7 @@ def randomize_wild_pokemon(world: "PokemonCrystalWorld"):
                         line.append(evo2.pokemon)
                 evo_lines.append(line)
 
-            logical_pokemon_pool.extend(evo_line.pop() for evo_line in evo_lines)
+            logical_pokemon_pool.extend(world.random.choice(evo_line) for evo_line in evo_lines)
         elif world.options.randomize_wilds.option_catch_em_all:
             logical_pokemon_pool.extend(world.generated_pokemon.keys())
 

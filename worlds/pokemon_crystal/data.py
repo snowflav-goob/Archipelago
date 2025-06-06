@@ -637,9 +637,9 @@ def _init() -> None:
     ) for trade_data in data_json["trade"]]
 
     starting_towns = [
-        StartingTown(2, "Pallet Town", "REGION_PALLET_TOWN", False),
-        StartingTown(3, "Viridian City", "REGION_VIRIDIAN_CITY", False),
-        StartingTown(4, "Pewter City", "REGION_PEWTER_CITY", False),
+        StartingTown(2, "Pallet Town", "REGION_PALLET_TOWN", False, restrictive_start=True),
+        StartingTown(3, "Viridian City", "REGION_VIRIDIAN_CITY", False, restrictive_start=True),
+        StartingTown(4, "Pewter City", "REGION_PEWTER_CITY", False, restrictive_start=True),
         StartingTown(5, "Cerulean City", "REGION_CERULEAN_CITY", False, restrictive_start=True),
         StartingTown(6, "Rock Tunnel", "REGION_ROUTE_9", False, restrictive_start=True),
         StartingTown(7, "Vermilion City", "REGION_VERMILION_CITY", False, restrictive_start=True),

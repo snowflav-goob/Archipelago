@@ -17,19 +17,19 @@ if TYPE_CHECKING:
 
 def set_rules(world: "PokemonCrystalWorld") -> None:
     all_pokemon = world.generated_pokemon.keys()
-    unown_unlocks = ["ENGINE_UNLOCKED_UNOWNS_A_TO_K",
+    unown_unlocks = ("ENGINE_UNLOCKED_UNOWNS_A_TO_K",
                      "ENGINE_UNLOCKED_UNOWNS_L_TO_R",
                      "ENGINE_UNLOCKED_UNOWNS_S_TO_W",
-                     "ENGINE_UNLOCKED_UNOWNS_X_TO_Z"]
-    evolution_item_unlocks = ["EVENT_GOLDENROD_EVOLUTION_ITEMS", "EVENT_CELADON_EVOLUTION_ITEMS"]
-    happiness_unlocks = ["EVENT_DAISY_GROOMING", "EVENT_HAIRCUT_BROTHERS"]
+                     "ENGINE_UNLOCKED_UNOWNS_X_TO_Z")
+    evolution_item_unlocks = ("EVENT_GOLDENROD_EVOLUTION_ITEMS", "EVENT_CELADON_EVOLUTION_ITEMS")
+    happiness_unlocks = ("EVENT_DAISY_GROOMING", "EVENT_HAIRCUT_BROTHERS")
 
     if world.options.randomize_pokegear:
-        map_card_fly_unlocks = ["Map Card", "Pokegear"]
-        expn_components = ["Pokegear", "Radio Card", "EXPN Card"]
+        map_card_fly_unlocks = ("Map Card", "Pokegear")
+        expn_components = ("Pokegear", "Radio Card", "EXPN Card")
     else:
-        map_card_fly_unlocks = ["EVENT_GOT_MAP_CARD", "EVENT_GOT_POKEGEAR"]
-        expn_components = ["EVENT_GOT_POKEGEAR", "EVENT_GOT_RADIO_CARD", "EVENT_GOT_EXPN_CARD"]
+        map_card_fly_unlocks = ("EVENT_GOT_MAP_CARD", "EVENT_GOT_POKEGEAR")
+        expn_components = ("EVENT_GOT_POKEGEAR", "EVENT_GOT_RADIO_CARD", "EVENT_GOT_EXPN_CARD")
 
     def can_map_card_fly(state: CollectionState):
         return state.has_all(map_card_fly_unlocks, world.player)

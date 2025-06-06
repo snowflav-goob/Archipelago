@@ -233,8 +233,8 @@ def get_random_starting_town(world: "PokemonCrystalWorld"):
 
 def _starting_town_valid(world: "PokemonCrystalWorld", starting_town: StartingTown):
     if world.options.johto_only and not starting_town.johto: return False
-    if not starting_town.restrictive_start: return True
-    if world.options.randomize_badges != RandomizeBadges.option_completely_random: return False
+    if world.options.randomize_badges != RandomizeBadges.option_completely_random and starting_town.restrictive_start:
+        return False
 
     immediate_hiddens = world.options.randomize_hidden_items and not world.options.require_itemfinder
 
