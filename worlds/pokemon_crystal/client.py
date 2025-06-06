@@ -123,6 +123,7 @@ class PokemonCrystalClient(BizHawkClient):
     patch_suffix = ".apcrystal"
     local_set_events: dict[str, bool]
     local_found_key_items: dict[str, bool]
+    local_pokemon: dict[str, list[int]]
     phone_trap_locations: list[int]
     current_map: list[int]
     last_death_link: float
@@ -133,6 +134,7 @@ class PokemonCrystalClient(BizHawkClient):
         self.goal_flag = None
         self.local_set_events = {}
         self.local_found_key_items = {}
+        self.local_pokemon = {"seen": list(), "caught": list()}
         self.phone_trap_locations = []
         self.current_map = [0, 0]
         self.last_death_link = 0
@@ -228,25 +230,23 @@ class PokemonCrystalClient(BizHawkClient):
 
             read_result = await bizhawk.guarded_read(
                 ctx.bizhawk_ctx,
-                [(data.ram_addresses["wEventFlags"], 0x104, "WRAM")],  # Flags
+                [(data.ram_addresses["wEventFlags"], 0x104, "WRAM"),  # Flags
+                 (data.ram_addresses["wArchipelagoPokedexCaught"], 0x20, "WRAM"),
+                 (data.ram_addresses["wArchipelagoPokedexSeen"], 0x20, "WRAM")],
                 [overworld_guard]
             )
-
-            pokedex_read_result = await bizhawk.guarded_read(
-                ctx.bizhawk_ctx,
-                [(data.ram_addresses["wArchipelagoPokedexCaught"], 0x20, "WRAM")],
-                [overworld_guard]
-            )
-
-            pokedex_caught_bytes = pokedex_read_result[0]
 
             if read_result is None:
                 return
+
+            pokedex_caught_bytes = read_result[1]
+            pokedex_seen_bytes = read_result[2]
 
             game_clear = False
             local_checked_locations = set()
             local_set_events = {flag_name: False for flag_name in TRACKER_EVENT_FLAGS}
             local_found_key_items = {flag_name: False for flag_name in TRACKER_KEY_ITEM_FLAGS}
+            local_pokemon: dict[str, list[int]] = {"caught": list(), "seen": list()}
 
             flag_bytes = read_result[0]
             for byte_i, byte in enumerate(flag_bytes):
@@ -265,18 +265,33 @@ class PokemonCrystalClient(BizHawkClient):
                         if location_id in KEY_ITEM_FLAG_MAP:
                             local_found_key_items[KEY_ITEM_FLAG_MAP[location_id]] = True
 
-            if ctx.slot_data["dexsanity"]:
-                for byte_i, byte in enumerate(pokedex_caught_bytes):
-                    for i in range(8):
-                        if byte & (1 << i) != 0:
-                            dex_number = (byte_i * 8 + i) + 1
+            for byte_i, byte in enumerate(pokedex_caught_bytes):
+                for i in range(8):
+                    if byte & (1 << i):
+                        dex_number = (byte_i * 8 + i) + 1
+                        location_id = dex_number + POKEDEX_OFFSET
+                        if location_id in ctx.server_locations:
+                            local_checked_locations.add(location_id)
+                        local_pokemon["caught"].append(dex_number)
 
-                            location_id = dex_number + POKEDEX_OFFSET
-                            if location_id in ctx.server_locations:
-                                local_checked_locations.add(location_id)
+            for byte_i, byte in enumerate(pokedex_seen_bytes):
+                for i in range(8):
+                    if byte & (1 << i):
+                        dex_number = (byte_i * 8 + 1) + 1
+                        local_pokemon["seen"].append(dex_number)
+
+            if local_pokemon != self.local_pokemon and ctx.slot is not None:
+                await ctx.send_msgs([{
+                    "cmd": "Set",
+                    "key": f"pokemon_crystal_pokemon_{ctx.team}_{ctx.slot}",
+                    "default": {},
+                    "want_reply": False,
+                    "operations": [{"operation": "replace", "value": local_pokemon}, ]
+                }])
+                self.local_pokemon = local_pokemon
 
             if ctx.slot_data["dexcountsanity"]:
-                dex_count = int.from_bytes(pokedex_caught_bytes).bit_count()
+                dex_count = len(local_pokemon["caught"])
                 check_counts = ctx.slot_data["dexcountsanity"]
 
                 for count in check_counts[:-1]:
