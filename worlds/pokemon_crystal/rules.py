@@ -278,10 +278,10 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     if world.options.kanto_access_requirement.value == KantoAccessRequirement.option_wake_snorlax:
         def has_kanto_access(state: CollectionState):
             return state.has("EVENT_FOUGHT_SNORLAX", world.player)
-    elif world.options.kanto_access_requirement.value == KantoAccessRequirement.option_badge_count:
+    elif world.options.kanto_access_requirement.value == KantoAccessRequirement.option_badges:
         def has_kanto_access(state: CollectionState):
             return has_n_badges(state, world.options.kanto_access_count.value)
-    elif world.options.kanto_access_requirement.value == KantoAccessRequirement.option_gym_count:
+    elif world.options.kanto_access_requirement.value == KantoAccessRequirement.option_gyms:
         def has_kanto_access(state: CollectionState):
             return has_beaten_n_gyms(state, world.options.kanto_access_count.value)
     else:

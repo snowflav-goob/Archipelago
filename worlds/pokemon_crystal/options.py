@@ -225,8 +225,8 @@ class KantoAccessRequirement(Choice):
     display_name = "Kanto Access Requirement"
     default = 0
     option_wake_snorlax = 0
-    option_badge_count = 1
-    option_gym_count = 2
+    option_badges = 1
+    option_gyms = 2
     option_become_champion = 3
 
 
