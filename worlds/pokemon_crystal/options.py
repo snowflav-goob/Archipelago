@@ -216,8 +216,8 @@ class KantoAccessRequirement(Choice):
     """
     Sets the requirement to pass between Victory Road gate and Kanto
     Wake Snorlax: Wake the Snorlax outside of Diglett's Cave
-    Badge Count: Requires the number of badges specified by kanto_access_count
-    Gym Count: Requires beating the number of gyms specified by kanto_access_count
+    Badges: Requires the number of badges specified by kanto_access_count
+    Gyms: Requires beating the number of gyms specified by kanto_access_count
     Become Champion: Defeat Lance and enter the Hall of Fame
 
     This setting does nothing if Johto Only is enabled

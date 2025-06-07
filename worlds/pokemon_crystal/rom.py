@@ -61,7 +61,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         if setting_name == "text_frame" and option_selection == "random":
             option_selection = world.random.randint(1, 8)
         if setting_name == "_death_link":
-            option_selection = world.options.death_link.value
+            option_selection = "on" if world.options.death_link else "off"
         setting.set_option_byte(option_selection, option_bytes)
 
     write_bytes(patch, option_bytes, data.rom_addresses["AP_Setting_DefaultOptions"])
