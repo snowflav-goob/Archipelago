@@ -278,6 +278,12 @@ class PokemonCrystalClient(BizHawkClient):
                         if location_id in EVENT_FLAG_MAP:
                             local_set_events[EVENT_FLAG_MAP[location_id]] = True
 
+                        if location_id in STATIC_EVENT_FLAG_MAP:
+                            local_set_static_events[STATIC_EVENT_FLAG_MAP[location_id]] = True
+
+                        if location_id in ROCKET_TRAP_EVENT_FLAG_MAP:
+                            local_set_rocket_trap_events[ROCKET_TRAP_EVENT_FLAG_MAP[location_id]] = True
+
                         if location_id in KEY_ITEM_FLAG_MAP:
                             local_found_key_items[KEY_ITEM_FLAG_MAP[location_id]] = True
 
