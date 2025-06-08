@@ -356,8 +356,9 @@ class PokemonCrystalClient(BizHawkClient):
                     self.phone_trap_locations = read_locations
             else:
                 hint_locations = [location for location in self.phone_trap_locations[:phone_trap_index] if
-                                  location not in ctx.locations_scouted
-                                  and location != 0 and location not in local_checked_locations
+                                  location != 0
+                                  and location not in ctx.locations_scouted
+                                  and location not in local_checked_locations
                                   and location not in ctx.checked_locations]
                 if hint_locations:
                     await ctx.send_msgs([{
