@@ -300,7 +300,7 @@ class PokemonCrystalClient(BizHawkClient):
             for byte_i, byte in enumerate(pokedex_seen_bytes):
                 for i in range(8):
                     if byte & (1 << i):
-                        dex_number = (byte_i * 8 + 1) + 1
+                        dex_number = (byte_i * 8 + i) + 1
                         local_pokemon["seen"].append(dex_number)
 
             if local_pokemon != self.local_pokemon and ctx.slot is not None:
