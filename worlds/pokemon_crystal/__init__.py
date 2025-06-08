@@ -391,11 +391,11 @@ class PokemonCrystalWorld(World):
         slot_data["dexsanity_pokemon"] = [self.generated_pokemon[poke].id for poke in self.generated_dexsanity]
         wild_encounters = dict[int, set[str]]()  # This should be defaultdict but pickle doesn't like it
         for encounter_key, encounters in self.generated_wild.items():
-            for encounter in encounters:
+            for i, encounter in enumerate(encounters):
                 dex_id = self.generated_pokemon[encounter.pokemon].id
                 if dex_id not in wild_encounters:
                     wild_encounters[dex_id] = set()
-                wild_encounters[dex_id].add(encounter_key.region_name())
+                wild_encounters[dex_id].add(f"{encounter_key.region_name()}_{i + 1}")
         slot_data["wild_encounters"] = wild_encounters
 
         for hm in self.options.remove_badge_requirement.valid_keys:
