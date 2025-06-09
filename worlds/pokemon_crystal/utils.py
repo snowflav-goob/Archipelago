@@ -339,7 +339,7 @@ def bound(value: int, lower_bound: int, upper_bound: int) -> int:
 
 def replace_map_tiles(patch, map_name: str, x: int, y: int, tiles):
     # x and y are 0 indexed
-    tile_index = (y * data.map_sizes[map_name].width) + x
+    tile_index = (y * data.map_sizes[map_name][0]) + x
     base_address = data.rom_addresses[f"{map_name}_Blocks"]
 
     logging.debug(f"Writing {len(tiles)} new tile(s) to map {map_name} at {x},{y}")

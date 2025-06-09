@@ -1,5 +1,5 @@
 import pkgutil
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from enum import Enum, StrEnum
 from typing import Any
 
@@ -145,14 +145,14 @@ class MiscOption(Enum):
 
 @dataclass(frozen=True)
 class MiscWarp:
-    coords: list[int]
+    coords: tuple[int, int]
     id: int
 
 
 @dataclass(frozen=True)
 class MiscSaffronWarps:
     warps: dict[str, MiscWarp]
-    pairs: list[list[str]]
+    pairs: list[tuple[str, str]]
 
 
 @dataclass(frozen=True)
@@ -183,6 +183,15 @@ class MusicData:
     maps: dict[str, str]
     encounters: list[str]
     scripts: dict[str, str]
+
+    def __copy__(self):
+        return replace(
+            self,
+            consts=self.consts.copy(),
+            maps=self.maps.copy(),
+            encounters=self.encounters.copy(),
+            scripts=self.scripts.copy()
+        )
 
 
 @dataclass(frozen=True)
@@ -395,7 +404,7 @@ class PokemonCrystalData:
     starting_towns: list[StartingTown]
     game_settings: dict[str, PokemonCrystalGameSetting]
     phone_scripts: list[PhoneScriptData]
-    map_sizes: dict[str, PokemonCrystalMapSizeData]
+    map_sizes: dict[str, tuple[int, int]]
 
 
 def load_json_data(data_name: str) -> list[Any] | dict[str, Any]:
@@ -735,7 +744,7 @@ def _init() -> None:
         "_death_link": PokemonCrystalGameSetting(4, 4, 1, ON_OFF, 0)
     }
 
-    map_sizes = {map_name: PokemonCrystalMapSizeData(map_size[0], map_size[1]) for map_name, map_size in
+    map_sizes = {map_name: (map_size[0], map_size[1]) for map_name, map_size in
                  map_size_data.items()}
 
     phone_scripts = []

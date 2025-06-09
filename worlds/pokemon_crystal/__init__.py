@@ -123,8 +123,8 @@ class PokemonCrystalWorld(World):
     def __init__(self, multiworld: MultiWorld, player: int):
         super().__init__(multiworld, player)
         self.generated_moves = crystal_data.moves.copy()
-        self.generated_pokemon = copy.deepcopy(crystal_data.pokemon)
-        self.generated_trainers = copy.deepcopy(crystal_data.trainers)
+        self.generated_pokemon = crystal_data.pokemon.copy()
+        self.generated_trainers = crystal_data.trainers.copy()
         self.generated_tms = crystal_data.tmhm.copy()
         self.generated_wild = {key: encounters.copy() for key, encounters in crystal_data.wild.items()}
         self.generated_wild_region_logic = defaultdict(lambda: LogicalAccess.Inaccessible)
@@ -139,8 +139,8 @@ class PokemonCrystalWorld(World):
         self.generated_starter_helditems = ("BERRY", "BERRY", "BERRY")
         self.generated_palettes = {}
         self.generated_breeding = defaultdict(lambda: set())
-        self.generated_music = copy.deepcopy(crystal_data.music)
-        self.generated_misc = copy.deepcopy(crystal_data.misc)
+        self.generated_music = copy.copy(crystal_data.music)
+        self.generated_misc = copy.copy(crystal_data.misc)
         self.generated_phone_traps = []
         self.generated_phone_indices = []
 
