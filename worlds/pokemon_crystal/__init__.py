@@ -380,7 +380,9 @@ class PokemonCrystalWorld(World):
             "breeding_methods_required",
             "evolution_gym_levels",
             "rematchsanity",
-            "all_pokemon_seen"
+            "all_pokemon_seen",
+            "dexcountsanity_leniency",
+            "dexcountsanity_step"
         )
         slot_data["apworld_version"] = self.apworld_version
         slot_data["tea_north"] = 1 if "North" in self.options.saffron_gatehouse_tea.value else 0
@@ -419,7 +421,8 @@ class PokemonCrystalWorld(World):
         if self.options.randomize_starting_town:
             slot_data["starting_town"] = self.starting_town.id
 
-        slot_data["dexcountsanity"] = self.generated_dexcountsanity
+        slot_data["dexcountsanity"] = self.generated_dexcountsanity[-1] if self.generated_dexcountsanity else 0
+        slot_data["dexcountsanity_checks"] = len(self.generated_dexcountsanity)
 
         slot_data["encmethod_land"] = 1 if "Land" in self.options.wild_encounter_methods_required else 0
         slot_data["encmethod_water"] = 1 if "Surfing" in self.options.wild_encounter_methods_required else 0
