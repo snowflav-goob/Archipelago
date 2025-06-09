@@ -1,3 +1,4 @@
+import time
 from typing import TYPE_CHECKING
 
 import worlds._bizhawk as bizhawk
@@ -463,19 +464,21 @@ class PokemonCrystalClient(BizHawkClient):
                 self.last_death_link = ctx.last_death_link
                 await bizhawk.write(ctx.bizhawk_ctx,
                                     [(data.ram_addresses["wArchipelagoDeathLink"], [0], "WRAM")])
+
             death_link_status = await bizhawk.guarded_read(
                 ctx.bizhawk_ctx,
                 [(data.ram_addresses["wArchipelagoDeathLink"], 1, "WRAM")], [guard])
-            if death_link_status and death_link_status[0][0] == 1:
+
+            if not death_link_status: return
+
+            if death_link_status[0][0] == 1:
                 await ctx.send_death(ctx.player_names[ctx.slot] + " is out of usable Pokémon! "
                                      + ctx.player_names[ctx.slot] + " whited out!")
-                await bizhawk.write(ctx.bizhawk_ctx,
-                                    [(data.ram_addresses["wArchipelagoDeathLink"], [0], "WRAM")])
-                self.last_death_link = ctx.last_death_link
+                await bizhawk.write(ctx.bizhawk_ctx, [(data.ram_addresses["wArchipelagoDeathLink"], [0], "WRAM")])
+                self.last_death_link = time.time()
             elif ctx.last_death_link > self.last_death_link and not death_link_status[0][0]:
+                await bizhawk.write(ctx.bizhawk_ctx, [(data.ram_addresses["wArchipelagoDeathLink"], [2], "WRAM")])
                 self.last_death_link = ctx.last_death_link
-                await bizhawk.write(ctx.bizhawk_ctx,
-                                    [(data.ram_addresses["wArchipelagoDeathLink"], [2], "WRAM")])
 
         elif "DeathLink" in ctx.tags:
             await ctx.update_death_link(False)
