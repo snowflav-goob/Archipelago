@@ -487,7 +487,7 @@ class PokemonCrystalWorld(World):
                                  f"{self.map_card_fly_location.name}\n")
 
         if self.options.randomize_starting_town:
-            spoiler_handle.write(f"Starting Town ({self.multiworld.player_name[self.player]}):"
+            spoiler_handle.write(f"Starting Town ({self.multiworld.player_name[self.player]}): "
                                  f"{self.starting_town.name}\n")
 
         if self.options.enable_mischief:

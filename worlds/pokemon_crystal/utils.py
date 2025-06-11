@@ -226,7 +226,7 @@ def get_random_starting_town(world: "PokemonCrystalWorld"):
 
     world.random.shuffle(filtered_pool)
     world.starting_town = filtered_pool.pop()
-    logging.warning(f"Starting town({world.player_name}): {world.starting_town.name}")
+    logging.debug(f"Starting town({world.player_name}): {world.starting_town.name}")
 
 
 def _starting_town_valid(world: "PokemonCrystalWorld", starting_town: StartingTown):
