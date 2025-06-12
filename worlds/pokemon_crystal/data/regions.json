@@ -290,7 +290,6 @@
       "EVENT_RIVAL_BURNED_TOWER"
     ],
     "wild_encounters": {
-      "rock_smash": true,
       "grass": "BURNED_TOWER_1F"
     }
   },
