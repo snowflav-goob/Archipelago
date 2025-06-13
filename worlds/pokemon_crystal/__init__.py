@@ -22,7 +22,8 @@ from .moves import randomize_tms, randomize_move_values, randomize_move_types
 from .music import randomize_music
 from .options import PokemonCrystalOptions, JohtoOnly, RandomizeBadges, Goal, HMBadgeRequirements, Route32Condition, \
     LevelScaling, RedGyaradosAccess, FreeFlyLocation, EliteFourRequirement, MtSilverRequirement, RedRequirement, \
-    EarlyFly, Route44AccessRequirement, BlackthornDarkCaveAccess, RadioTowerRequirement, RequireItemfinder
+    EarlyFly, Route44AccessRequirement, BlackthornDarkCaveAccess, RadioTowerRequirement, RequireItemfinder, \
+    OPTION_GROUPS
 from .phone import generate_phone_traps
 from .phone_data import PhoneScript
 from .pokemon import randomize_pokemon_data, randomize_starters, randomize_traded_pokemon, \
@@ -54,6 +55,8 @@ class PokemonCrystalWebWorld(WebWorld):
         "setup/en",
         ["AliceMousie", "gerbiljames"]
     )]
+
+    option_groups = OPTION_GROUPS
 
 
 class PokemonCrystalWorld(World):

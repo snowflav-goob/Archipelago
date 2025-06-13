@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from Options import Toggle, Choice, DefaultOnToggle, Range, PerGameCommonOptions, NamedRange, OptionSet, \
-    StartInventoryPool, OptionDict, Visibility, DeathLink
+    StartInventoryPool, OptionDict, Visibility, DeathLink, OptionGroup
 from .data import data
 
 
@@ -1282,3 +1282,141 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     enable_mischief: EnableMischief
     start_inventory_from_pool: StartInventoryPool
     death_link: PokemonCrystalDeathLink
+
+
+OPTION_GROUPS = [
+    OptionGroup(
+        "Map",
+        [RandomizeStartingTown,
+         StartingTownBlocklist,
+         JohtoOnly]
+    ),
+    OptionGroup(
+        "Roadblocks",
+        [EliteFourRequirement, EliteFourCount,
+         RedRequirement, RedCount,
+         MtSilverRequirement, MtSilverCount,
+         RadioTowerRequirement, RadioTowerCount,
+         Route44AccessRequirement, Route44AccessCount,
+         KantoAccessRequirement, KantoAccessCount,
+         Route32Condition,
+         Route2Access,
+         Route3Access,
+         RedGyaradosAccess,
+         BlackthornDarkCaveAccess,
+         NationalParkAccess,
+         SaffronGatehouseTea,
+         RemoveIlexCutTree,
+         UndergroundsRequirePower,
+         EastWestUnderground,
+         VanillaClair]
+    ),
+    OptionGroup(
+        "Items",
+        [RandomizeBadges,
+         RandomizePokegear,
+         RandomizeHiddenItems,
+         RandomizeBerryTrees,
+         RequireItemfinder,
+         RemoteItems]
+    ),
+    OptionGroup(
+        "HMs",
+        [HMCompatibility,
+         HMBadgeRequirements,
+         RemoveBadgeRequirement,
+         FreeFlyLocation,
+         FlyLocationBlocklist,
+         EarlyFly]
+    ),
+    OptionGroup(
+        "Pokemon",
+        [RandomizeWilds,
+         WildEncounterBlocklist,
+         RandomizeStaticPokemon,
+         StaticBlocklist,
+         RandomizeBaseStats,
+         RandomizeTypes,
+         RandomizeTrades,
+         EncounterGrouping,
+         EncounterSlotDistribution]
+    ),
+    OptionGroup(
+        "Starters",
+        [RandomizeStarters,
+         StarterBST,
+         StarterBlocklist]
+    ),
+    OptionGroup(
+        "Moves",
+        [RandomizeLearnsets,
+         LearnsetTypeBias,
+         MetronomeOnly,
+         RandomizeMoveTypes,
+         RandomizeMoveValues,
+         RandomizeTMMoves,
+         TMCompatibility,
+         ReusableTMs,
+         MoveBlocklist]
+    ),
+    OptionGroup(
+        "Trainers",
+        [RandomizeTrainerParties,
+         TrainerPartyBlocklist,
+         BoostTrainerPokemonLevels,
+         TrainerLevelBoostValue,
+         ForceFullyEvolved]
+    ),
+    OptionGroup(
+        "Dexsanities",
+        [Dexsanity,
+         Dexcountsanity,
+         DexcountsanityStep,
+         DexcountsanityLeniency,
+         DexsanityStarters]
+    ),
+    OptionGroup(
+        "Trainersanity",
+        [Trainersanity,
+         TrainersanityAlerts]
+    ),
+    OptionGroup(
+        "Pokemon Logic",
+        [WildEncounterMethodsRequired,
+         StaticPokemonRequired,
+         EvolutionMethodsRequired,
+         EvolutionGymLevels,
+         BreedingMethodsRequired]
+    ),
+    OptionGroup(
+        "Traps",
+        [PhoneTrapWeight,
+         SleepTrapWeight,
+         PoisonTrapWeight,
+         BurnTrapWeight,
+         FreezeTrapWeight,
+         ParalysisTrapWeight]
+    ),
+    OptionGroup(
+        "Quality of Life",
+        [GameOptions,
+         LevelScaling,
+         AllPokemonSeen,
+         StartingMoney,
+         BetterMarts,
+         ExpModifier,
+         SkipEliteFour,
+         MinimumCatchRate,
+         PokemonCrystalDeathLink]
+    ),
+    OptionGroup(
+        "Cosmetic",
+        [RandomizePalettes,
+         RandomizeMusic]
+    ),
+    OptionGroup(
+        ":3",
+        [EnableMischief],
+        False
+    )
+]
