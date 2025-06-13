@@ -210,6 +210,13 @@ def adjust_options(world: "PokemonCrystalWorld"):
             "Disabling breeding logic for player %s.",
             world.multiworld.get_player_name(world.player))
 
+    if world.options.randomize_starting_town and world.options.hm_compatibility.value < 100:
+        world.options.hm_compatibility.value = 100
+        logging.warning(
+            "Randomize starting town is enabled. "
+            "Setting HM Compatibility to 100% for player %s.",
+            world.multiworld.get_player_name(world.player)
+        )
     # In race mode we don't patch any item location information into the ROM
     if world.multiworld.is_race and not world.options.remote_items:
         logging.warning("Pokemon Crystal: Forcing Player %s (%s) to use remote items due to race mode.",
