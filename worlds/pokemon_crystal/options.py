@@ -133,8 +133,9 @@ class RandomizeStartingTown(Toggle):
     """
     Randomly chooses a town to start in.
     Any Pokemon Center except Indigo Plateau, Cinnabar Island and Silver Cave can be chosen.
+    Lake of Rage can also be chosen.
 
-    Other settings may additionally affect which Pokemon Centers can be chosen.
+    Other settings may additionally restrict which Pokemon Centers can be chosen.
 
     WARNING: Some starting towns in combination with Trainersanity may produce difficult starts.
     """
@@ -145,6 +146,7 @@ class StartingTownBlocklist(OptionSet):
     """
     Specify places which cannot be chosen as a starting town. If you block every valid option, this list will do
     nothing.
+    Indigo Plateau, Cinnabar Island and Silver Cave cannot be chosen as starting towns and are not valid options
     """
     display_name = "Starting Town Blocklist"
     valid_keys = sorted(town.name for town in data.starting_towns)
@@ -592,7 +594,7 @@ class EncounterSlotDistribution(Choice):
 class RandomizeStaticPokemon(Toggle):
     """
     Randomizes species of static Pokemon encounters
-    This includes overworld Pokemon, gift Pokémon and egg Pokémon
+    This includes overworld Pokemon, gift Pokémon and gift egg Pokémon
     """
     display_name = "Randomize Static Pokemon"
 
@@ -760,7 +762,7 @@ class RandomizeTMMoves(Toggle):
 
 class TMCompatibility(NamedRange):
     """
-    Percent chance for Pokemon to be compatible with a TM
+    Percent chance for Pokemon to be compatible with each TM
     Headbutt and Rock Smash are considered HMs when applying compatibility
     """
     display_name = "TM Compatibility"
@@ -775,7 +777,7 @@ class TMCompatibility(NamedRange):
 
 class HMCompatibility(NamedRange):
     """
-    Percent chance for Pokemon to be compatible with an HM
+    Percent chance for Pokemon to be compatible with each HM
     Headbutt and Rock Smash are considered HMs when applying compatibility
     """
     display_name = "HM Compatibility"
@@ -847,6 +849,8 @@ class FreeFlyLocation(Choice):
     Free Fly: Unlocks a random Fly destination when Fly is obtained.
     Free Fly and Map Card: Additionally unlocks a random Fly destination after obtaining both the Pokegear and Map Card.
     Map Card: Unlocks a single random Fly destination only after obtaining both the Pokegear and Map card.
+
+    Indigo Plateau cannot be chosen as a free Fly location.
     """
     display_name = "Free Fly Location"
     default = 0
@@ -871,8 +875,8 @@ class HMBadgeRequirements(Choice):
     Vanilla: HMs require their vanilla badges
     No Badges: HMs do not require a badge to use
     Add Kanto: HMs can be used with the Johto or Kanto badge
-    Regional: HMs can be used in Johto with the Johto badge and in Kanto with the Kanto badge
-        This does not apply to Fly which will default to either badge
+    Regional: HMs can be used in Johto with the Johto badge or in Kanto with the Kanto badge
+        This does not apply to Fly which will accept either badge
         Routes 26, 27, 28 and Tohjo Falls are in Johto for HM purposes
     """
     display_name = "HM Badge Requirements"
@@ -886,6 +890,8 @@ class HMBadgeRequirements(Choice):
 class RemoveBadgeRequirement(OptionSet):
     """
     Specify which HMs do not require a badge to use. This overrides the HM Badge Requirements setting.
+
+    HMs should be provided in the form: "Fly".
     """
     display_name = "Remove Badge Requirement"
     valid_keys = ["Cut", "Fly", "Surf", "Strength", "Flash", "Whirlpool", "Waterfall"]
@@ -1088,7 +1094,7 @@ class FlyLocationBlocklist(OptionSet):
     """
     These locations won't be given to you as fly locations, either as your free one or from receiving the map card.
     Locations should be provided in the form: "Ecruteak City"
-    New Bark Town, Cherrygrove City and Indigo Plateau cannot be chosen as free fly locations and are not valid options
+    Indigo Plateau cannot be chosen as a free fly location and is not a valid option
     If you blocklist enough locations that there aren't enough locations left for your total number of free fly locations, the blocklist will simply do nothing
     """
     display_name = "Fly Location Blocklist"
