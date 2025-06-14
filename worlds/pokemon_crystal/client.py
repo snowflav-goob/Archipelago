@@ -217,7 +217,7 @@ class PokemonCrystalClient(BizHawkClient):
         ctx.watcher_timeout = 0.125
 
         self.initialize_client()
-        
+
         return True
 
     async def set_auth(self, ctx: "BizHawkClientContext") -> None:
@@ -282,7 +282,8 @@ class PokemonCrystalClient(BizHawkClient):
                 for i in range(8):
                     location_id = byte_i * 8 + i
                     event_set = byte & (1 << i)
-                    if (location_id in INVERTED_EVENT_IDS and event_set == 0) or event_set != 0:
+                    invert_event = location_id in INVERTED_EVENT_IDS
+                    if (not invert_event and event_set != 0) or (invert_event and event_set == 0):
                         if location_id in ctx.server_locations:
                             local_checked_locations.add(location_id)
 
