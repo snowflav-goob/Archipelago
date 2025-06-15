@@ -751,6 +751,7 @@ bill_box:
       storage limit
       today.
 
+
 badge_call:
   caller: withheld
   script:
@@ -806,6 +807,7 @@ badge_call:
       I just can't wait
       to try it!
 
+
 blaine_riddle:
   caller: out_of_area
   script:
@@ -844,3 +846,30 @@ blaine_riddle:
     - |
       A surprising
       number of <POKE>MON!
+
+
+weast_call:
+  caller: withheld
+  script:
+    - |
+      Hey <player>,
+      it's USELESS.
+    - |
+      I thought we
+      were meeting in
+      VIRIDIAN CITY.
+    - |
+      VERMILION CITY?
+    - |
+      No, I said WEAST
+      KANTO…
+    - |
+      You gotta head
+      WEAST out of 
+      VERMILION,
+    - |
+      then SNORTH-
+      WEAST through
+      DIGLETT'S CAVE,
+    - |
+      then you need t--
