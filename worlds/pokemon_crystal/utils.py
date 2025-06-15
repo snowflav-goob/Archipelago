@@ -282,6 +282,9 @@ def get_free_fly_locations(world: "PokemonCrystalWorld"):
         # Mt. Silver
         location_pool = [region for region in location_pool if region.name != "Silver Cave"]
 
+    if world.options.randomize_starting_town:
+        world.options.free_fly_blocklist.value.add(world.starting_town.name)
+
     # only do any of this if there even is a fly location blocklist
     if world.options.free_fly_blocklist:
 
