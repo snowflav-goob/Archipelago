@@ -4615,8 +4615,7 @@
     "events": [],
     "wild_encounters": {
       "surfing": "ROUTE_42",
-      "fishing": "Lake",
-      "headbutt": "Town"
+      "fishing": "Lake"
     }
   },
   "REGION_ROUTE_42:CENTER": {
@@ -4721,8 +4720,7 @@
     "wild_encounters": {
       "grass": "ROUTE_43",
       "surfing": "ROUTE_43",
-      "fishing": "Pond",
-      "headbutt": "Lake"
+      "fishing": "Pond"
     }
   },
   "REGION_ROUTE_43:FRUITTREE": {
