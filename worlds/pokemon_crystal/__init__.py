@@ -470,31 +470,21 @@ class PokemonCrystalWorld(World):
             = multidata["connect_names"][self.player_name]
 
     def write_spoiler(self, spoiler_handle) -> None:
-        if self.options.randomize_starters:
-            spoiler_handle.write(f"\n\nStarter Pokemon ({self.multiworld.player_name[self.player]}):\n\n")
-            for evo in self.generated_starters:
-                types_0 = ", ".join(self.generated_pokemon[evo[0]].types)
-                types_1 = ", ".join(self.generated_pokemon[evo[1]].types)
-                types_2 = ", ".join(self.generated_pokemon[evo[2]].types)
-                spoiler_handle.write(f"{evo[0]} ({types_0}) -> {evo[1]} ({types_1}) -> {evo[2]} ({types_2})\n")
+        spoiler_handle.write(f"\nPokemon Crystal ({self.multiworld.player_name[self.player]}):\n")
 
         if self.options.free_fly_location.value in (FreeFlyLocation.option_free_fly,
                                                     FreeFlyLocation.option_free_fly_and_map_card):
-            spoiler_handle.write(f"\n\n")
-            spoiler_handle.write(f"Free Fly Location ({self.multiworld.player_name[self.player]}): "
-                                 f"{self.free_fly_location.name}\n")
+            spoiler_handle.write(f"Free Fly Location: {self.free_fly_location.name}\n")
 
         if self.options.free_fly_location.value in (FreeFlyLocation.option_free_fly_and_map_card,
                                                     FreeFlyLocation.option_map_card):
-            spoiler_handle.write(f"Map Card Fly Location ({self.multiworld.player_name[self.player]}): "
-                                 f"{self.map_card_fly_location.name}\n")
+            spoiler_handle.write(f"Map Card Fly Location: {self.map_card_fly_location.name}\n")
 
         if self.options.randomize_starting_town:
-            spoiler_handle.write(f"Starting Town ({self.multiworld.player_name[self.player]}): "
-                                 f"{self.starting_town.name}\n")
+            spoiler_handle.write(f"Starting Town: {self.starting_town.name}\n")
 
         if self.options.enable_mischief:
-            spoiler_handle.write(f"\n\nMischief ({self.multiworld.player_name[self.player]}):\n\n")
+            spoiler_handle.write(f"Mischief:\n")
             get_misc_spoiler_log(self, spoiler_handle.write)
 
     def create_item(self, name: str) -> PokemonCrystalItem:
