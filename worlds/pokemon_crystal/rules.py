@@ -1295,7 +1295,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         if not state.has(evolved_from, world.player): return False
         for evo in evolutions:
             if evo.evo_type is EvolutionType.Level or evo.evo_type is EvolutionType.Stats:
-                required_gyms = max(1, evo.level // world.options.evolution_gym_levels)
+                required_gyms = ((evo.level - 1) // world.options.evolution_gym_levels) + 1
                 if has_beaten_n_gyms(state, required_gyms): return True
             if evo.evo_type is EvolutionType.Item and state.has_any(evolution_item_unlocks, world.player): return True
             if evo.evo_type is EvolutionType.Happiness and state.has_any(happiness_unlocks, world.player): return True
