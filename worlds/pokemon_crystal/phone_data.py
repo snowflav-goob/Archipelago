@@ -169,7 +169,7 @@ def template_call_remote(location: Location, world):
     game_name = location.item.game.upper()
     game_name = (game_name[:15] + "…") if len(game_name) > 16 else game_name
 
-    player_name = world.multiworld.player_name[player].upper()
+    player_name = world.player_name.upper()
 
     item_name = location.item.name.upper()
     item_name = (item_name[:15] + "…") if len(item_name) > 16 else item_name
@@ -221,8 +221,7 @@ def template_call_psychic():
 
 
 def template_call_filler_hint(location, world):
-    player = location.item.player
-    player_name = world.multiworld.player_name[player].upper()
+    player_name = world.player_name.upper()
 
     item_name = location.item.name.upper()
     item_name = (item_name[:15] + "…") if len(item_name) > 16 else item_name
