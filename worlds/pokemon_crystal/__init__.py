@@ -182,8 +182,8 @@ class PokemonCrystalWorld(World):
         randomize_static_pokemon(self)
         randomize_pokemon_data(self)
         randomize_starters(self)
-        generate_evolution_data(self)
         generate_breeding_data(self)
+        generate_evolution_data(self)
 
         create_locations(self, regions)
         self.multiworld.regions.extend(regions.values())
