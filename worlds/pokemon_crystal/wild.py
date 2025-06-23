@@ -99,8 +99,13 @@ def randomize_wild_pokemon(world: "PokemonCrystalWorld"):
         def get_pokemon_from_pool(pool: list[str], blocklist: set[str] | None = None,
                                   exclude_unown: bool = False) -> str:
             pokemon = pool.pop()
-            if exclude_unown and pokemon == "UNOWN":
+            if exclude_unown and pokemon == "UNOWN" and not pool:
                 pokemon = get_random_pokemon(world, exclude_unown=True, blocklist=global_blocklist)
+            elif exclude_unown and pokemon == "UNOWN":
+                pokemon = get_pokemon_from_pool(pool, exclude_unown=exclude_unown, blocklist=blocklist)
+                pool.append("UNOWN")
+                world.random.shuffle(pool)
+
             if blocklist and pokemon in blocklist:
                 pokemon = get_random_pokemon(world, exclude_unown=exclude_unown, blocklist=blocklist | global_blocklist)
             return pokemon
