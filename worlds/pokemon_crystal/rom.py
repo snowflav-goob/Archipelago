@@ -351,6 +351,18 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         address = data.rom_addresses["AP_Setting_TMMoves"]
         write_bytes(patch, tm_moves, address)
 
+        address = data.rom_addresses["AP_Setting_GoldenrodMoveTutorMoveNames"]
+        for tm in ("FLAMETHROWER", "THUNDERBOLT", "ICE_BEAM"):
+            move_data = world.generated_moves[world.generated_tms[tm].id]
+            move_name = convert_to_ingame_text(move_data.name + " " * (12 - len(move_data.name))) + [0x50]
+            write_bytes(patch, move_name, address)
+            address += 13
+
+        for tm in ("FLAMETHROWER", "THUNDERBOLT", "ICE_BEAM"):
+            move_id = world.generated_tms[tm].move_id
+            address = data.rom_addresses["AP_Setting_MoveTutor_" + tm] + 1
+            write_bytes(patch, [move_id], address)
+
     if world.options.enable_mischief:
         if MiscOption.FuchsiaGym.value in world.generated_misc.selected:
             address = data.rom_addresses["AP_Misc_FuchsiaTrainers"] + 1
