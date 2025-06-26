@@ -9,7 +9,7 @@ import yaml
 
 from BaseClasses import ItemClassification
 
-APWORLD_VERSION = "4.0.6"
+APWORLD_VERSION = "4.0.7"
 POKEDEX_OFFSET = 10000
 POKEDEX_COUNT_OFFSET = 20000
 
