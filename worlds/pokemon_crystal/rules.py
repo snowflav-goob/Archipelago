@@ -1428,22 +1428,40 @@ def verify_hm_accessibility(world: "PokemonCrystalWorld") -> None:
             return logic.can_rock_smash()(state)
         return False
 
+    def do_verify(hms: list[str]):
+        hms_to_verify = hms.copy()
+        unverified_hms = []
+        last_hm = None
+
+        while hms_to_verify:
+            state = world.get_world_collection_state()
+            hm_to_verify = hms_to_verify[0]
+            if not can_use_hm(state, hm_to_verify):
+
+                if last_hm == hm_to_verify:
+                    if not can_use_hm(state, hm_to_verify):
+                        unverified_hms.append(hms_to_verify.pop(0))
+                    else:
+                        hms_to_verify.pop(0)
+                    continue
+
+                last_hm = hm_to_verify
+                valid_pokemon = [mon for mon in logic.available_pokemon if state.has(mon, world.player)
+                                 and mon not in logic.compatible_hm_pokemon[hm_to_verify]]
+                if valid_pokemon:
+                    pokemon = world.random.choice(valid_pokemon)
+                    add_hm_compatibility(world, pokemon, hm_to_verify)
+            else:
+                hms_to_verify.pop(0)
+
+        if unverified_hms and unverified_hms == hms:
+            if any((logic.has_hm_badge_requirement(hm, False)(state)
+                    or logic.has_hm_badge_requirement(hm, True)(state)) for hm in unverified_hms):
+                raise Exception(f"Failed to ensure access to {",".join(unverified_hms)} for player {world.player}")
+        elif unverified_hms:
+            unverified_hms.reverse()
+            do_verify(unverified_hms)
+
     hms = ["CUT", "FLY", "SURF", "STRENGTH", "FLASH", "WHIRLPOOL", "WATERFALL", "HEADBUTT", "ROCK_SMASH"]
     world.random.shuffle(hms)
-    last_hm_verified = None
-    while hms:
-        hm_to_verify = hms[0]
-        state = world.get_world_collection_state()
-        if not can_use_hm(state, hm_to_verify) and (logic.has_hm_badge_requirement(hm_to_verify, False)(state)
-                                                    or logic.has_hm_badge_requirement(hm_to_verify, True)(state)):
-            if hm_to_verify == last_hm_verified:
-                raise Exception(f"Failed to ensure access to {hm_to_verify} for player {world.player}")
-            last_hm_verified = hm_to_verify
-            valid_pokemon = [mon for mon in logic.available_pokemon if state.has(mon, world.player)
-                             and mon not in logic.compatible_hm_pokemon[hm_to_verify]]
-            pokemon = world.random.choice(valid_pokemon)
-            add_hm_compatibility(world, pokemon, hm_to_verify)
-            hms.pop(0)
-            hms.append(hm_to_verify)
-        else:
-            hms.pop(0)
+    do_verify(hms)
