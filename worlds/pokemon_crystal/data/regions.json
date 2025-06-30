@@ -210,7 +210,7 @@
     ],
     "events": [
       "EVENT_BEAT_CLAIR",
-      "EVENT_RISING_BADGE_FROM_CLAIR"
+      "EVENT_RISING_BADGE_FROM_CLAIR_GYM"
     ]
   },
   "REGION_BLACKTHORN_GYM_2F": {
@@ -1057,7 +1057,9 @@
       "ITEM_FROM_COOLTRAINERF_CARA",
       "ITEM_FROM_TWINS_LEA_AND_PIA"
     ],
-    "events": [],
+    "events": [
+      "EVENT_RISING_BADGE_FROM_CLAIR"
+    ],
     "wild_encounters": {
       "surfing": "DRAGONS_DEN_B1F",
       "fishing": "Dratini"

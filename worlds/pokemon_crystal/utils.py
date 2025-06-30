@@ -254,7 +254,7 @@ def _starting_town_valid(world: "PokemonCrystalWorld", starting_town: StartingTo
     immediate_hiddens = world.options.randomize_hidden_items and not world.options.require_itemfinder
 
     if starting_town.name == "Cianwood City":
-        return world.options.trainersanity and immediate_hiddens
+        return world.options.trainersanity and immediate_hiddens and world.options.static_pokemon_required
 
     if starting_town.name in ("Pallet Town", "Viridian City", "Pewter City"):
         return immediate_hiddens or world.options.route_3_access.value == Route3Access.option_vanilla

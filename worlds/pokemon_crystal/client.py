@@ -121,7 +121,9 @@ TRACKER_KEY_ITEM_FLAGS = [
     "EVENT_GOT_POKEGEAR",
     "EVENT_GOT_POKEDEX",
     "EVENT_MART_ESCAPE_ROPE",
-    "EVENT_MART_WATER_STONE"
+    "EVENT_MART_WATER_STONE",
+
+    "EVENT_RISING_BADGE_FROM_CLAIR_GYM"
 ]
 KEY_ITEM_FLAG_MAP = {data.event_flags[event]: event for event in TRACKER_KEY_ITEM_FLAGS}
 
@@ -198,7 +200,7 @@ class PokemonCrystalClient(BizHawkClient):
                     generator_apworld_version = bytes([byte for byte in rom_info[4] if byte != 0]).decode("ascii")
                 except UnicodeDecodeError:
                     generator_apworld_version = None
-                    
+
                 if not generator_apworld_version:
                     generator_apworld_version = "too old to know"
                 generator_version = "{0:x}".format(rom_version)

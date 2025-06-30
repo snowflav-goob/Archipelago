@@ -30,7 +30,7 @@ from .pokemon import randomize_pokemon_data, randomize_starters, randomize_trade
     fill_wild_encounter_locations, generate_breeding_data, generate_evolution_data
 from .regions import create_regions, setup_free_fly_regions
 from .rom import generate_output, PokemonCrystalProcedurePatch
-from .rules import set_rules, PokemonCrystalLogic, set_hm_compatible_pokemon, verify_hm_accessibility
+from .rules import set_rules, PokemonCrystalLogic, verify_hm_accessibility
 from .trainers import boost_trainer_pokemon, randomize_trainers, vanilla_trainer_movesets
 from .utils import get_random_filler_item, get_free_fly_locations, get_random_ball, get_random_starting_town, \
     adjust_options
@@ -177,7 +177,7 @@ class PokemonCrystalWorld(World):
         self.blocklisted_moves = {move.replace(" ", "_").upper() for move in self.options.move_blocklist.value}
 
         randomize_pokemon_data(self)
-        set_hm_compatible_pokemon(self)
+        self.logic.set_hm_compatible_pokemon(self)
 
     def create_regions(self) -> None:
         if self.options.randomize_starting_town:

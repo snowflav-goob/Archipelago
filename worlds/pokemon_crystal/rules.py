@@ -61,7 +61,7 @@ class PokemonCrystalLogic:
                 "mineral": "EVENT_STORM_BADGE_FROM_CHUCK",
                 "storm": "EVENT_MINERAL_BADGE_FROM_JASMINE",
                 "glacier": "EVENT_GLACIER_BADGE_FROM_PRYCE",
-                "rising": "EVENT_RISING_BADGE_FROM_CLAIR",
+                "rising": "EVENT_RISING_BADGE_FROM_CLAIR" if world.options.vanilla_clair else "EVENT_RISING_BADGE_FROM_CLAIR_GYM",
 
                 "boulder": "EVENT_BOULDER_BADGE_FROM_BROCK",
                 "cascade": "EVENT_CASCADE_BADGE_FROM_MISTY",
@@ -326,18 +326,22 @@ class PokemonCrystalLogic:
         else:
             return None
 
-    def update_hm_compatible_pokemon(self):
+    def set_hm_compatible_pokemon(self, world: "PokemonCrystalWorld"):
+        hms = ("CUT", "FLY", "SURF", "STRENGTH", "FLASH", "WHIRLPOOL", "WATERFALL", "HEADBUTT", "ROCK_SMASH")
+        for hm in hms:
+            for pokemon_id, pokemon_data in world.generated_pokemon.items():
+                if hm in pokemon_data.tm_hm:
+                    self.compatible_hm_pokemon[hm].append(pokemon_id)
+
         pokemon_hm_use = defaultdict(list)
         for hm, species_list in self.compatible_hm_pokemon.items():
-            hm_logic_name = f"Teach {hm}"
             for species in species_list:
-                pokemon_hm_use[species].append(hm_logic_name)
+                pokemon_hm_use[species].append(f"Teach {hm}")
         self.pokemon_hm_use = pokemon_hm_use
 
-    def add_hm_compatible_pokemon(self, hm: str, species: str):
-        self.compatible_hm_pokemon[hm].append(species)
-        hm_logic_name = f"Teach {hm}"
-        self.pokemon_hm_use.setdefault(species, []).append(hm_logic_name)
+    def add_hm_compatible_pokemon(self, hm: str, pokemon_id: str):
+        self.compatible_hm_pokemon[hm].append(pokemon_id)
+        self.pokemon_hm_use.setdefault(pokemon_id, []).append(f"Teach {hm}")
 
 
 def set_rules(world: "PokemonCrystalWorld") -> None:
@@ -1400,16 +1404,6 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
             )
 
 
-def set_hm_compatible_pokemon(world: "PokemonCrystalWorld") -> None:
-    logic = world.logic
-    hms = ("CUT", "FLY", "SURF", "STRENGTH", "FLASH", "WHIRLPOOL", "WATERFALL", "HEADBUTT", "ROCK_SMASH")
-    for hm in hms:
-        for pokemon_id, pokemon_data in world.generated_pokemon.items():
-            if hm in pokemon_data.tm_hm:
-                logic.compatible_hm_pokemon[hm].append(pokemon_id)
-    logic.update_hm_compatible_pokemon()
-
-
 def verify_hm_accessibility(world: "PokemonCrystalWorld") -> None:
     logic = world.logic
 
@@ -1449,9 +1443,7 @@ def verify_hm_accessibility(world: "PokemonCrystalWorld") -> None:
                              and mon not in logic.compatible_hm_pokemon[hm_to_verify]]
             pokemon = world.random.choice(valid_pokemon)
             add_hm_compatibility(world, pokemon, hm_to_verify)
-            logic.add_hm_compatible_pokemon(hm_to_verify, pokemon)
             hms.pop(0)
             hms.append(hm_to_verify)
         else:
             hms.pop(0)
-    logic.update_hm_compatible_pokemon()

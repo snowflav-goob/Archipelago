@@ -402,6 +402,7 @@ def get_random_types(random):
 def add_hm_compatibility(world: "PokemonCrystalWorld", pokemon_id: str, hm: str):
     pokemon_data = world.generated_pokemon[pokemon_id]
     world.generated_pokemon[pokemon_id] = replace(pokemon_data, tm_hm=[hm] + list(pokemon_data.tm_hm))
+    world.logic.add_hm_compatible_pokemon(hm, pokemon_id)
 
 
 # palettes stuff
