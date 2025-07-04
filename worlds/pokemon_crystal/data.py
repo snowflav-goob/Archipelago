@@ -19,6 +19,7 @@ class ItemData:
     label: str
     item_id: int
     item_const: str
+    price: int
     classification: ItemClassification
     tags: frozenset[str]
 
@@ -566,11 +567,12 @@ def _init() -> None:
             # raise ValueError(f"Unknown classification {attributes['classification']} for item {item_constant_name}")
 
         items[item_codes[item_constant_name]] = ItemData(
-            attributes["name"],
-            item_codes[item_constant_name],
-            item_constant_name,
-            item_classification,
-            frozenset(attributes["tags"])
+            label=attributes["name"],
+            item_id=item_codes[item_constant_name],
+            item_const=item_constant_name,
+            price=attributes["price"],
+            classification=item_classification,
+            tags=frozenset(attributes["tags"])
         )
 
     pokemon = {}
