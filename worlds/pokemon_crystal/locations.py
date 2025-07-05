@@ -241,6 +241,6 @@ LOCATION_GROUPS = {
     "Berry Trees": {loc.label for loc in data.locations.values() if "BerryTree" in loc.tags},
     "Key Items": {loc.label for loc in data.locations.values() if "KeyItem" in loc.tags},
     "Ruins of Alph": {loc.label for loc in data.locations.values() if "AlphItemChambers" in loc.tags},
-    "Shopsanity": {f"{mart.friendly_name} - Item {i + 1}" for mart in data.marts.values() for i in
-                   range(len(mart.items))}
+    "Shopsanity": {f"{mart.friendly_name} - Item {i + 1}" for mart in data.marts.values() for i, item in
+                   enumerate(mart.items) if item.flag}
 }
