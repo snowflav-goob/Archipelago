@@ -458,6 +458,18 @@ class EvolutionGymLevels(Range):
     range_end = 69
 
 
+class Shopsanity(Choice):
+    """
+    Adds Pokemart items as locations, items in Pokemarts are added to the item pool
+    """
+    display_name = "Shopsanity"
+    default = 0
+    option_off = 0
+    option_johto = 1
+    option_kanto = 2
+    option_both = 3
+
+
 class RandomizePokegear(Toggle):
     """
     Shuffles the Pokegear and cards into the pool
@@ -1240,6 +1252,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     evolution_methods_required: EvolutionMethodsRequired
     evolution_gym_levels: EvolutionGymLevels
     breeding_methods_required: BreedingMethodsRequired
+    shopsanity: Shopsanity
     randomize_pokegear: RandomizePokegear
     randomize_berry_trees: RandomizeBerryTrees
     randomize_starters: RandomizeStarters
@@ -1335,6 +1348,10 @@ OPTION_GROUPS = [
          RandomizeBerryTrees,
          RequireItemfinder,
          RemoteItems]
+    ),
+    OptionGroup(
+        "Shopsanity",
+        [Shopsanity]
     ),
     OptionGroup(
         "HMs",

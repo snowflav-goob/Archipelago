@@ -13,6 +13,62 @@ APWORLD_VERSION = "4.0.9"
 POKEDEX_OFFSET = 10000
 POKEDEX_COUNT_OFFSET = 20000
 
+FRIENDLY_MART_NAMES = {
+    "MART_CHERRYGROVE": "Cherrygrove City Pokemart",
+    "MART_VIOLET": "Violet City Pokemart",
+    "MART_AZALEA": "Azalea Town Pokemart",
+    "MART_CIANWOOD": "Cianwood City Pharmacy",
+    "MART_GOLDENROD_2F_1": "Goldenrod Dept. Store 2F - Pokemart 1",
+    "MART_GOLDENROD_2F_2": "Goldenrod Dept. Store 2F - Pokemart 2",
+    "MART_GOLDENROD_3F": "Goldenrod Dept. Store 3F - X Items Shop",
+    "MART_GOLDENROD_4F": "Goldenrod Dept. Store 4F - Vitamin Shop",
+    "MART_GOLDENROD_5F": "Goldenrod Dept. Store 5F - TM Shop",
+    "MART_OLIVINE": "Olivine City Pokemart",
+    "MART_ECRUTEAK": "Ecruteak City Pokemart",
+    "MART_MAHOGANY_1": "Mahogany Town Rocket Shop",
+    "MART_MAHOGANY_2": "Mahogany Town Pokemart",
+    "MART_BLACKTHORN": "Blackthorn City Pokemart",
+    "MART_VIRIDIAN": "Viridian City Pokemart",
+    "MART_PEWTER": "Pewter City Pokemart",
+    "MART_CERULEAN": "Cerulean City Pokemart",
+    "MART_LAVENDER": "Lavender Town Pokemart",
+    "MART_VERMILION": "Vermilion City Pokemart",
+    "MART_CELADON_2F_1": "Celadon Dept. Store 2F - Pokemart 1",
+    "MART_CELADON_2F_2": "Celadon Dept. Store 2F - Pokemart 2",
+    "MART_CELADON_3F": "Celadon Dept. Store 3F - TM Shop",
+    "MART_CELADON_4F": "Celadon Dept. Store 4F - Mail Shop",
+    "MART_CELADON_5F_1": "Celadon Dept. Store 5F - Vitamin Shop",
+    "MART_CELADON_5F_2": "Celadon Dept. Store 5F - X Items Shop",
+    "MART_FUCHSIA": "Fuchsia City Pokemart",
+    "MART_SAFFRON": "Saffron City Pokemart",
+    "MART_MT_MOON": "Mt Moon Square Gift Shop",
+    "MART_INDIGO_PLATEAU": "Indigo Plateau Pokemart",
+    "MART_UNDERGROUND": "Goldenrod UG - Herb Shop",
+    "MART_GOLDENROD_1F_S": "Evolution Stone Shop",
+    "MART_ROOFTOP_SALE": "Goldenrod Dept. Store - Rooftop Sale",
+    "MART_BARGAIN_SHOP": "Goldenrod UG - Bargain Shop"
+}
+
+JOHTO_MARTS = {
+    "MART_CHERRYGROVE",
+    "MART_VIOLET",
+    "MART_AZALEA",
+    "MART_CIANWOOD",
+    "MART_GOLDENROD_2F_1",
+    "MART_GOLDENROD_2F_2",
+    "MART_GOLDENROD_3F",
+    "MART_GOLDENROD_4F",
+    "MART_GOLDENROD_5F",
+    "MART_OLVINE",
+    "MART_ECRUTEAK",
+    "MART_MAHOGANY_1",
+    "MART_MAHOGANY_2",
+    "MART_BLACKHORN",
+    "MART_UNDERGROUND",
+    "MART_BARGAIN_SHOP",
+    "MART_ROOFTOP_SALE"
+}
+
 
 @dataclass(frozen=True)
 class ItemData:
@@ -130,12 +186,15 @@ class TMHMData:
 class MartItemData:
     item: str
     price: int
-    flag: str | None
+    flag: int | None
+    address: int
 
 
 @dataclass(frozen=True)
 class MartData:
     index: int
+    friendly_name: str
+    johto: bool
     items: Sequence[MartItemData]
 
 
@@ -333,6 +392,7 @@ class RegionData:
     locations: list[str]
     events: list[EventData]
     wild_encounters: RegionWildEncounterData | None
+    marts: list[str]
 
 
 @dataclass(frozen=True)
@@ -544,7 +604,8 @@ def _init() -> None:
                 region_json["wild_encounters"].get("fishing"),
                 region_json["wild_encounters"].get("headbutt"),
                 region_json["wild_encounters"].get("rock_smash")
-            ) if "wild_encounters" in region_json else None
+            ) if "wild_encounters" in region_json else None,
+            marts=region_json["marts"] if "marts" in region_json else [],
         )
 
         regions[region_name] = new_region
@@ -657,7 +718,11 @@ def _init() -> None:
 
     marts = {mart_name: MartData(
         mart_data["index"],
-        [MartItemData(entry["item"], entry["price"], entry.get("flag")) for entry in mart_data["items"]]
+        FRIENDLY_MART_NAMES[mart_name],
+        mart_name in JOHTO_MARTS,
+        [MartItemData(entry["item"], entry["price"], event_flag_data[entry["flag"]] if "flag" in entry else None,
+                      rom_address_data[mart_data["address"]] + (i * 5) + 1)
+         for i, entry in enumerate(mart_data["items"])]
     ) for mart_name, mart_data in mart_data.items()}
 
     music_consts = {music_name: MusicConst(music_data["id"], music_data["loop"]) for music_name, music_data in

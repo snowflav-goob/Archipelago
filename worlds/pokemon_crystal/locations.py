@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from BaseClasses import Location, Region, LocationProgressType
+from . import item_const_name_to_id
 from .data import data, POKEDEX_OFFSET, POKEDEX_COUNT_OFFSET
 from .options import Goal, DexsanityStarters
 from .pokemon import get_priority_dexsanity, get_excluded_dexsanity
@@ -179,6 +180,25 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
             )
             breeding_region.locations.append(new_location)
 
+    if world.options.shopsanity:
+        for mart, mart_data in data.marts.items():
+            region_name = f"REGION_{mart}"
+            if region_name in regions:
+                region = regions[region_name]
+
+                for i, item in enumerate(mart_data.items):
+                    new_location = PokemonCrystalLocation(
+                        world.player,
+                        f"{mart_data.friendly_name} - Item {i + 1}",
+                        region,
+                        tags=frozenset({"shopsanity"}),
+                        flag=item.flag,
+                        rom_address=item.address,
+                        default_item_value=item_const_name_to_id(item.item)
+                    )
+                    new_location.mart_id = mart
+                    region.locations.append(new_location)
+
 
 def create_location_label_to_id_map() -> dict[str, int]:
     """
@@ -189,6 +209,11 @@ def create_location_label_to_id_map() -> dict[str, int]:
         for location_name in region_data.locations:
             location_data = data.locations[location_name]
             label_to_id_map[location_data.label] = location_data.flag
+
+    for mart, mart_data in data.marts.items():
+        for i, item in enumerate(mart_data.items):
+            if item.flag:
+                label_to_id_map[f"{mart_data.friendly_name} - Item {i + 1}"] = item.flag
 
     for pokemon in data.pokemon.values():
         label_to_id_map[f"Pokedex - {pokemon.friendly_name}"] = pokemon.id + POKEDEX_OFFSET
@@ -215,5 +240,7 @@ LOCATION_GROUPS = {
     "Trainersanity": {loc.label for loc in data.locations.values() if "Trainersanity" in loc.tags},
     "Berry Trees": {loc.label for loc in data.locations.values() if "BerryTree" in loc.tags},
     "Key Items": {loc.label for loc in data.locations.values() if "KeyItem" in loc.tags},
-    "Ruins of Alph": {loc.label for loc in data.locations.values() if "AlphItemChambers" in loc.tags}
+    "Ruins of Alph": {loc.label for loc in data.locations.values() if "AlphItemChambers" in loc.tags},
+    "Shopsanity": {f"{mart.friendly_name} - Item {i + 1}" for mart in data.marts.values() for i in
+                   range(len(mart.items))}
 }

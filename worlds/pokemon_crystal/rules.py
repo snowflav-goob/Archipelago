@@ -9,7 +9,7 @@ from .data import data, EvolutionType, EvolutionData, FishingRodType, EncounterK
 from .options import Goal, JohtoOnly, Route32Condition, UndergroundsRequirePower, Route2Access, \
     BlackthornDarkCaveAccess, NationalParkAccess, KantoAccessRequirement, Route3Access, BreedingMethodsRequired, \
     MtSilverRequirement, FreeFlyLocation, HMBadgeRequirements, EliteFourRequirement, RedRequirement, \
-    Route44AccessRequirement, RandomizeBadges, RadioTowerRequirement, PokemonCrystalOptions
+    Route44AccessRequirement, RandomizeBadges, RadioTowerRequirement, PokemonCrystalOptions, Shopsanity
 from .pokemon import add_hm_compatibility
 from .utils import evolution_in_logic, evolution_location_name
 
@@ -657,6 +657,10 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         set_rule(get_location("Eevee"), lambda state: state.has("EVENT_MET_BILL", world.player))
     if world.options.static_pokemon_required:
         set_rule(get_location("Static_Eevee_1"), lambda state: state.has("EVENT_MET_BILL", world.player))
+
+    if world.options.shopsanity == Shopsanity.option_johto or world.options.shopsanity == Shopsanity.option_both:
+        set_rule(get_entrance("REGION_GOLDENROD_DEPT_STORE_ROOF -> REGION_MART_ROOFTOP_SALE"),
+                 lambda state: state.has("EVENT_BEAT_ELITE_FOUR", world.player))
 
     if not johto_only():
         set_rule(get_entrance("REGION_GOLDENROD_MAGNET_TRAIN_STATION -> REGION_SAFFRON_MAGNET_TRAIN_STATION"),

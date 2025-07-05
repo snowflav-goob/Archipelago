@@ -1,3 +1,4 @@
+import math
 import time
 from typing import TYPE_CHECKING
 
@@ -9,6 +10,8 @@ from .options import Goal
 
 if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext
+
+EVENT_BYTES = math.ceil(max(data.event_flags.values()) / 8)
 
 TRACKER_EVENT_FLAGS = [
     "EVENT_GOT_KENYA",
@@ -264,7 +267,7 @@ class PokemonCrystalClient(BizHawkClient):
 
             read_result = await bizhawk.guarded_read(
                 ctx.bizhawk_ctx,
-                [(data.ram_addresses["wEventFlags"], 0x104, "WRAM"),  # Flags
+                [(data.ram_addresses["wEventFlags"], EVENT_BYTES, "WRAM"),  # Flags
                  (data.ram_addresses["wArchipelagoPokedexCaught"], 0x20, "WRAM"),
                  (data.ram_addresses["wArchipelagoPokedexSeen"], 0x20, "WRAM")],
                 [overworld_guard]

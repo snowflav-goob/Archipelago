@@ -31,7 +31,10 @@
       "REGION_AZALEA_TOWN"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_AZALEA"
+    ]
   },
   "REGION_AZALEA_POKECENTER_1F": {
     "johto": true,
@@ -235,7 +238,10 @@
       "REGION_BLACKTHORN_CITY"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_BLACKTHORN"
+    ]
   },
   "REGION_BLACKTHORN_POKECENTER_1F": {
     "johto": true,
@@ -363,7 +369,11 @@
       "REGION_CELADON_DEPT_STORE_ELEVATOR"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_CELADON_2F_1",
+      "MART_CELADON_2F_2"
+    ]
   },
   "REGION_CELADON_DEPT_STORE_3F": {
     "johto": false,
@@ -373,7 +383,10 @@
       "REGION_CELADON_DEPT_STORE_ELEVATOR"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_CELADON_3F"
+    ]
   },
   "REGION_CELADON_DEPT_STORE_4F": {
     "johto": false,
@@ -383,7 +396,10 @@
       "REGION_CELADON_DEPT_STORE_ELEVATOR"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_CELADON_4F"
+    ]
   },
   "REGION_CELADON_DEPT_STORE_5F": {
     "johto": false,
@@ -393,7 +409,11 @@
       "REGION_CELADON_DEPT_STORE_ELEVATOR"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_CELADON_5F_1",
+      "MART_CELADON_5F_2"
+    ]
   },
   "REGION_CELADON_DEPT_STORE_6F": {
     "johto": false,
@@ -578,7 +598,10 @@
       "REGION_CERULEAN_CITY"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_CERULEAN"
+    ]
   },
   "REGION_CERULEAN_POKECENTER_1F": {
     "johto": false,
@@ -665,7 +688,10 @@
       "REGION_CHERRYGROVE_CITY"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_CHERRYGROVE"
+    ]
   },
   "REGION_CHERRYGROVE_POKECENTER_1F": {
     "johto": true,
@@ -1167,7 +1193,10 @@
       "REGION_ECRUTEAK_CITY"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_ECRUTEAK"
+    ]
   },
   "REGION_ECRUTEAK_POKECENTER_1F": {
     "johto": true,
@@ -1386,7 +1415,10 @@
       "REGION_FUCHSIA_CITY"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_FUCHSIA"
+    ]
   },
   "REGION_FUCHSIA_POKECENTER_1F": {
     "johto": false,
@@ -1452,7 +1484,11 @@
       "REGION_GOLDENROD_DEPT_STORE_ELEVATOR"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_GOLDENROD_2F_1",
+      "MART_GOLDENROD_2F_2"
+    ]
   },
   "REGION_GOLDENROD_DEPT_STORE_3F": {
     "johto": true,
@@ -1462,7 +1498,10 @@
       "REGION_GOLDENROD_DEPT_STORE_ELEVATOR"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_GOLDENROD_3F"
+    ]
   },
   "REGION_GOLDENROD_DEPT_STORE_4F": {
     "johto": true,
@@ -1472,7 +1511,10 @@
       "REGION_GOLDENROD_DEPT_STORE_ELEVATOR"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_GOLDENROD_4F"
+    ]
   },
   "REGION_GOLDENROD_DEPT_STORE_5F": {
     "johto": true,
@@ -1485,7 +1527,10 @@
       "TM27_RETURN",
       "TM21_FRUSTRATION"
     ],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_GOLDENROD_5F"
+    ]
   },
   "REGION_GOLDENROD_DEPT_STORE_6F": {
     "johto": true,
@@ -1536,7 +1581,10 @@
       "REGION_GOLDENROD_DEPT_STORE_6F"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_ROOFTOP_SALE"
+    ]
   },
   "REGION_GOLDENROD_FLOWER_SHOP": {
     "johto": true,
@@ -1650,6 +1698,10 @@
     ],
     "events": [
       "EVENT_HAIRCUT_BROTHERS"
+    ],
+    "marts": [
+      "MART_UNDERGROUND",
+      "MART_BARGAIN_SHOP"
     ]
   },
   "REGION_GOLDENROD_UNDERGROUND_SWITCH_ROOM_ENTRANCES": {
@@ -1935,7 +1987,10 @@
       "REGION_NEW_BARK_TOWN"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_INDIGO_PLATEAU"
+    ]
   },
   "REGION_INDIGO_PLATEAU_POKECENTER_1F:RIVAL": {
     "johto": false,
@@ -2101,7 +2156,10 @@
       "REGION_LAVENDER_TOWN"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_LAVENDER"
+    ]
   },
   "REGION_LAVENDER_NAME_RATER": {
     "johto": false,
@@ -2179,7 +2237,11 @@
       "REGION_TEAM_ROCKET_BASE_B1F"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_MAHOGANY_1",
+      "MART_MAHOGANY_2"
+    ]
   },
   "REGION_MAHOGANY_POKECENTER_1F": {
     "johto": true,
@@ -2267,7 +2329,10 @@
       "REGION_MOUNT_MOON_SQUARE"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_MT_MOON"
+    ]
   },
   "REGION_MOUNT_MOON_SQUARE": {
     "johto": false,
@@ -2752,7 +2817,10 @@
       "REGION_OLIVINE_CITY"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_OLIVINE"
+    ]
   },
   "REGION_OLIVINE_POKECENTER_1F": {
     "johto": true,
@@ -2862,7 +2930,10 @@
       "REGION_PEWTER_CITY"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_PEWTER"
+    ]
   },
   "REGION_PEWTER_NIDORAN_SPEECH_HOUSE": {
     "johto": false,
@@ -5382,7 +5453,10 @@
       "REGION_SAFFRON_CITY"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_SAFFRON"
+    ]
   },
   "REGION_SAFFRON_POKECENTER_1F": {
     "johto": false,
@@ -6134,7 +6208,10 @@
       "REGION_VERMILION_CITY"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_VERMILION"
+    ]
   },
   "REGION_VERMILION_POKECENTER_1F": {
     "johto": false,
@@ -6273,6 +6350,9 @@
     "locations": [],
     "events": [
       "EVENT_MART_ESCAPE_ROPE"
+    ],
+    "marts": [
+      "MART_VIOLET"
     ]
   },
   "REGION_VIOLET_NICKNAME_SPEECH_HOUSE": {
@@ -6337,7 +6417,10 @@
       "REGION_VIRIDIAN_CITY"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_VIRIDIAN"
+    ]
   },
   "REGION_VIRIDIAN_NICKNAME_SPEECH_HOUSE": {
     "johto": false,

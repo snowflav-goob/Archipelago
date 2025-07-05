@@ -5,7 +5,7 @@ from BaseClasses import Region, ItemClassification, Entrance
 from .data import data, RegionData, EncounterMon, StaticPokemon, LogicalAccess, EncounterKey, FishingRodType, TreeRarity
 from .items import PokemonCrystalItem
 from .locations import PokemonCrystalLocation
-from .options import FreeFlyLocation, JohtoOnly, LevelScaling, BlackthornDarkCaveAccess, Goal
+from .options import FreeFlyLocation, JohtoOnly, LevelScaling, BlackthornDarkCaveAccess, Goal, Shopsanity
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
@@ -174,6 +174,17 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
             else:
                 world.logic.wild_regions[encounter_key] = LogicalAccess.OutOfLogic
 
+    def setup_mart_regions(parent_region: Region, region_data: RegionData):
+        for mart in region_data.marts:
+            mart_data = data.marts[mart]
+            if (world.options.shopsanity == Shopsanity.option_both or (
+                    world.options.shopsanity == Shopsanity.option_johto and mart_data.johto) or (
+                    world.options.shopsanity == Shopsanity.option_kanto and not mart_data.johto)):
+                region_name = f"REGION_{mart}"
+                new_region = Region(region_name, world.player, world.multiworld)
+                regions[region_name] = new_region
+                parent_region.connect(new_region)
+
     for region_name, region_data in data.regions.items():
         if should_include_region(region_data):
             new_region = Region(region_name, world.player, world.multiworld)
@@ -187,6 +198,8 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
                 new_region.locations.append(event_location)
 
             setup_wild_regions(new_region, region_data)
+            if world.options.shopsanity:
+                setup_mart_regions(new_region, region_data)
 
             # Level Scaling
             if world.options.level_scaling.value != LevelScaling.option_off:

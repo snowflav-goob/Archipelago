@@ -85,7 +85,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
             write_bytes(patch, [item_id], location_address)
         else:
             # for in game text
-            if location.address < POKEDEX_OFFSET:
+            if location.address < POKEDEX_OFFSET and "shopsanity" not in location.tags:
                 item_flag = location.address
                 player_name = world.multiworld.player_name[location.item.player].upper()
                 item_name = location.item.name.upper()
@@ -467,7 +467,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
             # script music is 2 bytes LE
             write_bytes(patch, world.generated_music.consts[script_music].id.to_bytes(2, "little"), music_address)
 
-    if world.options.better_marts:
+    if world.options.better_marts and not world.options.shopsanity:
         mart_address = data.rom_addresses["Marts"]
         marts_end_address = data.rom_addresses["MartsEnd"]
         better_mart_address = data.rom_addresses["MartBetterMart"] - 0x10000
