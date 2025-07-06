@@ -25,7 +25,9 @@ MOVE_POWER_RATIO = {
 
 BAD_DAMAGING_MOVES = ["EXPLOSION", "SELFDESTRUCT", "STRUGGLE", "SNORE", "DREAM_EATER"]
 
+HM_MOVES = ["CUT", "FLY", "SURF", "STRENGTH", "FLASH", "WHIRLPOOL", "WATERFALL"]
 HM_COMPAT_TMS = ["HEADBUTT", "ROCK_SMASH"]
+LOGIC_MOVES = HM_MOVES + HM_COMPAT_TMS
 
 
 def randomize_learnset(world: "PokemonCrystalWorld", pkmn_name):
@@ -194,6 +196,18 @@ def randomize_move_values(world: "PokemonCrystalWorld"):
             accuracy=new_acc,
             pp=new_pp
         )
+
+
+def cap_hm_move_power(world: "PokemonCrystalWorld"):
+    if world.options.hm_power_cap.value == world.options.hm_power_cap.range_end: return
+
+    cap = world.options.hm_power_cap.value
+    for move_name in LOGIC_MOVES:
+         if world.generated_moves.get(move_name).power > cap:
+             world.generated_moves[move_name] = replace(
+                 world.generated_moves[move_name],
+                 power=cap
+             )
 
 
 def randomize_move_types(world: "PokemonCrystalWorld"):

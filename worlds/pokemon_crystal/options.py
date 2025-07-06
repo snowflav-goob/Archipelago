@@ -810,6 +810,18 @@ class HMCompatibility(NamedRange):
         "fully_compatible": 100
     }
 
+class HMPowerCap(NamedRange):
+    """
+    Lowers the power of damaging HM moves that exceed the set power down to match it.
+    Headbutt and Rock Smash are considered HMs for this setting.
+    """
+    display_name = "HM Power Cap"
+    default = 255
+    range_start = 20
+    range_end = 255
+    special_range_names = {
+        "none": range_end
+    }
 
 class RandomizeBaseStats(Choice):
     """
@@ -1278,6 +1290,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     randomize_tm_moves: RandomizeTMMoves
     tm_compatibility: TMCompatibility
     hm_compatibility: HMCompatibility
+    hm_power_cap: HMPowerCap
     randomize_base_stats: RandomizeBaseStats
     randomize_types: RandomizeTypes
     randomize_palettes: RandomizePalettes
@@ -1387,6 +1400,7 @@ OPTION_GROUPS = [
          MetronomeOnly,
          RandomizeMoveTypes,
          RandomizeMoveValues,
+         HMPowerCap,
          RandomizeTMMoves,
          TMCompatibility,
          ReusableTMs,
