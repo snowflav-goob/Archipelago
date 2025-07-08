@@ -119,6 +119,8 @@ class PokemonCrystalWorld(World):
     trainer_level_list: list[int]
     trainer_name_level_dict: dict[str, int]
 
+    shop_locations_by_spheres: list[set[PokemonCrystalLocation]]
+
     blocklisted_moves: set
 
     itempool: list[PokemonCrystalItem]
@@ -157,6 +159,8 @@ class PokemonCrystalWorld(World):
         self.encounter_level_list = []
 
         self.blocklisted_moves = set()
+
+        self.shop_locations_by_spheres = []
 
         self.itempool = []
         self.pre_fill_items = []
@@ -348,6 +352,23 @@ class PokemonCrystalWorld(World):
 
     @classmethod
     def stage_generate_output(cls, multiworld: MultiWorld, output_directory: str):
+        shop_locations: dict[int, list[set[PokemonCrystalLocation]]] = defaultdict(list)
+
+        for sphere in multiworld.get_spheres():
+            shop_locations_in_sphere = defaultdict(set)
+            for location in sphere:
+                if location.game == "Pokemon Crystal":
+                    assert isinstance(location, PokemonCrystalLocation)
+                    if "shopsanity" in location.tags:
+                        shop_locations_in_sphere[location.player].add(location)
+
+            for player, locations in shop_locations_in_sphere.items():
+                shop_locations[player].append(locations)
+
+        for world in multiworld.get_game_worlds("Pokemon Crystal"):
+            if world.options.shopsanity:
+                world.shop_locations_by_spheres = shop_locations[world.player]
+
         perform_level_scaling(multiworld)
 
     def generate_output(self, output_directory: str) -> None:

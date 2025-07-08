@@ -1,4 +1,5 @@
 import copy
+import logging
 import os
 from typing import TYPE_CHECKING
 
@@ -13,7 +14,7 @@ from .items import item_const_name_to_id
 from .moves import LOGIC_MOVES
 from .options import UndergroundsRequirePower, RequireItemfinder, Goal, Route2Access, \
     BlackthornDarkCaveAccess, NationalParkAccess, Route3Access, EncounterSlotDistribution, KantoAccessRequirement, \
-    FreeFlyLocation, HMBadgeRequirements
+    FreeFlyLocation, HMBadgeRequirements, ShopsanityPrices
 from .utils import convert_to_ingame_text, write_bytes, replace_map_tiles
 
 if TYPE_CHECKING:
@@ -156,6 +157,69 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
 
     write_bytes(patch, [0xFF], item_name_table_adr + item_name_table_length - 1)
     write_bytes(patch, [0xFF], shopsanity_name_table_adr + shopsanity_name_table_length - 1)
+
+    if world.options.shopsanity and world.options.shopsanity_prices:
+
+        min_shop_price = world.options.shopsanity_minimum_price.value
+        max_shop_price = world.options.shopsanity_maximum_price.value
+        total_shop_spheres = len(world.shop_locations_by_spheres)
+
+        by_item_price = world.options.shopsanity_prices == ShopsanityPrices.option_item_price
+
+        by_spheres = world.options.shopsanity_prices in (
+            ShopsanityPrices.option_spheres,
+            ShopsanityPrices.option_spheres_and_classification
+        )
+        by_classification = world.options.shopsanity_prices in (
+            ShopsanityPrices.option_classification,
+            ShopsanityPrices.option_spheres_and_classification
+        )
+
+        if world.options.shopsanity_minimum_price > world.options.shopsanity_maximum_price:
+            logging.info("Pokemon Crystal: Minimum Shopsanity Price for player %s (%s)"
+                         " is greater than Maximum Shopsanity Price.",
+                         world.player, world.player_name)
+            min_shop_price = world.options.shopsanity_maximum_price.value
+            max_shop_price = world.options.shopsanity_minimum_price.value
+
+        for i, locations in enumerate(world.shop_locations_by_spheres):
+            sphere_min_shop_price = min_shop_price
+            sphere_max_shop_price = max_shop_price
+            if by_spheres:
+                base_price = sphere_min_shop_price
+                price_difference = max_shop_price - min_shop_price
+                sphere_min_shop_price = int(round(base_price + ((price_difference / total_shop_spheres) * i)))
+                sphere_max_shop_price = int(round(base_price + ((price_difference / total_shop_spheres) * (i + 1))))
+
+            for location in locations:
+                item_min_shop_price = sphere_min_shop_price
+                item_max_shop_price = sphere_max_shop_price
+
+                if by_item_price:
+                    item_price = location.item.price if location.item.player == world.player else 0
+                    if item_price < item_min_shop_price:
+                        item_price = item_min_shop_price
+                    elif item_price > item_max_shop_price:
+                        item_price = item_max_shop_price
+                    item_min_shop_price = item_price
+                    item_max_shop_price = item_price
+                elif by_classification:
+                    base_price = item_min_shop_price
+                    price_difference = item_max_shop_price - item_min_shop_price
+                    if location.item.advancement:
+                        item_min_shop_price = base_price + int(round(price_difference * 0.6))
+                    elif location.item.useful:
+                        item_min_shop_price = base_price + int(round(price_difference * 0.2))
+                        item_max_shop_price = base_price + int(round(price_difference * 0.6))
+                    else:
+                        item_max_shop_price = base_price + int(round(price_difference * 0.2))
+
+                address = location.rom_address + 1
+                shop_price = world.random.randint(item_min_shop_price, item_max_shop_price) \
+                    if item_max_shop_price != item_min_shop_price else item_min_shop_price
+                logging.debug(f"Setting ¥{shop_price} for {location.name}")
+                shop_price_bytes = shop_price.to_bytes(2, "little")
+                write_bytes(patch, shop_price_bytes, address)
 
     world.finished_level_scaling.wait()
 

@@ -481,6 +481,46 @@ class Shopsanity(Choice):
     option_both = 3
 
 
+class ShopsanityPrices(Choice):
+    """
+    Sets how shop item prices are determined when Shopsanity is enabled
+    - Vanilla: Shop prices are unchanged
+    - Item Price: Shop prices are determined by the value of the item being sold
+    - Spheres: Shop prices are determined by sphere access
+    - Classification: Shop prices are determined by item classifications (Progression, Useful, Filler/Trap)
+    - Spheres and Classifications: Shop prices are determined by both sphere access and item classifications
+    - Completely Random: Shop prices will be completely random
+    """
+    display_name = "Shopsanity Prices"
+    default = 0
+    option_vanilla = 0
+    option_item_price = 1
+    option_spheres = 2
+    option_classification = 3
+    option_spheres_and_classification = 4
+    option_completely_random = 5
+
+
+class MinimumShopsanityPrice(Range):
+    """
+    Sets the minimum cost of shop items when Shopsanity is enabled
+    """
+    display_name = "Minimum Shopsanity Price"
+    default = 100
+    range_start = 0
+    range_end = 10000
+
+
+class MaximumShopsanityPrice(Range):
+    """
+    Sets the maximum cost of shop items when Shopsanity is enabled
+    """
+    display_name = "Maximum Shopsanity Price"
+    default = 3000
+    range_start = 0
+    range_end = 10000
+
+
 class ProvideShopHints(Choice):
     """
     Sends out hints when a randomized shop is accessed
@@ -1297,6 +1337,9 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     evolution_gym_levels: EvolutionGymLevels
     breeding_methods_required: BreedingMethodsRequired
     shopsanity: Shopsanity
+    shopsanity_prices: ShopsanityPrices
+    shopsanity_minimum_price: MinimumShopsanityPrice
+    shopsanity_maximum_price: MaximumShopsanityPrice
     provide_shop_hints: ProvideShopHints
     randomize_pokegear: RandomizePokegear
     randomize_berry_trees: RandomizeBerryTrees
@@ -1399,6 +1442,9 @@ OPTION_GROUPS = [
     OptionGroup(
         "Shopsanity",
         [Shopsanity,
+         ShopsanityPrices,
+         MinimumShopsanityPrice,
+         MaximumShopsanityPrice,
          ProvideShopHints]
     ),
     OptionGroup(
