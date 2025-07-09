@@ -6628,7 +6628,11 @@
       "SAGE_MASA",
       "SAGE_KOJI"
     ],
-    "locations": [],
+    "locations": [
+      "ITEM_FROM_SAGE_GAKU",
+      "ITEM_FROM_SAGE_MASA",
+      "ITEM_FROM_SAGE_KOJI"
+    ],
     "events": [
       "EVENT_KOJI_ALLOWS_YOU_PASSAGE_TO_TIN_TOWER"
     ]
