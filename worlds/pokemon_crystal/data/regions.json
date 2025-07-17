@@ -787,7 +787,10 @@
     "locations": [
       "SECRETPOTION_FROM_PHARMACY"
     ],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_CIANWOOD"
+    ]
   },
   "REGION_CIANWOOD_PHOTO_STUDIO": {
     "johto": true,
