@@ -11,7 +11,7 @@ from .options import Goal, JohtoOnly, Route32Condition, UndergroundsRequirePower
     MtSilverRequirement, FreeFlyLocation, HMBadgeRequirements, EliteFourRequirement, RedRequirement, \
     Route44AccessRequirement, RandomizeBadges, RadioTowerRequirement, PokemonCrystalOptions, Shopsanity
 from .pokemon import add_hm_compatibility
-from .utils import evolution_in_logic, evolution_location_name
+from .utils import evolution_in_logic, evolution_location_name, get_fly_regions
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
@@ -409,6 +409,13 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                                                  FreeFlyLocation.option_map_card):
         map_card_fly_entrance = f"REGION_FLY -> {world.map_card_fly_location.region_id}"
         add_rule(get_entrance(map_card_fly_entrance), world.logic.can_map_card_fly())
+
+    # Fly Unlocks
+
+    if world.options.randomize_fly_unlocks:
+        for fly_region in get_fly_regions(world):
+            set_rule(get_entrance(f"REGION_FLY -> {fly_region.region_id}"),
+                     lambda state, fly_unlock=f"Fly {fly_region.name}": state.has(fly_unlock, world.player))
 
     # New Bark Town
     # set_rule(get_entrance("REGION_NEW_BARK_TOWN -> REGION_ROUTE_29"),

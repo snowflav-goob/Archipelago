@@ -553,6 +553,19 @@ class RandomizeBerryTrees(Toggle):
     display_name = "Randomize Berry Trees"
 
 
+class RandomizeFlyUnlocks(Choice):
+    """
+    Shuffles Fly destination unlocks into the pool
+
+    Indigo Plateau is not included.
+    """
+    display_name = "Shuffle Fly Unlocks"
+    default = 0
+    option_off = 0
+    option_on = 1
+    option_exclude_silver_cave = 2
+
+
 class RandomizeStarters(Choice):
     """
     Randomizes species of starter Pokemon
@@ -1350,6 +1363,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     shopsanity_restrict_rare_candies: ShopsanityRestrictRareCandies
     randomize_pokegear: RandomizePokegear
     randomize_berry_trees: RandomizeBerryTrees
+    randomize_fly_unlocks: RandomizeFlyUnlocks
     randomize_starters: RandomizeStarters
     starter_blocklist: StarterBlocklist
     starters_bst_average: StarterBST
@@ -1443,6 +1457,7 @@ OPTION_GROUPS = [
          RandomizePokegear,
          RandomizeHiddenItems,
          RandomizeBerryTrees,
+         RandomizeFlyUnlocks,
          RequireItemfinder,
          RemoteItems]
     ),

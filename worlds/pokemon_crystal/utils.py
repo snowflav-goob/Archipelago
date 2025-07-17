@@ -3,7 +3,7 @@ from random import Random
 from typing import TYPE_CHECKING
 
 from Options import Toggle
-from .data import data, EvolutionData, EvolutionType, StartingTown
+from .data import data, EvolutionData, EvolutionType, StartingTown, FlyRegion
 from .options import FreeFlyLocation, Route32Condition, JohtoOnly, RandomizeBadges, UndergroundsRequirePower, \
     Route3Access, EliteFourRequirement, Goal, Route44AccessRequirement, BlackthornDarkCaveAccess, RedRequirement, \
     MtSilverRequirement, HMBadgeRequirements, RedGyaradosAccess, EarlyFly, RadioTowerRequirement, \
@@ -272,6 +272,18 @@ def _starting_town_valid(world: "PokemonCrystalWorld", starting_town: StartingTo
                 immediate_hiddens and world.options.randomize_berry_trees)
 
     return True
+
+
+def get_fly_regions(world: "PokemonCrystalWorld") -> list[FlyRegion]:
+    fly_regions = list(data.fly_regions)
+
+    if world.options.johto_only == JohtoOnly.option_on:
+        fly_regions = [region for region in fly_regions if region.name != "Silver Cave"]
+
+    if world.options.johto_only:
+        fly_regions = [region for region in fly_regions if region.johto]
+
+    return fly_regions
 
 
 def get_free_fly_locations(world: "PokemonCrystalWorld"):

@@ -6,6 +6,7 @@ from .data import data, RegionData, EncounterMon, StaticPokemon, LogicalAccess, 
 from .items import PokemonCrystalItem
 from .locations import PokemonCrystalLocation
 from .options import FreeFlyLocation, JohtoOnly, LevelScaling, BlackthornDarkCaveAccess, Goal, Shopsanity
+from .utils import get_fly_regions
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
@@ -276,6 +277,11 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
         regions["Menu"].connect(regions["REGION_PLAYERS_HOUSE_2F"], "Start Game")
 
     regions["Menu"].connect(regions["REGION_FLY"], "Fly")
+
+    if world.options.randomize_fly_unlocks:
+        fly_region = regions["REGION_FLY"]
+        for region in get_fly_regions(world):
+            fly_region.connect(regions[region.region_id])
 
     if world.options.johto_only.value == JohtoOnly.option_off and world.options.east_west_underground:
         regions["REGION_ROUTE_7"].connect(regions["REGION_ROUTE_8"])
