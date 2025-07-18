@@ -386,6 +386,7 @@ class RegionWildEncounterData:
 class RegionData:
     name: str
     johto: bool
+    elite_4: bool
     silver_cave: bool
     exits: list[str]
     trainers: list[TrainerData]
@@ -595,6 +596,7 @@ def _init() -> None:
         new_region = RegionData(
             name=region_name,
             johto=region_json["johto"],
+            elite_4=region_json["elite_4"] if "elite_4" in region_json else False,
             silver_cave=region_json["silver_cave"] if "silver_cave" in region_json else False,
             exits=[region_exit for region_exit in region_json["exits"]],
             statics=[EncounterKey(EncounterType.Static, static) for static in region_json.get("statics", [])],

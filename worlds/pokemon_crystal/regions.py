@@ -77,12 +77,15 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
     regions: dict[str, Region] = {}
     connections: list[tuple[str, str, str]] = []
     johto_only = world.options.johto_only.value
+    skip_e4 = world.options.skip_elite_four.value
 
     def should_include_region(region):
-        # check if region should be included per selected Johto Only option
+        # check if region should be included
         return (region.johto
                 or johto_only == JohtoOnly.option_off
-                or (region.silver_cave and johto_only == JohtoOnly.option_include_silver_cave))
+                or (region.silver_cave and johto_only == JohtoOnly.option_include_silver_cave)) and (
+                not skip_e4 or not region.elite_4
+        )
 
     def exclude_scaling(trainer: str):
         if not world.options.rematchsanity and trainer in REMATCHES:
@@ -269,6 +272,9 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
     for name, source, dest in connections:
         if should_include_region(data.regions[source]) and should_include_region(data.regions[dest]):
             regions[source].connect(regions[dest], name)
+
+    if world.options.skip_elite_four:
+        regions["REGION_INDIGO_PLATEAU_POKECENTER_1F"].connect(regions["REGION_LANCES_ROOM"])
 
     regions["Menu"] = Region("Menu", world.player, world.multiworld)
     if world.options.randomize_starting_town:

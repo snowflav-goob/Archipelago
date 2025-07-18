@@ -264,6 +264,7 @@
   },
   "REGION_BRUNOS_ROOM": {
     "johto": true,
+    "elite_4": true,
     "exits": [
       "REGION_KOGAS_ROOM",
       "REGION_KARENS_ROOM"
@@ -271,7 +272,9 @@
     "trainers": [
       "E4_BRUNO"
     ],
-    "locations": [],
+    "locations": [
+      "ITEM_FROM_ELITE_4_BRUNO"
+    ],
     "events": [
       "EVENT_BEAT_ELITE_4_BRUNO"
     ]
@@ -2016,6 +2019,7 @@
   },
   "REGION_KARENS_ROOM": {
     "johto": true,
+    "elite_4": true,
     "exits": [
       "REGION_BRUNOS_ROOM",
       "REGION_LANCES_ROOM"
@@ -2023,13 +2027,16 @@
     "trainers": [
       "E4_KAREN"
     ],
-    "locations": [],
+    "locations": [
+      "ITEM_FROM_ELITE_4_KAREN"
+    ],
     "events": [
       "EVENT_BEAT_ELITE_4_KAREN"
     ]
   },
   "REGION_KOGAS_ROOM": {
     "johto": true,
+    "elite_4": true,
     "exits": [
       "REGION_WILLS_ROOM",
       "REGION_BRUNOS_ROOM"
@@ -2037,7 +2044,9 @@
     "trainers": [
       "E4_KOGA"
     ],
-    "locations": [],
+    "locations": [
+      "ITEM_FROM_ELITE_4_KOGA"
+    ],
     "events": [
       "EVENT_BEAT_ELITE_4_KOGA"
     ]
@@ -6608,6 +6617,7 @@
   },
   "REGION_WILLS_ROOM": {
     "johto": true,
+    "elite_4": true,
     "exits": [
       "REGION_INDIGO_PLATEAU_POKECENTER_1F",
       "REGION_KOGAS_ROOM"
@@ -6615,7 +6625,9 @@
     "trainers": [
       "E4_WILL"
     ],
-    "locations": [],
+    "locations": [
+      "ITEM_FROM_ELITE_4_WILL"
+    ],
     "events": [
       "EVENT_BEAT_ELITE_4_WILL"
     ]
