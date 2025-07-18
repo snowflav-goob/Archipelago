@@ -381,7 +381,7 @@ def _locations_to_pokemon(world: "PokemonCrystalWorld", locations: Iterable[str]
 
 
 def get_priority_dexsanity(world: "PokemonCrystalWorld") -> set[str]:
-    return _locations_to_pokemon(world, world.options.priority_locations.value)
+    return _locations_to_pokemon(world, world.options.priority_locations.value) - world.logic.available_pokemon
 
 
 def get_excluded_dexsanity(world: "PokemonCrystalWorld") -> set[str]:
