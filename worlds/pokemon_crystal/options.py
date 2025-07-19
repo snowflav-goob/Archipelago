@@ -428,6 +428,14 @@ class WildEncounterMethodsRequired(OptionSet):
     default = valid_keys
 
 
+class EnforceWildEncounterMethodsLogic(Toggle):
+    """
+    Sets whether the game will prevent capture of Pokemon found through disabled wild encounter methods
+    Statics and roamers can always be caught
+    """
+    display_name = "Enforce Wild Encounter Methods Logic"
+
+
 class EvolutionMethodsRequired(OptionSet):
     """
     Sets which types of evolutions may be logically required
@@ -439,7 +447,7 @@ class EvolutionMethodsRequired(OptionSet):
 
 class StaticPokemonRequired(DefaultOnToggle):
     """
-    Sets whether or not static Pokemon may be logically required
+    Sets whether static Pokemon may be logically required
     """
     display_name = "Static Pokemon Required"
 
@@ -692,7 +700,7 @@ class EncounterSlotDistribution(Choice):
 class RandomizeStaticPokemon(Toggle):
     """
     Randomizes species of static Pokemon encounters
-    This includes overworld Pokemon, gift Pokémon and gift egg Pokémon
+    This includes overworld Pokemon, gift Pokemon and gift egg Pokemon
     """
     display_name = "Randomize Static Pokemon"
 
@@ -931,6 +939,7 @@ class RandomizeTypes(Choice):
     option_vanilla = 0
     option_follow_evolutions = 1
     option_completely_random = 2
+
 
 class RandomizeEvolution(Choice):
     """
@@ -1361,6 +1370,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     dexcountsanity_step: DexcountsanityStep
     dexcountsanity_leniency: DexcountsanityLeniency
     wild_encounter_methods_required: WildEncounterMethodsRequired
+    enforce_wild_encounter_methods_logic: EnforceWildEncounterMethodsLogic
     static_pokemon_required: StaticPokemonRequired
     evolution_methods_required: EvolutionMethodsRequired
     evolution_gym_levels: EvolutionGymLevels
@@ -1546,6 +1556,7 @@ OPTION_GROUPS = [
     OptionGroup(
         "Pokemon Logic",
         [WildEncounterMethodsRequired,
+         EnforceWildEncounterMethodsLogic,
          StaticPokemonRequired,
          EvolutionMethodsRequired,
          EvolutionGymLevels,

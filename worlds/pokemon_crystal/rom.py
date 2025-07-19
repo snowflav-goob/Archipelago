@@ -14,7 +14,7 @@ from .items import item_const_name_to_id
 from .moves import LOGIC_MOVES
 from .options import UndergroundsRequirePower, RequireItemfinder, Goal, Route2Access, \
     BlackthornDarkCaveAccess, NationalParkAccess, Route3Access, EncounterSlotDistribution, KantoAccessRequirement, \
-    FreeFlyLocation, HMBadgeRequirements, ShopsanityPrices
+    FreeFlyLocation, HMBadgeRequirements, ShopsanityPrices, WildEncounterMethodsRequired
 from .utils import convert_to_ingame_text, write_bytes, replace_map_tiles
 
 if TYPE_CHECKING:
@@ -885,6 +885,12 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
 
     if world.options.better_marts:
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_BetterMarts"] + 1)
+
+    if world.options.enforce_wild_encounter_methods_logic:
+        methods = [method in world.options.wild_encounter_methods_required.value for method in
+                   WildEncounterMethodsRequired.valid_keys]
+
+        write_bytes(patch, methods, data.rom_addresses["AP_Setting_AllowedCatchTypes"])
 
     # Set slot auth
     ap_version_text = convert_to_ingame_text(APWORLD_VERSION)[:19]
