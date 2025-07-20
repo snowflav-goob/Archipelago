@@ -906,7 +906,7 @@ headbutt_call:
       helps!
     - |
       Peace out.
-
+      
 kurt_balls:
   caller: withheld
   script:
@@ -934,3 +934,27 @@ kurt_balls:
       Oh no, I see
       them coming
       He--------
+
+black_friday_call:
+  caller: out_of_area
+  script:
+    - |
+      Hurry up! Black
+      Friday ends in 2 
+      hours! Don't miss
+    - |
+      out on 30% off on
+      all items, limited
+      to current stock.
+    - |
+      Use code <POKE>30 at
+      checkout in any
+      <POKE>MART store.
+    - |
+      For purchases 
+      above ¥1000 you
+      will receive a
+    - |  
+      free SLOWPOKETAIL!
+      Thank you for
+      shopping with us.
