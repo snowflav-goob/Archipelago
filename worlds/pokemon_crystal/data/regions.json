@@ -2287,12 +2287,19 @@
       "REGION_MAHOGANY_RED_GYARADOS_SPEECH_HOUSE",
       "REGION_MAHOGANY_GYM",
       "REGION_MAHOGANY_POKECENTER_1F",
-      "REGION_ROUTE_43_MAHOGANY_GATE"
+      "REGION_ROUTE_43_MAHOGANY_GATE",
+      "REGION_MAHOGANY_TOWN:FLY"
     ],
-    "locations": [],
+    "events": [],
+    "locations": []
+  },
+  "REGION_MAHOGANY_TOWN:FLY": {
+    "johto": true,
+    "exits": [],
     "events": [
       "ENGINE_FLYPOINT_MAHOGANY"
-    ]
+    ],
+    "locations": []
   },
   "REGION_MANIAS_HOUSE": {
     "johto": true,
@@ -6185,7 +6192,8 @@
       "REGION_VERMILION_DIGLETTS_CAVE_SPEECH_HOUSE",
       "REGION_VERMILION_GYM",
       "REGION_VERMILION_PORT_PASSAGE",
-      "REGION_DIGLETTS_CAVE"
+      "REGION_DIGLETTS_CAVE",
+      "REGION_VERMILION_CITY:FLY"
     ],
     "statics": [
       "Snorlax"
@@ -6201,6 +6209,12 @@
       "surfing": "VERMILION_CITY",
       "fishing": "Ocean"
     }
+  },
+  "REGION_VERMILION_CITY:FLY": {
+    "johto": false,
+    "exits": [],
+    "locations": [],
+    "events": []
   },
   "REGION_VERMILION_DIGLETTS_CAVE_SPEECH_HOUSE": {
     "johto": false,

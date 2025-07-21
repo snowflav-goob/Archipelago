@@ -14,7 +14,7 @@ from .items import item_const_name_to_id
 from .moves import LOGIC_MOVES
 from .options import UndergroundsRequirePower, RequireItemfinder, Goal, Route2Access, \
     BlackthornDarkCaveAccess, NationalParkAccess, Route3Access, EncounterSlotDistribution, KantoAccessRequirement, \
-    FreeFlyLocation, HMBadgeRequirements, ShopsanityPrices, WildEncounterMethodsRequired
+    FreeFlyLocation, HMBadgeRequirements, ShopsanityPrices, WildEncounterMethodsRequired, FlyCheese
 from .utils import convert_to_ingame_text, write_bytes, replace_map_tiles
 
 if TYPE_CHECKING:
@@ -640,11 +640,10 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
                 data.rom_addresses["AP_Setting_RocketsRequirement"] + 1)
     write_bytes(patch, [world.options.radio_tower_count.value], data.rom_addresses["AP_Setting_RocketsCount"] + 1)
 
-    write_bytes(patch, [world.options.route_44_access_requirement.value],
-                data.rom_addresses["AP_Setting_Route44Requirement_1"] + 1)
-    write_bytes(patch, [world.options.route_44_access_requirement.value],
-                data.rom_addresses["AP_Setting_Route44Requirement_2"] + 1)
     for i in range(4):
+        write_bytes(patch, [world.options.route_44_access_requirement.value],
+                    data.rom_addresses[f"AP_Setting_Route44Requirement_{i + 1}"] + 1)
+    for i in range(8):
         write_bytes(patch, [world.options.route_44_access_count.value],
                     data.rom_addresses[f"AP_Setting_Route44Count_{i + 1}"] + 1)
 
@@ -891,6 +890,11 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
                    WildEncounterMethodsRequired.valid_keys]
 
         write_bytes(patch, methods, data.rom_addresses["AP_Setting_AllowedCatchTypes"])
+
+    if world.options.fly_cheese == FlyCheese.option_disallow:
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_FlyCheeseDisabled"] + 2)
+        write_bytes(patch, [1], data.rom_addresses["AP_Setting_FlyCheeseDisabled_2"] + 2)
+        write_bytes(patch, [0], data.rom_addresses["AP_Setting_FlyCheeseDisabled_3"] + 2)  # sprite flag
 
     # Set slot auth
     ap_version_text = convert_to_ingame_text(APWORLD_VERSION)[:19]

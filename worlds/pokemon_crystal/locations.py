@@ -202,7 +202,7 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
     if world.options.randomize_fly_unlocks:
 
         for fly_region in get_fly_regions(world):
-            parent_region = regions[data.regions[fly_region.region_id].name]
+            parent_region = regions[data.regions[fly_region.unlock_region].name]
 
             location = PokemonCrystalLocation(
                 world.player,

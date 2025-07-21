@@ -5,7 +5,7 @@ from BaseClasses import Region, ItemClassification, Entrance
 from .data import data, RegionData, EncounterMon, StaticPokemon, LogicalAccess, EncounterKey, FishingRodType, TreeRarity
 from .items import PokemonCrystalItem
 from .locations import PokemonCrystalLocation
-from .options import FreeFlyLocation, JohtoOnly, LevelScaling, BlackthornDarkCaveAccess, Goal, Shopsanity
+from .options import FreeFlyLocation, JohtoOnly, LevelScaling, BlackthornDarkCaveAccess, Goal, Shopsanity, FlyCheese
 from .utils import get_fly_regions
 
 if TYPE_CHECKING:
@@ -287,13 +287,20 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
     if world.options.randomize_fly_unlocks:
         fly_region = regions["REGION_FLY"]
         for region in get_fly_regions(world):
-            fly_region.connect(regions[region.region_id])
+            fly_region.connect(regions[region.exit_region])
 
-    if world.options.johto_only.value == JohtoOnly.option_off and world.options.east_west_underground:
+    if world.options.fly_cheese == FlyCheese.option_in_logic:
+        regions["REGION_ROUTE_44"].connect(regions["REGION_MAHOGANY_TOWN:FLY"])
+
+        if not world.options.johto_only:
+            regions["REGION_DIGLETTS_CAVE"].connect(regions["REGION_VERMILION_CITY:FLY"])
+            regions["REGION_ROUTE_11"].connect(regions["REGION_VERMILION_CITY:FLY"])
+
+    if world.options.johto_only == JohtoOnly.option_off and world.options.east_west_underground:
         regions["REGION_ROUTE_7"].connect(regions["REGION_ROUTE_8"])
         regions["REGION_ROUTE_8"].connect(regions["REGION_ROUTE_7"])
 
-    if world.options.blackthorn_dark_cave_access.value == BlackthornDarkCaveAccess.option_waterfall:
+    if world.options.blackthorn_dark_cave_access == BlackthornDarkCaveAccess.option_waterfall:
         regions["REGION_DARK_CAVE_BLACKTHORN_ENTRANCE:SOUTH_WEST"].connect(
             regions["REGION_DARK_CAVE_BLACKTHORN_ENTRANCE:NORTH_WEST"])
 
@@ -321,10 +328,10 @@ def setup_free_fly_regions(world: "PokemonCrystalWorld"):
     if world.options.free_fly_location.value in (FreeFlyLocation.option_free_fly,
                                                  FreeFlyLocation.option_free_fly_and_map_card):
         free_fly_location = world.free_fly_location
-        fly_region = world.get_region(free_fly_location.region_id)
+        fly_region = world.get_region(free_fly_location.exit_region)
         connection = Entrance(
             world.player,
-            f"Free Fly {free_fly_location.region_id}",
+            f"Free Fly {free_fly_location.exit_region}",
             fly
         )
         fly.exits.append(connection)
@@ -333,10 +340,10 @@ def setup_free_fly_regions(world: "PokemonCrystalWorld"):
     if world.options.free_fly_location.value in (FreeFlyLocation.option_free_fly_and_map_card,
                                                  FreeFlyLocation.option_map_card):
         map_card_fly_location = world.map_card_fly_location
-        map_card_region = world.get_region(map_card_fly_location.region_id)
+        map_card_region = world.get_region(map_card_fly_location.exit_region)
         connection = Entrance(
             world.player,
-            f"Free Fly {map_card_fly_location.region_id}",
+            f"Free Fly {map_card_fly_location.exit_region}",
             fly
         )
         fly.exits.append(connection)
