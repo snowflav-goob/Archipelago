@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import ItemClassification
 from .data import data as crystal_data, LogicalAccess, PokemonData, EncounterType
-from .moves import get_tmhm_compatibility, randomize_learnset
+from .moves import get_tmhm_compatibility, randomize_learnset, moves_convert_friendly_to_ids
 from .options import RandomizeTypes, RandomizePalettes, RandomizeBaseStats, RandomizeStarters, RandomizeTrades, \
     DexsanityStarters, EncounterGrouping, BreedingMethodsRequired
 from .utils import get_random_filler_item, evolution_in_logic
@@ -38,6 +38,8 @@ def randomize_pokemon_data(world: "PokemonCrystalWorld"):
                     types=new_types
                 )
 
+    move_blocklist = moves_convert_friendly_to_ids(world, world.options.move_blocklist)
+
     for pkmn_name, pkmn_data in world.generated_pokemon.items():
         new_base_stats = pkmn_data.base_stats
         new_learnset = pkmn_data.learnset
@@ -56,7 +58,7 @@ def randomize_pokemon_data(world: "PokemonCrystalWorld"):
                 new_base_stats = get_random_base_stats(world.random)
 
         if world.options.randomize_learnsets or world.options.metronome_only:
-            new_learnset = randomize_learnset(world, pkmn_name)
+            new_learnset = randomize_learnset(world, pkmn_name, move_blocklist)
 
         if world.options.tm_compatibility >= 0 or world.options.hm_compatibility >= 0:
             new_tm_hms = get_tmhm_compatibility(world, pkmn_name)

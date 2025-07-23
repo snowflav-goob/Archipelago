@@ -122,8 +122,6 @@ class PokemonCrystalWorld(World):
 
     shop_locations_by_spheres: list[set[PokemonCrystalLocation]]
 
-    blocklisted_moves: set
-
     itempool: list[PokemonCrystalItem]
     pre_fill_items: list[PokemonCrystalItem]
     logic: PokemonCrystalLogic
@@ -159,8 +157,6 @@ class PokemonCrystalWorld(World):
         self.encounter_name_list = []
         self.encounter_level_list = []
 
-        self.blocklisted_moves = set()
-
         self.shop_locations_by_spheres = []
 
         self.itempool = []
@@ -178,8 +174,6 @@ class PokemonCrystalWorld(World):
                     and "Fly" not in self.options.remove_badge_requirement.value
                     and self.options.randomize_badges == RandomizeBadges.option_completely_random):
                 self.multiworld.local_early_items[self.player]["Storm Badge"] = 1
-
-        self.blocklisted_moves = {move.replace(" ", "_").upper() for move in self.options.move_blocklist.value}
 
         randomize_move_types(self)
         randomize_pokemon_data(self)

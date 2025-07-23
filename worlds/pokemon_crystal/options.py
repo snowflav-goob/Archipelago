@@ -1240,12 +1240,22 @@ class EnableMischief(Toggle):
 
 class MoveBlocklist(OptionSet):
     """
-    Pokemon won't learn these moves via learnsets and no TM will contain them.
+    Pokemon won't learn these moves via learnsets.
     Moves should be provided in the form: "Ice Beam"
-    Does not apply to vanilla learnsets or vanilla TMs
+    Does not apply to vanilla learnsets
     """
     display_name = "Move Blocklist"
-    valid_keys = sorted(move.replace("_", " ").title() for move in data.moves.keys())
+    valid_keys = sorted(move.name.title() for id, move in data.moves.items() if id not in ("NO_MOVE", "STRUGGLE"))
+
+
+class TMBlocklist(OptionSet):
+    """
+    No TM will contain these moves.
+    Moves should be provided in the form: "Ice Beam"
+    Does not apply to vanilla TMs
+    """
+    display_name = "TM Blocklist"
+    valid_keys = sorted(move.name.title() for id, move in data.moves.items() if id not in ("NO_MOVE", "STRUGGLE"))
 
 
 class FlyLocationBlocklist(OptionSet):
@@ -1431,6 +1441,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     randomize_music: RandomizeMusic
     # randomize_sfx: RandomizeSFX
     move_blocklist: MoveBlocklist
+    tm_blocklist: TMBlocklist
     free_fly_location: FreeFlyLocation
     free_fly_blocklist: FlyLocationBlocklist
     early_fly: EarlyFly
@@ -1548,7 +1559,8 @@ OPTION_GROUPS = [
          RandomizeTMMoves,
          TMCompatibility,
          ReusableTMs,
-         MoveBlocklist]
+         MoveBlocklist,
+         TMBlocklist]
     ),
     OptionGroup(
         "Trainers",

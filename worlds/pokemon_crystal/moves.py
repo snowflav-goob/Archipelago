@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 from dataclasses import replace
 from typing import TYPE_CHECKING
 
@@ -31,7 +32,7 @@ HM_COMPAT_TMS = ["HEADBUTT", "ROCK_SMASH"]
 LOGIC_MOVES = HM_MOVES + HM_COMPAT_TMS
 
 
-def randomize_learnset(world: "PokemonCrystalWorld", pkmn_name):
+def randomize_learnset(world: "PokemonCrystalWorld", pkmn_name: str, move_blocklist: Iterable[str]):
     pkmn_data = world.generated_pokemon[pkmn_name]
     learn_levels = []
     new_learnset = []
@@ -56,7 +57,8 @@ def randomize_learnset(world: "PokemonCrystalWorld", pkmn_name):
                     rem_types = [type for type in crystal_data.types if type not in pkmn_types]
                     move_type = world.random.choice(rem_types)
             new_learnset.append(
-                LearnsetData(level, get_random_move(world, move_type=move_type, cur_learnset=new_learnset)))
+                LearnsetData(level,
+                             get_random_move(world, move_blocklist, move_type=move_type, cur_learnset=new_learnset)))
 
     if not world.options.metronome_only:
         # All moves available at Lv.1 that do damage (and don't faint the user)
@@ -67,13 +69,14 @@ def randomize_learnset(world: "PokemonCrystalWorld", pkmn_name):
 
         if not start_attacking:  # if there are no attacking moves at Lv.1, add one
             new_learnset[0] = LearnsetData(1, get_random_move(world,
+                                                              move_blocklist,
                                                               attacking=True))  # overwrites whatever the 1st move is
 
     return new_learnset
 
 
-def get_random_move(world: "PokemonCrystalWorld", move_type=None, attacking=None, cur_learnset=None,
-                    enforce_blocklist=True):
+def get_random_move(world: "PokemonCrystalWorld", blocklist: Iterable[str], move_type=None, attacking=None,
+                    cur_learnset=None):
     if not cur_learnset:
         cur_learnset = []
 
@@ -92,16 +95,16 @@ def get_random_move(world: "PokemonCrystalWorld", move_type=None, attacking=None
                      and move_name not in existing_moves]
 
     # remove every move from move_pool that is in the blocklist
-    if enforce_blocklist and world.blocklisted_moves:
+    if blocklist:
         move_pool = [move_name for move_name in move_pool if
-                     move_name not in world.blocklisted_moves]
+                     move_name not in blocklist]
 
     if move_pool:
         return world.random.choice(move_pool)
     elif move_type:
-        return get_random_move(world)
+        return get_random_move(world, blocklist=blocklist)
     else:
-        return get_random_move(world, enforce_blocklist=False)
+        return get_random_move(world, blocklist=[])
 
 
 def get_tmhm_compatibility(world: "PokemonCrystalWorld", pkmn_name):
@@ -134,7 +137,8 @@ def randomize_tms(world: "PokemonCrystalWorld"):
                         not move_data.is_hm
                         and move_name not in ignored_moves]
 
-    filtered_move_pool = [move for move in global_move_pool if move.id not in world.blocklisted_moves]
+    blocked_tm_moves = moves_convert_friendly_to_ids(world, world.options.tm_blocklist)
+    filtered_move_pool = [move for move in global_move_pool if move.id not in blocked_tm_moves]
 
     world.random.shuffle(global_move_pool)
     world.random.shuffle(filtered_move_pool)
@@ -225,3 +229,7 @@ def randomize_move_types(world: "PokemonCrystalWorld"):
             world.generated_moves[move_name],
             type=new_type
         )
+
+
+def moves_convert_friendly_to_ids(world: "PokemonCrystalWorld", moves: Iterable[str]) -> set[str]:
+    return {move_id for move_id, move_data in world.generated_moves.items() if move_data.name.upper() in moves}
