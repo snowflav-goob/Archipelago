@@ -1267,7 +1267,7 @@ class FlyLocationBlocklist(OptionSet):
     "_Johto" and "_Kanto" are shortcuts for all Johto and Kanto towns respectively
     """
     display_name = "Fly Location Blocklist"
-    valid_keys = [region.name for region in data.fly_regions] + ["_Johto", "_Kanto"]
+    valid_keys = sorted(region.name for region in data.fly_regions) + ["_Johto", "_Kanto"]
 
 
 class RemoteItems(Toggle):
