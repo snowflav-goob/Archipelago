@@ -1410,7 +1410,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         return False
 
     if world.options.evolution_methods_required:
-        locations_to_evolutions = defaultdict[str, list[EvolutionData]](lambda: [])
+        locations_to_evolutions = defaultdict[str, list[EvolutionData]](list)
         locations_to_pokemon = dict[str, str]()
         for pokemon_id in world.logic.available_pokemon:
             for evolution in world.generated_pokemon[pokemon_id].evolutions:

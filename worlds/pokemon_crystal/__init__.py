@@ -147,7 +147,7 @@ class PokemonCrystalWorld(World):
                                    ["CHIKORITA", "BAYLEEF", "MEGANIUM"])
         self.generated_starter_helditems = ("BERRY", "BERRY", "BERRY")
         self.generated_palettes = {}
-        self.generated_breeding = defaultdict(lambda: set())
+        self.generated_breeding = defaultdict(set)
         self.generated_music = replace(crystal_data.music)
         self.generated_misc = replace(crystal_data.misc)
         self.generated_phone_traps = []

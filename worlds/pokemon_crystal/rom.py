@@ -1,6 +1,6 @@
-import copy
 import logging
 import os
+from collections import defaultdict
 from typing import TYPE_CHECKING
 
 import bsdiff4
@@ -715,12 +715,9 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
     write_bytes(patch, phone_location_bytes, phone_location_address)
 
     start_inventory_address = data.rom_addresses["AP_Start_Inventory"]
-    start_inventory = copy.copy(world.options.start_inventory.value)
-    for item, quantity in world.options.start_inventory_from_pool.value.items():
-        if item in start_inventory:
-            start_inventory[item] += quantity
-        else:
-            start_inventory[item] = quantity
+    start_inventory = defaultdict[str, int](int)
+    for item in world.multiworld.precollected_items[world.player]:
+        start_inventory[item.name] += 1
 
     free_fly_write = [0, 0, 0, 0]
 

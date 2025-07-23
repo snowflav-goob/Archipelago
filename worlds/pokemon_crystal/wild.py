@@ -128,7 +128,7 @@ def randomize_wild_pokemon(world: "PokemonCrystalWorld"):
                     new_encounters.append(replace(encounter, pokemon=pokemon))
 
             elif world.options.encounter_grouping.value == EncounterGrouping.option_one_to_one:
-                distribution = defaultdict[str, list[int]](lambda: [])
+                distribution = defaultdict[str, list[int]](list)
                 new_encounters = [encounter for encounter in encounter_list]
                 encounter_blocklist = set()
                 for i, encounter in enumerate(encounter_list):
