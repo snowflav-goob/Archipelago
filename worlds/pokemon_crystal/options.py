@@ -316,11 +316,23 @@ class MountMortarAccess(Choice):
     option_rock_smash = 1
 
 
-class Trainersanity(Toggle):
+class Trainersanity(NamedRange):
     """
-    Adds checks for defeating trainers
+    Adds checks for defeating trainers.
+
+    If you have Johto Only on, the amount of Trainer checks might be lower than the amount you specify.
+    You can turn trainers that have checks greyscale by setting the "trainersanity_indication" in-game option.
+
+    Trainers are no longer missable. Each trainer will add a random filler item into the pool.
     """
     display_name = "Trainersanity"
+    default = 0
+    range_start = 0
+    range_end = len([loc for loc in data.locations.values() if "Trainersanity" in loc.tags])
+    special_range_names = {
+        "off": 0,
+        "full": range_end
+    }
 
 
 class Rematchsanity(Toggle):

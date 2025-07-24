@@ -3,7 +3,7 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 from BaseClasses import CollectionState
-from worlds.generic.Rules import add_rule, set_rule
+from worlds.generic.Rules import add_rule, set_rule, CollectionRule
 from .data import data, EvolutionType, EvolutionData, FishingRodType, EncounterKey, \
     TreeRarity, LogicalAccess
 from .options import Goal, JohtoOnly, Route32Condition, UndergroundsRequirePower, Route2Access, \
@@ -361,14 +361,18 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
         return world.multiworld.get_location(location, world.player)
 
+    def safe_set_rule(entrance_name: str, rule: CollectionRule) -> None:
+        try:
+            entrance = world.get_entrance(entrance_name)
+        except KeyError:
+            return
+        set_rule(entrance, rule)
+
     def hidden():
         return world.options.randomize_hidden_items
 
     def johto_only():
         return world.options.johto_only.value
-
-    def trainersanity():
-        return world.options.trainersanity
 
     def rematchsanity():
         return world.options.rematchsanity
@@ -708,8 +712,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     if world.options.level_scaling:
         set_rule(get_location("GRUNTM_3"), has_rockets_requirement)
 
-    if trainersanity():
-        set_rule(get_location("Radio Tower 1F - Grunt"), has_rockets_requirement)
+    safe_set_rule("Radio Tower 1F - Grunt", has_rockets_requirement)
 
     # Route 35
     set_rule(get_location("Route 35 - HP Up after delivering Kenya"),
@@ -1076,8 +1079,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     set_rule(get_location("Route 27 - West Item across Water"), can_surf)
 
     set_rule(get_location("Route 27 - East Item behind Whirlpool"), can_surf_and_whirlpool)
-    if trainersanity():
-        set_rule(get_location("Route 27 - Bird Keeper Jose"), can_surf_and_whirlpool)
+    safe_set_rule("Route 27 - Bird Keeper Jose", can_surf_and_whirlpool)
 
     if rematchsanity():
         if world.options.goal == Goal.option_red:
@@ -1168,9 +1170,8 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
         # Cerulean
         set_rule(get_entrance("REGION_ROUTE_24 -> REGION_CERULEAN_CITY:SURF"), can_surf_kanto)
-        if trainersanity():
-            set_rule(get_location("Route 24 - Grunt"),
-                     lambda state: state.has("EVENT_CERULEAN_GYM_ROCKET", world.player))
+        safe_set_rule("Route 24 - Grunt",
+                      lambda state: state.has("EVENT_CERULEAN_GYM_ROCKET", world.player))
 
         set_rule(get_entrance("REGION_CERULEAN_CITY -> REGION_ROUTE_9"), can_cut_kanto)
 
@@ -1192,7 +1193,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
         set_rule(get_entrance("REGION_ROUTE_10_SOUTH -> REGION_ROCK_TUNNEL_1F"), can_flash_kanto)
 
-        # Lavendar
+        # Lavender
         if world.options.randomize_pokegear:
             set_rule(get_location("Lavender Radio Tower - EXPN Card"), lambda state: state.has(
                 "EVENT_RESTORED_POWER_TO_KANTO", world.player))

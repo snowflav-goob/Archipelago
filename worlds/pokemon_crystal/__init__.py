@@ -107,6 +107,7 @@ class PokemonCrystalWorld(World):
     generated_starter_helditems: tuple[str, str, str]
     generated_palettes: dict[str, list[int]]
     generated_breeding: dict[str, set[str]]
+    generated_trainersanity: list[int]
 
     generated_music: MusicData
     generated_misc: MiscData
@@ -146,6 +147,7 @@ class PokemonCrystalWorld(World):
         self.generated_starter_helditems = ("BERRY", "BERRY", "BERRY")
         self.generated_palettes = {}
         self.generated_breeding = defaultdict(set)
+        self.generated_trainersanity = []
         self.generated_music = replace(crystal_data.music)
         self.generated_misc = replace(crystal_data.misc)
         self.generated_phone_traps = []
@@ -200,6 +202,27 @@ class PokemonCrystalWorld(World):
             setup_free_fly_regions(self)
 
     def create_items(self) -> None:
+
+        # Delete trainersanity locations if there are more than the amount specified in the settings
+        if self.options.trainersanity:
+            locations: list[PokemonCrystalLocation] = self.get_locations()
+            trainer_locations = [loc for loc in locations if "Trainersanity" in loc.tags]
+            locs_to_remove = len(trainer_locations) - self.options.trainersanity.value
+            if locs_to_remove > 0:
+                priority_trainer_locations = [loc for loc in trainer_locations
+                                              if loc.name in self.options.priority_locations.value]
+                non_priority_trainer_locations = [loc for loc in trainer_locations
+                                                  if loc.name not in self.options.priority_locations.value]
+                self.random.shuffle(priority_trainer_locations)
+                self.random.shuffle(non_priority_trainer_locations)
+                trainer_locations = non_priority_trainer_locations + priority_trainer_locations
+                for location in trainer_locations:
+                    region = location.parent_region
+                    region.locations.remove(location)
+                    locs_to_remove -= 1
+                    if locs_to_remove <= 0:
+                        break
+
         item_locations = [
             location
             for location in self.multiworld.get_locations(self.player)
@@ -394,7 +417,6 @@ class PokemonCrystalWorld(World):
             "red_requirement",
             "red_count",
             "randomize_badges",
-            "trainersanity",
             "dexsanity",
             "randomize_pokegear",
             "hm_badge_requirements",
@@ -518,6 +540,7 @@ class PokemonCrystalWorld(World):
                 hidden_items_setting = 5
 
         slot_data["hiddenitem_logic"] = hidden_items_setting
+        slot_data["trainersanity"] = [loc.address for loc in self.get_locations() if "Trainersanity" in loc.tags]
 
         return slot_data
 
