@@ -684,7 +684,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         write_bytes(patch, [world.options.kanto_access_count.value],
                     data.rom_addresses["AP_Setting_KantoAccess_Count_2"] + 1)
 
-    if world.options.trainersanity:
+    if world.options.johto_trainersanity or world.options.kanto_trainersanity:
         # prevents disabling gym trainers, among a few others
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_Trainersanity"] + 2)
         # removes events from certain trainers, to prevent disabling them.

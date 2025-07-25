@@ -107,7 +107,6 @@ class PokemonCrystalWorld(World):
     generated_starter_helditems: tuple[str, str, str]
     generated_palettes: dict[str, list[int]]
     generated_breeding: dict[str, set[str]]
-    generated_trainersanity: list[int]
 
     generated_music: MusicData
     generated_misc: MiscData
@@ -147,7 +146,6 @@ class PokemonCrystalWorld(World):
         self.generated_starter_helditems = ("BERRY", "BERRY", "BERRY")
         self.generated_palettes = {}
         self.generated_breeding = defaultdict(set)
-        self.generated_trainersanity = []
         self.generated_music = replace(crystal_data.music)
         self.generated_misc = replace(crystal_data.misc)
         self.generated_phone_traps = []
@@ -204,10 +202,7 @@ class PokemonCrystalWorld(World):
     def create_items(self) -> None:
 
         # Delete trainersanity locations if there are more than the amount specified in the settings
-        if self.options.trainersanity:
-            locations: list[PokemonCrystalLocation] = self.get_locations()
-            trainer_locations = [loc for loc in locations if "Trainersanity" in loc.tags]
-            locs_to_remove = len(trainer_locations) - self.options.trainersanity.value
+        def remove_excess_trainersanity(trainer_locations: [PokemonCrystalLocation], locs_to_remove: int):
             if locs_to_remove > 0:
                 priority_trainer_locations = [loc for loc in trainer_locations
                                               if loc.name in self.options.priority_locations.value]
@@ -222,6 +217,18 @@ class PokemonCrystalWorld(World):
                     locs_to_remove -= 1
                     if locs_to_remove <= 0:
                         break
+
+        if self.options.johto_trainersanity:
+            trainer_locations = [loc for loc in self.get_locations() if
+                                 "Trainersanity" in loc.tags and "Johto" in loc.tags]
+            locs_to_remove = len(trainer_locations) - self.options.johto_trainersanity.value
+            remove_excess_trainersanity(trainer_locations, locs_to_remove)
+
+        if self.options.kanto_trainersanity:
+            trainer_locations = [loc for loc in self.get_locations() if
+                                 "Trainersanity" in loc.tags and "Johto" not in loc.tags]
+            locs_to_remove = len(trainer_locations) - self.options.kanto_trainersanity.value
+            remove_excess_trainersanity(trainer_locations, locs_to_remove)
 
         item_locations = [
             location

@@ -7,7 +7,7 @@ from .data import data, EvolutionData, EvolutionType, StartingTown, FlyRegion
 from .options import FreeFlyLocation, Route32Condition, JohtoOnly, RandomizeBadges, UndergroundsRequirePower, \
     Route3Access, EliteFourRequirement, Goal, Route44AccessRequirement, BlackthornDarkCaveAccess, RedRequirement, \
     MtSilverRequirement, HMBadgeRequirements, RedGyaradosAccess, EarlyFly, RadioTowerRequirement, \
-    BreedingMethodsRequired, Shopsanity
+    BreedingMethodsRequired, Shopsanity, KantoTrainersanity, JohtoTrainersanity
 from ..Files import APTokenTypes
 
 if TYPE_CHECKING:
@@ -41,8 +41,10 @@ def adjust_options(world: "PokemonCrystalWorld"):
     __adjust_meta_options(world)
     __adjust_option_problems(world)
 
+
 def __adjust_meta_options(world: "PokemonCrystalWorld"):
     __saffron_tea_random(world)
+
 
 def __adjust_option_problems(world: "PokemonCrystalWorld"):
     __adjust_options_radio_tower_and_route_44(world)
@@ -52,6 +54,7 @@ def __adjust_option_problems(world: "PokemonCrystalWorld"):
     __adjust_options_encounters_and_breeding(world)
     __adjust_options_race_mode(world)
 
+
 def __saffron_tea_random(world: "PokemonCrystalWorld"):
     teaset = world.options.saffron_gatehouse_tea.value
     if "_Random" in teaset:
@@ -60,6 +63,7 @@ def __saffron_tea_random(world: "PokemonCrystalWorld"):
             if direction not in teaset:
                 if world.random.randint(0, 1) == 1:
                     teaset.add(direction)
+
 
 def __adjust_options_radio_tower_and_route_44(world: "PokemonCrystalWorld"):
     if (world.options.randomize_badges.value != RandomizeBadges.option_completely_random
@@ -102,6 +106,7 @@ def __adjust_options_radio_tower_and_route_44(world: "PokemonCrystalWorld"):
             world.options.radio_tower_count.value,
             world.options.radio_tower_count.value,
             world.player_name)
+
 
 def __adjust_options_johto_only(world: "PokemonCrystalWorld"):
     if world.options.johto_only:
@@ -200,6 +205,7 @@ def __adjust_options_johto_only(world: "PokemonCrystalWorld"):
                     "if badges are not completely random. Changing Route 44 Access Badges to 8 for player %s.",
                     world.player_name)
 
+
 def __adjust_options_gyarados(world: "PokemonCrystalWorld"):
     if (world.options.red_gyarados_access
             and world.options.randomize_badges.value == RandomizeBadges.option_vanilla
@@ -209,6 +215,7 @@ def __adjust_options_gyarados(world: "PokemonCrystalWorld"):
         logging.warning("Pokemon Crystal: Red Gyarados access requires Whirlpool and Vanilla Badges are not "
                         "compatible, setting Red Gyarados access to vanilla for player %s.",
                         world.player_name)
+
 
 def __adjust_options_early_fly(world: "PokemonCrystalWorld"):
     if (world.options.early_fly
@@ -220,6 +227,7 @@ def __adjust_options_early_fly(world: "PokemonCrystalWorld"):
         logging.warning("Pokemon Crystal: Early fly is not compatible with Random Starting Town if Badges are "
                         "not completely random. Disabling Early Fly for player %s",
                         world.player_name)
+
 
 def __adjust_options_encounters_and_breeding(world: "PokemonCrystalWorld"):
     if (world.options.breeding_methods_required == BreedingMethodsRequired.option_with_ditto
@@ -243,6 +251,7 @@ def __adjust_options_encounters_and_breeding(world: "PokemonCrystalWorld"):
             "At least one wild encounter type must be available for Ditto only breeding. "
             "Disabling breeding logic for player %s.",
             world.player_name)
+
 
 def __adjust_options_race_mode(world: "PokemonCrystalWorld"):
     # In race mode we don't patch any item location information into the ROM
@@ -281,20 +290,22 @@ def _starting_town_valid(world: "PokemonCrystalWorld", starting_town: StartingTo
         return False
 
     immediate_hiddens = world.options.randomize_hidden_items and not world.options.require_itemfinder
+    full_johto_trainersanity = world.options.johto_trainersanity == JohtoTrainersanity.range_end
+    full_kanto_trainersanity = world.options.kanto_trainersanity == KantoTrainersanity.range_end
     johto_shopsanity = world.options.shopsanity in (Shopsanity.option_johto, Shopsanity.option_both)
     kanto_shopsanity = world.options.shopsanity in (Shopsanity.option_kanto, Shopsanity.option_both)
 
     if starting_town.name == "Cianwood City":
         return world.options.static_pokemon_required and (
-                    (world.options.trainersanity and immediate_hiddens) or johto_shopsanity)
+                (full_johto_trainersanity and immediate_hiddens) or johto_shopsanity)
     if starting_town.name in ("Lake of Rage", "Mahogany Town"):
-        return not world.options.mount_mortar_access or world.options.trainersanity or johto_shopsanity
+        return not world.options.mount_mortar_access or full_johto_trainersanity or johto_shopsanity
 
     if starting_town.name in ("Pallet Town", "Viridian City", "Pewter City"):
         return (immediate_hiddens or world.options.route_3_access == Route3Access.option_vanilla or kanto_shopsanity
                 or world.options.randomize_berry_trees)
     if starting_town.name == "Rock Tunnel":
-        return world.options.trainersanity
+        return full_kanto_trainersanity
     if starting_town.name == "Vermilion City":
         return "South" not in world.options.saffron_gatehouse_tea or world.options.undergrounds_require_power not in (
             UndergroundsRequirePower.option_both, UndergroundsRequirePower.option_north_south) or kanto_shopsanity

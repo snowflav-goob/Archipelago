@@ -316,11 +316,10 @@ class MountMortarAccess(Choice):
     option_rock_smash = 1
 
 
-class Trainersanity(NamedRange):
+class JohtoTrainersanity(NamedRange):
     """
-    Adds checks for defeating trainers.
+    Adds checks for defeating Johto trainers.
 
-    If you have Johto Only on, the amount of Trainer checks might be lower than the amount you specify.
     You can turn trainers that have checks greyscale by setting the "trainersanity_indication" in-game option.
 
     Trainers are no longer missable. Each trainer will add a random filler item into the pool.
@@ -328,7 +327,27 @@ class Trainersanity(NamedRange):
     display_name = "Trainersanity"
     default = 0
     range_start = 0
-    range_end = len([loc for loc in data.locations.values() if "Trainersanity" in loc.tags])
+    range_end = len([loc_id for loc_id, loc_data in data.locations.items() if
+                     "Trainersanity" in loc_data.tags and "Johto" in loc_data.tags])
+    special_range_names = {
+        "off": 0,
+        "full": range_end
+    }
+
+
+class KantoTrainersanity(NamedRange):
+    """
+    Adds checks for defeating Kanto trainers.
+
+    You can turn trainers that have checks greyscale by setting the "trainersanity_indication" in-game option.
+
+    Trainers are no longer missable. Each trainer will add a random filler item into the pool.
+    """
+    display_name = "Trainersanity"
+    default = 0
+    range_start = 0
+    range_end = len([loc_id for loc_id, loc_data in data.locations.items() if
+                     "Trainersanity" in loc_data.tags and "Johto" not in loc_data.tags])
     special_range_names = {
         "off": 0,
         "full": range_end
@@ -1401,7 +1420,8 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     blackthorn_dark_cave_access: BlackthornDarkCaveAccess
     national_park_access: NationalParkAccess
     mount_mortar_access: MountMortarAccess
-    trainersanity: Trainersanity
+    johto_trainersanity: JohtoTrainersanity
+    kanto_trainersanity: KantoTrainersanity
     trainersanity_alerts: TrainersanityAlerts
     rematchsanity: Rematchsanity
     randomize_wilds: RandomizeWilds
@@ -1595,7 +1615,8 @@ OPTION_GROUPS = [
     ),
     OptionGroup(
         "Trainersanity",
-        [Trainersanity,
+        [JohtoTrainersanity,
+         KantoTrainersanity,
          TrainersanityAlerts]
     ),
     OptionGroup(

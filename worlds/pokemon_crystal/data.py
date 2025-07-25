@@ -567,8 +567,9 @@ def _init() -> None:
             level_address
         )
 
-    regions = {}
-    locations = {}
+    regions = dict[str, RegionData]()
+    locations = dict[str, LocationData]()
+    locations_to_regions = dict[str, str]()
 
     for region_name, region_json in regions_json.items():
 
@@ -585,12 +586,13 @@ def _init() -> None:
                 item_codes[location_json["default_item"]],
                 rom_address_data[location_json["script"]],
                 event_flag_data[location_json["flag"]],
-                frozenset(location_json["tags"]),
+                frozenset(location_json["tags"] + (["Johto"] if region_json["johto"] else [])),
                 location_json["script"]
             )
             region_locations.append(location_name)
             locations[location_name] = new_location
             claimed_locations.add(location_name)
+            locations_to_regions[location_name] = region_name
 
         region_locations.sort()
 
@@ -888,7 +890,7 @@ def _init() -> None:
         starting_towns=starting_towns,
         game_settings=game_settings,
         phone_scripts=phone_scripts,
-        map_sizes=map_sizes
+        map_sizes=map_sizes,
     )
 
 
