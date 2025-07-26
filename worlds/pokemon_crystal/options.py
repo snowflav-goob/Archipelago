@@ -593,6 +593,18 @@ class RandomizeBerryTrees(Toggle):
     display_name = "Randomize Berry Trees"
 
 
+class RandomizePokemonRequests(Choice):
+    """
+    Shuffles the items given by Bill's Grandpa after showing him specific Pokemon into the pool
+    Optionally also randomizes the requested Pokemon
+    """
+    display_name = "Randomize Pokemon Requests"
+    default = 0
+    option_off = 0
+    option_items = 1
+    option_items_and_pokemon = 2
+
+
 class RandomizeFlyUnlocks(Choice):
     """
     Shuffles Fly destination unlocks into the pool
@@ -1444,6 +1456,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     shopsanity_restrict_rare_candies: ShopsanityRestrictRareCandies
     randomize_pokegear: RandomizePokegear
     randomize_berry_trees: RandomizeBerryTrees
+    randomize_pokemon_requests: RandomizePokemonRequests
     randomize_fly_unlocks: RandomizeFlyUnlocks
     randomize_starters: RandomizeStarters
     starter_blocklist: StarterBlocklist
@@ -1541,6 +1554,7 @@ OPTION_GROUPS = [
          RandomizePokegear,
          RandomizeHiddenItems,
          RandomizeBerryTrees,
+         RandomizePokemonRequests,
          RandomizeFlyUnlocks,
          RequireItemfinder,
          RemoteItems]

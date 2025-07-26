@@ -140,7 +140,13 @@
     "exits": [
       "REGION_ROUTE_25"
     ],
-    "locations": [],
+    "locations": [
+      "EVERSTONE_FROM_BILLS_GRANDPA",
+      "LEAF_STONE_FROM_BILLS_GRANDPA",
+      "WATER_STONE_FROM_BILLS_GRANDPA",
+      "FIRE_STONE_FROM_BILLS_GRANDPA",
+      "THUNDERSTONE_FROM_BILLS_GRANDPA"
+    ],
     "events": []
   },
   "REGION_BLACKTHORN_CITY": {

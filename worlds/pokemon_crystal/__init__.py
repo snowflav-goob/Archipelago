@@ -28,7 +28,7 @@ from .options import PokemonCrystalOptions, JohtoOnly, RandomizeBadges, Goal, HM
 from .phone import generate_phone_traps
 from .phone_data import PhoneScript
 from .pokemon import randomize_pokemon_data, randomize_starters, randomize_traded_pokemon, \
-    fill_wild_encounter_locations, generate_breeding_data, generate_evolution_data
+    fill_wild_encounter_locations, generate_breeding_data, generate_evolution_data, randomize_requested_pokemon
 from .regions import create_regions, setup_free_fly_regions
 from .rom import generate_output, PokemonCrystalProcedurePatch
 from .rules import set_rules, PokemonCrystalLogic, verify_hm_accessibility
@@ -107,6 +107,7 @@ class PokemonCrystalWorld(World):
     generated_starter_helditems: tuple[str, str, str]
     generated_palettes: dict[str, list[int]]
     generated_breeding: dict[str, set[str]]
+    generated_request_pokemon: list[str]
 
     generated_music: MusicData
     generated_misc: MiscData
@@ -146,6 +147,7 @@ class PokemonCrystalWorld(World):
         self.generated_starter_helditems = ("BERRY", "BERRY", "BERRY")
         self.generated_palettes = {}
         self.generated_breeding = defaultdict(set)
+        self.generated_request_pokemon = list(crystal_data.request_pokemon)
         self.generated_music = replace(crystal_data.music)
         self.generated_misc = replace(crystal_data.misc)
         self.generated_phone_traps = []
@@ -191,6 +193,7 @@ class PokemonCrystalWorld(World):
         randomize_starters(self)
         generate_breeding_data(random_evolutions_dict, self)
         generate_evolution_data(self)
+        randomize_requested_pokemon(self)
 
         create_locations(self, regions)
         self.multiworld.regions.extend(regions.values())
@@ -569,6 +572,9 @@ class PokemonCrystalWorld(World):
 
         if self.options.randomize_starting_town:
             spoiler_handle.write(f"Starting Town: {self.starting_town.name}\n")
+
+        if self.options.randomize_pokemon_requests:
+            spoiler_handle.write(f"Bill's Grandpa Pokemon: {", ".join(self.generated_request_pokemon)}\n")
 
         if self.options.enable_mischief:
             spoiler_handle.write(f"Mischief:\n")

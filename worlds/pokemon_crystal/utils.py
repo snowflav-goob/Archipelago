@@ -7,7 +7,7 @@ from .data import data, EvolutionData, EvolutionType, StartingTown, FlyRegion
 from .options import FreeFlyLocation, Route32Condition, JohtoOnly, RandomizeBadges, UndergroundsRequirePower, \
     Route3Access, EliteFourRequirement, Goal, Route44AccessRequirement, BlackthornDarkCaveAccess, RedRequirement, \
     MtSilverRequirement, HMBadgeRequirements, RedGyaradosAccess, EarlyFly, RadioTowerRequirement, \
-    BreedingMethodsRequired, Shopsanity, KantoTrainersanity, JohtoTrainersanity
+    BreedingMethodsRequired, Shopsanity, KantoTrainersanity, JohtoTrainersanity, RandomizePokemonRequests
 from ..Files import APTokenTypes
 
 if TYPE_CHECKING:
@@ -53,6 +53,7 @@ def __adjust_option_problems(world: "PokemonCrystalWorld"):
     __adjust_options_early_fly(world)
     __adjust_options_encounters_and_breeding(world)
     __adjust_options_race_mode(world)
+    __adjust_options_pokemon_requests(world)
 
 
 def __saffron_tea_random(world: "PokemonCrystalWorld"):
@@ -234,13 +235,14 @@ def __adjust_options_encounters_and_breeding(world: "PokemonCrystalWorld"):
             and "Ditto" in world.options.wild_encounter_blocklist):
         world.options.breeding_methods_required.value = BreedingMethodsRequired.option_none
         logging.warning(
-            "Ditto cannot be blocklisted while Ditto only breeding is enabled. Disabling breeding logic for player %s.",
+            "Pokemon Crystal: Ditto cannot be blocklisted while Ditto only breeding is enabled. "
+            "Disabling breeding logic for player %s.",
             world.player_name)
 
     if "Land" not in world.options.wild_encounter_methods_required and "Fishing" not in world.options.wild_encounter_methods_required:
         world.options.wild_encounter_methods_required.value.add(world.random.choice(("Land", "Fishing")))
         logging.warning(
-            "At least one of Land or Fishing must be enabled in wild encounter methods required. "
+            "Pokemon Crystal: At least one of Land or Fishing must be enabled in wild encounter methods required. "
             "Adding one at random for player %s.",
             world.player_name)
 
@@ -248,7 +250,7 @@ def __adjust_options_encounters_and_breeding(world: "PokemonCrystalWorld"):
             and not world.options.wild_encounter_methods_required):
         world.options.breeding_methods_required.value = BreedingMethodsRequired.option_none
         logging.warning(
-            "At least one wild encounter type must be available for Ditto only breeding. "
+            "Pokemon Crystal: At least one wild encounter type must be available for Ditto only breeding. "
             "Disabling breeding logic for player %s.",
             world.player_name)
 
@@ -259,6 +261,14 @@ def __adjust_options_race_mode(world: "PokemonCrystalWorld"):
         logging.warning("Pokemon Crystal: Forcing Player %s (%s) to use remote items due to race mode.",
                         world.player, world.player_name)
         world.options.remote_items.value = Toggle.option_true
+
+
+def __adjust_options_pokemon_requests(world: "PokemonCrystalWorld"):
+    if world.options.randomize_pokemon_requests == RandomizePokemonRequests.option_items and not world.options.randomize_wilds:
+        logging.warning("Pokemon Crystal: Randomize Pokemon Requests items only is not compatible with vanilla wilds. "
+                        "Disabling Randomize Pokemon Requests for player %s (%s).", world.player_name,
+                        world.player_name)
+        world.options.randomize_pokemon_requests.value = RandomizePokemonRequests.option_off
 
 
 def get_random_starting_town(world: "PokemonCrystalWorld"):

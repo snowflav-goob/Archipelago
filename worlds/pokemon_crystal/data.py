@@ -70,6 +70,14 @@ JOHTO_MARTS = {
     "MART_ROOFTOP_SALE"
 }
 
+REQUEST_POKEMON = [
+    "LICKITUNG",
+    "ODDISH",
+    "STARYU",
+    "GROWLITHE",
+    "PICHU"
+]
+
 
 @dataclass(frozen=True)
 class ItemData:
@@ -486,6 +494,7 @@ class PokemonCrystalData:
     game_settings: Mapping[str, PokemonCrystalGameSetting]
     phone_scripts: Sequence[PhoneScriptData]
     map_sizes: Mapping[str, tuple[int, int]]
+    request_pokemon: Sequence[str]
 
 
 def load_json_data(data_name: str) -> list[Any] | Mapping[str, Any]:
@@ -891,6 +900,7 @@ def _init() -> None:
         game_settings=game_settings,
         phone_scripts=phone_scripts,
         map_sizes=map_sizes,
+        request_pokemon=REQUEST_POKEMON
     )
 
 

@@ -7,7 +7,7 @@ from BaseClasses import ItemClassification
 from .data import data as crystal_data, LogicalAccess, PokemonData, EncounterType
 from .moves import get_tmhm_compatibility, randomize_learnset, moves_convert_friendly_to_ids
 from .options import RandomizeTypes, RandomizePalettes, RandomizeBaseStats, RandomizeStarters, RandomizeTrades, \
-    DexsanityStarters, EncounterGrouping, BreedingMethodsRequired
+    DexsanityStarters, EncounterGrouping, BreedingMethodsRequired, RandomizePokemonRequests
 from .utils import get_random_filler_item, evolution_in_logic
 
 if TYPE_CHECKING:
@@ -133,13 +133,12 @@ def randomize_starters(world: "PokemonCrystalWorld"):
 def randomize_traded_pokemon(world: "PokemonCrystalWorld"):
     if not world.options.randomize_trades: return
 
+    randomize_received = world.options.randomize_trades.value in (RandomizeTrades.option_received,
+                                                                  RandomizeTrades.option_both)
+    randomize_requested = world.options.randomize_trades.value in (RandomizeTrades.option_requested,
+                                                                   RandomizeTrades.option_both)
     new_trades = []
     for trade in world.generated_trades:
-        randomize_received = world.options.randomize_trades.value in (RandomizeTrades.option_received,
-                                                                      RandomizeTrades.option_both)
-        randomize_requested = world.options.randomize_trades.value in (RandomizeTrades.option_requested,
-                                                                       RandomizeTrades.option_both)
-
         received_pokemon = get_random_pokemon(world) if randomize_received else trade.received_pokemon
 
         new_trades.append(
@@ -153,6 +152,26 @@ def randomize_traded_pokemon(world: "PokemonCrystalWorld"):
         )
 
     world.generated_trades = new_trades
+
+
+def randomize_requested_pokemon(world: "PokemonCrystalWorld"):
+    if world.options.randomize_pokemon_requests == RandomizePokemonRequests.option_items_and_pokemon:
+
+        logically_available_pokemon = [pokemon for pokemon in world.logic.available_pokemon if pokemon != "UNOWN"]
+
+        assert logically_available_pokemon
+        while len(logically_available_pokemon) < len(world.generated_request_pokemon):
+            logically_available_pokemon.append(world.random.choice(logically_available_pokemon))
+
+        world.random.shuffle(logically_available_pokemon)
+        world.generated_request_pokemon = [logically_available_pokemon.pop() for _ in world.generated_request_pokemon]
+    elif world.options.randomize_pokemon_requests == RandomizePokemonRequests.option_items:
+        # ideally we should never need this, but best to be safe
+        logically_available_pokemon = [pokemon for pokemon in world.logic.available_pokemon if pokemon != "UNOWN"]
+
+        world.generated_request_pokemon = [
+            world.random.choice(logically_available_pokemon) if mon not in world.logic.available_pokemon else mon for
+            mon in world.generated_request_pokemon]
 
 
 def fill_wild_encounter_locations(world: "PokemonCrystalWorld"):

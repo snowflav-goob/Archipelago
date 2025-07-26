@@ -2728,7 +2728,8 @@
     "flag": "EVENT_GOT_EVERSTONE_FROM_BILLS_GRANDPA",
     "type": "giveitem",
     "tags": [
-      "NPCGift"
+      "NPCGift",
+      "BillsGrandpa"
     ],
     "default_item": "EVERSTONE",
     "script": "AP_NPC_BillsHouse_EVERSTONE"
@@ -2738,7 +2739,8 @@
     "flag": "EVENT_GOT_LEAF_STONE_FROM_BILLS_GRANDPA",
     "type": "giveitem",
     "tags": [
-      "NPCGift"
+      "NPCGift",
+      "BillsGrandpa"
     ],
     "default_item": "LEAF_STONE",
     "script": "AP_NPC_BillsHouse_LEAF_STONE"
@@ -2748,7 +2750,8 @@
     "flag": "EVENT_GOT_WATER_STONE_FROM_BILLS_GRANDPA",
     "type": "giveitem",
     "tags": [
-      "NPCGift"
+      "NPCGift",
+      "BillsGrandpa"
     ],
     "default_item": "WATER_STONE",
     "script": "AP_NPC_BillsHouse_WATER_STONE"
@@ -2758,7 +2761,8 @@
     "flag": "EVENT_GOT_FIRE_STONE_FROM_BILLS_GRANDPA",
     "type": "giveitem",
     "tags": [
-      "NPCGift"
+      "NPCGift",
+      "BillsGrandpa"
     ],
     "default_item": "FIRE_STONE",
     "script": "AP_NPC_BillsHouse_FIRE_STONE"
@@ -2768,7 +2772,8 @@
     "flag": "EVENT_GOT_THUNDERSTONE_FROM_BILLS_GRANDPA",
     "type": "giveitem",
     "tags": [
-      "NPCGift"
+      "NPCGift",
+      "BillsGrandpa"
     ],
     "default_item": "THUNDERSTONE",
     "script": "AP_NPC_BillsHouse_THUNDERSTONE"

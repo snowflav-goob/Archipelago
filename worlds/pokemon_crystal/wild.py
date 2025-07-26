@@ -3,7 +3,7 @@ from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from .data import EncounterMon, LogicalAccess, EncounterType, EncounterKey
-from .options import RandomizeWilds, EncounterGrouping, BreedingMethodsRequired
+from .options import RandomizeWilds, EncounterGrouping, BreedingMethodsRequired, RandomizePokemonRequests
 from .pokemon import get_random_pokemon, pokemon_convert_friendly_to_ids, get_priority_dexsanity
 
 if TYPE_CHECKING:
@@ -58,6 +58,9 @@ def randomize_wild_pokemon(world: "PokemonCrystalWorld"):
         elif world.options.randomize_wilds.option_catch_em_all:
             logical_pokemon_pool.extend(world.generated_pokemon.keys())
 
+        if world.options.randomize_pokemon_requests == RandomizePokemonRequests.option_items:
+            logical_pokemon_pool.extend(world.generated_request_pokemon)
+
         logical_pokemon_pool.extend(get_priority_dexsanity(world))
 
         global_blocklist = pokemon_convert_friendly_to_ids(world, world.options.wild_encounter_blocklist)
@@ -65,6 +68,9 @@ def randomize_wild_pokemon(world: "PokemonCrystalWorld"):
         if global_blocklist:
             logical_pokemon_pool = [pokemon_id for pokemon_id in logical_pokemon_pool if
                                     pokemon_id not in global_blocklist]
+
+        if world.options.randomize_pokemon_requests == RandomizePokemonRequests.option_items:
+            logical_pokemon_pool.extend(world.generated_request_pokemon)
 
         if len(logical_pokemon_pool) > required_logical_pokemon:
             world.random.shuffle(logical_pokemon_pool)

@@ -1329,6 +1329,20 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
         set_rule(get_entrance("REGION_PALLET_TOWN -> REGION_ROUTE_21"), can_surf_kanto)
 
+        if world.options.randomize_pokemon_requests:
+            bills_grandpa_locations = (
+                "Bill's House - Everstone from Bill's Grandpa",
+                "Bill's House - Leaf Stone from Bill's Grandpa",
+                "Bill's House - Water Stone from Bill's Grandpa",
+                "Bill's House - Fire Stone from Bill's Grandpa",
+                "Bill's House - Thunderstone from Bill's Grandpa"
+            )
+
+            for i, location in enumerate(bills_grandpa_locations):
+                required_pokemon = world.generated_request_pokemon[:i + 1]
+                set_rule(get_location(location),
+                         lambda state, pokemon=required_pokemon: state.has_all(pokemon, world.player))
+
     if world.options.require_itemfinder:
         for location in world.multiworld.get_locations(world.player):
             if "Hidden" in location.tags:
