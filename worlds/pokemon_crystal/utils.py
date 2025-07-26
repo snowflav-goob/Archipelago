@@ -284,7 +284,10 @@ def get_random_starting_town(world: "PokemonCrystalWorld"):
         blocklist.update(town.name for town in data.starting_towns if not town.johto)
 
     filtered_pool = [loc for loc in location_pool if loc.name not in blocklist]
-    if not filtered_pool: filtered_pool = location_pool
+    if not filtered_pool:
+        logging.warning("Pokemon Crystal: All valid starting town locations blocked for player %s (%s). "
+                        "Using global list instead.", world.player, world.player_name)
+        filtered_pool = location_pool
 
     world.random.shuffle(filtered_pool)
     world.starting_town = filtered_pool.pop()
@@ -385,6 +388,8 @@ def get_free_fly_locations(world: "PokemonCrystalWorld"):
 
         # if the list after the blocked locations are removed is long enough to satisfy all the requested fly locations, set the location pool to it
         if len(location_pool_after_blocklist) >= locations_required:
+            logging.warning("Pokemon Crystal: All valid free fly locations blocked for player %s (%s). "
+                            "Using global list instead.", world.player, world.player_name)
             location_pool = location_pool_after_blocklist
 
     world.random.shuffle(location_pool)
