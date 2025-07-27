@@ -84,6 +84,8 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
     trainer_name_level_list: list[tuple[str, int]] = []
     static_name_level_list: list[tuple[str, int]] = []
 
+    wild_scaling_locations = set()
+
     def should_include_region(region):
         # check if region should be included
         return (region.johto
@@ -103,7 +105,7 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
             return False
 
     def create_scaling_location(parent_region: Region, wild_key: EncounterKey):
-        if wild_key.region_name() in regions: return
+        if wild_key.region_name() in wild_scaling_locations: return
         if world.options.level_scaling and wild_key.encounter_type in [EncounterType.Grass,
                                                                        EncounterType.Water]:
             wild_name_level_list.append((
@@ -119,6 +121,7 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
                 "Wild Pokemon", ItemClassification.filler, None, world.player))
             scaling_event.encounter_key = wild_key
             parent_region.locations.append(scaling_event)
+            wild_scaling_locations.add(scaling_event.name)
 
     def create_wild_region(parent_region: Region, wild_key: EncounterKey, wilds: list[EncounterMon | StaticPokemon],
                            tags: set[str] | None = None):
