@@ -5,7 +5,7 @@ from BaseClasses import Region, ItemClassification, Entrance
 from .data import data, RegionData, EncounterMon, StaticPokemon, LogicalAccess, EncounterKey, FishingRodType, TreeRarity
 from .items import PokemonCrystalItem
 from .locations import PokemonCrystalLocation
-from .options import FreeFlyLocation, JohtoOnly, LevelScaling, BlackthornDarkCaveAccess, Goal, Shopsanity, FlyCheese
+from .options import FreeFlyLocation, JohtoOnly, BlackthornDarkCaveAccess, Goal, Shopsanity, FlyCheese
 from .utils import get_fly_regions
 
 if TYPE_CHECKING:
@@ -78,6 +78,9 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
     connections: list[tuple[str, str, str]] = []
     johto_only = world.options.johto_only.value
     skip_e4 = world.options.skip_elite_four.value
+
+    trainer_name_level_list: list[tuple[str, int]] = []
+    encounter_name_level_list: list[tuple[str, int]] = []
 
     def should_include_region(region):
         # check if region should be included
@@ -206,10 +209,7 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
                 setup_mart_regions(new_region, region_data)
 
             # Level Scaling
-            if world.options.level_scaling.value != LevelScaling.option_off:
-                trainer_name_level_list: list[tuple[str, int]] = []
-                encounter_name_level_list: list[tuple[str, int]] = []
-
+            if world.options.level_scaling:
                 # Create plando locations for the trainers in their regions.
                 for trainer in region_data.trainers:
                     if exclude_scaling(trainer.name):
@@ -256,14 +256,6 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
 
                 # And finally the wilds.
                 # TODO add wilds scaling.
-
-                # Make the lists for level_scaling.py to use
-                trainer_name_level_list.sort(key=lambda i: i[1])
-                world.trainer_name_list.extend(i[0] for i in trainer_name_level_list)
-                world.trainer_level_list.extend(i[1] for i in trainer_name_level_list)
-                encounter_name_level_list.sort(key=lambda i: i[1])
-                world.encounter_name_list.extend(i[0] for i in encounter_name_level_list)
-                world.encounter_level_list.extend(i[1] for i in encounter_name_level_list)
                 # End level scaling in regions.py
 
             for region_exit in region_data.exits:
@@ -317,8 +309,13 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
         regions["Breeding"] = breeding_region
         regions["Menu"].connect(regions["Breeding"])
 
-    world.trainer_level_list.sort()
-    world.encounter_level_list.sort()
+    if world.options.level_scaling:
+        trainer_name_level_list.sort(key=lambda i: i[1])
+        world.trainer_name_list = [i[0] for i in trainer_name_level_list]
+        world.trainer_level_list = [i[1] for i in trainer_name_level_list]
+        encounter_name_level_list.sort(key=lambda i: i[1])
+        world.encounter_name_list = [i[0] for i in encounter_name_level_list]
+        world.encounter_level_list = [i[1] for i in encounter_name_level_list]
 
     return regions
 
