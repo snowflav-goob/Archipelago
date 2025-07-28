@@ -417,6 +417,7 @@ class PokemonCrystalClient(BizHawkClient):
                                   and location not in local_checked_locations
                                   and location not in ctx.checked_locations]
                 if hint_locations:
+                    ctx.locations_scouted.update(hint_locations)
                     await ctx.send_msgs([{
                         "cmd": "LocationScouts",
                         "locations": hint_locations,
