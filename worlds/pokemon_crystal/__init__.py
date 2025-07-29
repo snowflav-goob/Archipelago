@@ -581,7 +581,8 @@ class PokemonCrystalWorld(World):
             spoiler_handle.write(f"Starting Town: {self.starting_town.name}\n")
 
         if self.options.randomize_pokemon_requests:
-            spoiler_handle.write(f"Bill's Grandpa Pokemon: {", ".join(self.generated_request_pokemon)}\n")
+            request_pokemon = ", ".join(self.generated_request_pokemon)
+            spoiler_handle.write(f"Bill's Grandpa Pokemon: {request_pokemon}\n")g
 
         if self.options.enable_mischief:
             spoiler_handle.write(f"Mischief:\n")
