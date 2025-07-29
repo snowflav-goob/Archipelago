@@ -1550,7 +1550,8 @@ def verify_hm_accessibility(world: "PokemonCrystalWorld") -> None:
             state = world.get_world_collection_state()
             if any((logic.has_hm_badge_requirement(hm, False)(state)
                     or logic.has_hm_badge_requirement(hm, True)(state)) for hm in unverified_hms):
-                raise Exception(f"Failed to ensure access to {",".join(unverified_hms)} for player {world.player}")
+                unverified_hms_list = ",".join(unverified_hms)
+                raise Exception(f"Failed to ensure access to {unverified_hms_list} for player {world.player}")
         elif unverified_hms:
             unverified_hms.reverse()
             do_verify(unverified_hms)
