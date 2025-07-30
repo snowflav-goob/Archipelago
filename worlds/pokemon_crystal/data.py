@@ -50,7 +50,20 @@ FRIENDLY_MART_NAMES = {
     "MART_BARGAIN_SHOP": "Goldenrod UG - Bargain Shop",
     "MART_BLUE_CARD": "Radio Tower - Blue Card Shop",
     "MART_GOLDENROD_GAME_CORNER": "Goldenrod Game Corner - Prize Shop",
-    "MART_CELADON_GAME_CORNER_PRIZE_ROOM": "Celadon Game Corner - Prize Shop"
+    "MART_CELADON_GAME_CORNER_PRIZE_ROOM": "Celadon Game Corner - Prize Shop",
+    "MART_KURTS_BALLS": "Azalea Town - Kurt's Ball Shop"
+}
+
+CUSTOM_MART_SLOT_NAMES = {
+    "MART_KURTS_BALLS": [
+        "Red Apricorn",
+        "Grn Apricorn",
+        "Blu Apricorn",
+        "Ylw Apricorn",
+        "Blk Apricorn",
+        "Wht Apricorn",
+        "Pnk Apricorn"
+    ]
 }
 
 JOHTO_MARTS = {
@@ -72,7 +85,8 @@ JOHTO_MARTS = {
     "MART_BARGAIN_SHOP",
     "MART_ROOFTOP_SALE",
     "MART_BLUE_CARD",
-    "MART_GOLDENROD_GAME_CORNER"
+    "MART_GOLDENROD_GAME_CORNER",
+    "MART_KURTS_BALLS"
 }
 
 REQUEST_POKEMON = [

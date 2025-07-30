@@ -5,7 +5,7 @@ from . import item_const_name_to_id
 from .data import data, POKEDEX_OFFSET, POKEDEX_COUNT_OFFSET, FLY_UNLOCK_OFFSET
 from .options import Goal, DexsanityStarters
 from .pokemon import get_priority_dexsanity, get_excluded_dexsanity
-from .utils import evolution_in_logic, evolution_location_name, get_fly_regions
+from .utils import evolution_in_logic, evolution_location_name, get_fly_regions, get_mart_slot_location_name
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
@@ -189,7 +189,7 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
                 for i, item in enumerate(mart_data.items):
                     new_location = PokemonCrystalLocation(
                         world.player,
-                        f"{mart_data.friendly_name} - Item {i + 1}",
+                        f"{mart_data.friendly_name} - {get_mart_slot_location_name(mart, i)}",
                         region,
                         tags=frozenset({"shopsanity"}),
                         flag=item.flag,
@@ -230,7 +230,7 @@ def create_location_label_to_id_map() -> dict[str, int]:
     for mart, mart_data in data.marts.items():
         for i, item in enumerate(mart_data.items):
             if item.flag:
-                label_to_id_map[f"{mart_data.friendly_name} - Item {i + 1}"] = item.flag
+                label_to_id_map[f"{mart_data.friendly_name} - {get_mart_slot_location_name(mart, i)}"] = item.flag
 
     for pokemon in data.pokemon.values():
         label_to_id_map[f"Pokedex - {pokemon.friendly_name}"] = pokemon.id + POKEDEX_OFFSET
@@ -261,7 +261,8 @@ LOCATION_GROUPS = {
     "Berry Trees": {loc.label for loc in data.locations.values() if "BerryTree" in loc.tags},
     "Key Items": {loc.label for loc in data.locations.values() if "KeyItem" in loc.tags},
     "Ruins of Alph": {loc.label for loc in data.locations.values() if "AlphItemChambers" in loc.tags},
-    "Shopsanity": {f"{mart.friendly_name} - Item {i + 1}" for mart in data.marts.values() for i, item in
-                   enumerate(mart.items) if item.flag},
+    "Shopsanity": {f"{mart_data.friendly_name} - {get_mart_slot_location_name(mart, i)}" for mart, mart_data in
+                   data.marts.items() for i, item in
+                   enumerate(mart_data.items) if item.flag},
     "Fly Unlocks": {f"Visit {region.name}" for region in data.fly_regions},
 }

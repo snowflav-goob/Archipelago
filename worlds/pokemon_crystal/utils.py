@@ -3,7 +3,7 @@ from random import Random
 from typing import TYPE_CHECKING
 
 from Options import Toggle
-from .data import data, EvolutionData, EvolutionType, StartingTown, FlyRegion
+from .data import data, EvolutionData, EvolutionType, StartingTown, FlyRegion, CUSTOM_MART_SLOT_NAMES
 from .options import FreeFlyLocation, Route32Condition, JohtoOnly, RandomizeBadges, UndergroundsRequirePower, \
     Route3Access, EliteFourRequirement, Goal, Route44AccessRequirement, BlackthornDarkCaveAccess, RedRequirement, \
     MtSilverRequirement, HMBadgeRequirements, RedGyaradosAccess, EarlyFly, RadioTowerRequirement, \
@@ -416,6 +416,13 @@ def evolution_in_logic(world: "PokemonCrystalWorld", evolution: EvolutionData):
 def evolution_location_name(world: "PokemonCrystalWorld", from_pokemon: str, to_pokemon: str):
     return (f"Evolve {world.generated_pokemon[from_pokemon].friendly_name} "
             f"into {world.generated_pokemon[to_pokemon].friendly_name}")
+
+
+def get_mart_slot_location_name(mart: str, index: int):
+    if mart in CUSTOM_MART_SLOT_NAMES:
+        return CUSTOM_MART_SLOT_NAMES[mart][index]
+    else:
+        return f"Item {index + 1}"
 
 
 def convert_to_ingame_text(text: str):

@@ -608,6 +608,24 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     set_rule(get_location("Azalea Town - Lure Ball from Kurt"),
              lambda state: state.has("EVENT_CLEARED_SLOWPOKE_WELL", world.player))
 
+    if world.options.shopsanity in (Shopsanity.option_johto, Shopsanity.option_both):
+        set_rule(get_entrance("REGION_KURTS_HOUSE -> REGION_MART_KURTS_BALLS"),
+                 lambda state: state.has("EVENT_CLEARED_SLOWPOKE_WELL", world.player))
+        set_rule(get_location("Azalea Town - Kurt's Ball Shop - Red Apricorn"),
+                 lambda state: state.has("Red Apricorn", world.player))
+        set_rule(get_location("Azalea Town - Kurt's Ball Shop - Grn Apricorn"),
+                 lambda state: state.has("Grn Apricorn", world.player))
+        set_rule(get_location("Azalea Town - Kurt's Ball Shop - Blu Apricorn"),
+                 lambda state: state.has("Blu Apricorn", world.player))
+        set_rule(get_location("Azalea Town - Kurt's Ball Shop - Ylw Apricorn"),
+                 lambda state: state.has("Ylw Apricorn", world.player))
+        set_rule(get_location("Azalea Town - Kurt's Ball Shop - Blk Apricorn"),
+                 lambda state: state.has("Blk Apricorn", world.player))
+        set_rule(get_location("Azalea Town - Kurt's Ball Shop - Wht Apricorn"),
+                 lambda state: state.has("Wht Apricorn", world.player))
+        set_rule(get_location("Azalea Town - Kurt's Ball Shop - Pnk Apricorn"),
+                 lambda state: state.has("Pnk Apricorn", world.player))
+
     set_rule(get_location("Charcoal Kiln - Charcoal"), lambda state: state.has("EVENT_HERDED_FARFETCHD", world.player))
 
     if world.options.level_scaling:

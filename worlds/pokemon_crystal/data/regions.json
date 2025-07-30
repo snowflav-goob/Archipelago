@@ -2081,7 +2081,10 @@
     "locations": [
       "KURT_GAVE_YOU_LURE_BALL"
     ],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_KURTS_BALLS"
+    ]
   },
   "REGION_LAKE_OF_RAGE": {
     "johto": true,

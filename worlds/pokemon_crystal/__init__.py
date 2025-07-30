@@ -396,7 +396,7 @@ class PokemonCrystalWorld(World):
         shop_locations: dict[int, list[set[PokemonCrystalLocation]]] = defaultdict(list)
 
         exclude_shops = ("REGION_MART_BLUE_CARD", "REGION_MART_GOLDENROD_GAME_CORNER",
-                         "REGION_MART_CELADON_GAME_CORNER_PRIZE_ROOM")
+                         "REGION_MART_CELADON_GAME_CORNER_PRIZE_ROOM", "REGION_MART_KURTS_BALLS")
         for sphere in multiworld.get_spheres():
             shop_locations_in_sphere = defaultdict(set)
             for location in sphere:
