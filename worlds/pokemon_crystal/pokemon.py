@@ -155,7 +155,8 @@ def randomize_traded_pokemon(world: "PokemonCrystalWorld"):
 
 
 def randomize_requested_pokemon(world: "PokemonCrystalWorld"):
-    if world.options.randomize_pokemon_requests == RandomizePokemonRequests.option_items_and_pokemon:
+    if world.options.randomize_pokemon_requests in (RandomizePokemonRequests.option_items_and_pokemon,
+                                                    RandomizePokemonRequests.option_pokemon):
 
         logically_available_pokemon = [pokemon for pokemon in world.logic.available_pokemon if pokemon != "UNOWN"]
 

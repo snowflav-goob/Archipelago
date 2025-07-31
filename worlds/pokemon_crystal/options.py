@@ -513,11 +513,16 @@ class EvolutionGymLevels(Range):
 
 class Shopsanity(OptionSet):
     """
-    Adds Pokemart items as locations, items in Pokemarts are added to the item pool
+    Adds shop purchases as locations, items in shops are added to the item pool
+
+    - Blue Card: Adds the Blue Card prize shop, accessing this shop requires the Blue Card and buying items requires
+    points. Five Blue Card Points are added to the item pool. Points are not spent when purchasing.
+    - Game Corners: The Game Corner TM shops are added.
+    - Apricorns: Kurt's Apricorn Ball shop is added, each slot requires a different Apricorn. Apricorns are progression.
     """
     display_name = "Shopsanity"
     default = []
-    
+
     johto_marts = "Johto Marts"
     kanto_marts = "Kanto Marts"
     blue_card = "Blue Card"
@@ -608,7 +613,8 @@ class RandomizePokemonRequests(Choice):
     default = 0
     option_off = 0
     option_items = 1
-    option_items_and_pokemon = 2
+    option_pokemon = 2
+    option_items_and_pokemon = 3
 
 
 class RandomizeFlyUnlocks(Choice):
