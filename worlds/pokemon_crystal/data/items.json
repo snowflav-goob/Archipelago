@@ -329,7 +329,7 @@
   },
   "ITEMFINDER": {
     "name": "Itemfinder",
-    "classification": "PROGRESSION",
+    "classification": "USEFUL",
     "price": 0,
     "tags": [
       "Unique",

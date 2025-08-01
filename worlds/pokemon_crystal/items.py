@@ -92,6 +92,11 @@ def adjust_item_classifications(world: "PokemonCrystalWorld"):
             if "Apricorn" in item.tags:
                 item.classification = ItemClassification.progression
 
+    if world.options.require_itemfinder:
+        for item in world.itempool:
+            if item.name == "Itemfinder":
+                item.classification = ItemClassification.progression
+
 
 ITEM_GROUPS = {
     "Badges": {item.label for item in data.items.values() if "Badge" in item.tags},
