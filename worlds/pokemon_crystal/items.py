@@ -76,7 +76,7 @@ def get_random_ball(random: Random):
 
 def item_const_name_to_label(const_name):
     labels = [item_data.label for _item_id, item_data in data.items.items() if item_data.item_const == const_name]
-    if len(labels):
+    if labels:
         return labels[0]
     return "Poke Ball"
 
