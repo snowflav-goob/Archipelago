@@ -48,7 +48,7 @@ FRIENDLY_MART_NAMES = {
     "MART_GOLDENROD_1F_S": "Evolution Stone Shop",
     "MART_ROOFTOP_SALE": "Goldenrod Dept. Store - Rooftop Sale",
     "MART_BARGAIN_SHOP": "Goldenrod UG - Bargain Shop",
-    "MART_BLUE_CARD": "Radio Tower - Blue Card Shop",
+    "MART_BLUE_CARD": "Radio Tower 2F - Blue Card Shop",
     "MART_GOLDENROD_GAME_CORNER": "Goldenrod Game Corner - Prize Shop",
     "MART_CELADON_GAME_CORNER_PRIZE_ROOM": "Celadon Game Corner - Prize Shop",
     "MART_KURTS_BALLS": "Azalea Town - Kurt's Ball Shop"
@@ -63,6 +63,17 @@ CUSTOM_MART_SLOT_NAMES = {
         "Blk Apricorn",
         "Wht Apricorn",
         "Pnk Apricorn"
+    ],
+    "MART_BLUE_CARD": [
+        "Two Point Item 1",
+        "Two Point Item 2",
+        "Three Point Item 1",
+        "Three Point Item 2",
+        "Five Point Item 1",
+        "Five Point Item 2",
+        "Five Point Item 3",
+        "Five Point Item 4",
+        "Five Point Item 5"
     ]
 }
 

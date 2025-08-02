@@ -320,7 +320,7 @@ class JohtoTrainersanity(NamedRange):
     """
     Adds checks for defeating Johto trainers.
 
-    You can turn trainers that have checks greyscale by setting the "trainersanity_indication" in-game option.
+    You can turn trainers that have checks grayscale by setting the "trainersanity_indication" in-game option.
 
     Trainers are no longer missable. Each trainer will add a random filler item into the pool.
     """
@@ -339,7 +339,7 @@ class KantoTrainersanity(NamedRange):
     """
     Adds checks for defeating Kanto trainers.
 
-    You can turn trainers that have checks greyscale by setting the "trainersanity_indication" in-game option.
+    You can turn trainers that have checks grayscale by setting the "trainersanity_indication" in-game option.
 
     Trainers are no longer missable. Each trainer will add a random filler item into the pool.
     """
@@ -1381,7 +1381,7 @@ class GameOptions(OptionDict):
     text_frame: 1-8 - Sets the textbox frame, "random" will pick a random frame
     text_speed: mid/slow/fast/instant - Sets the speed at which text advances
     time_of_day: auto/morn/day/nite - Sets a time of day override, auto follows the clock, "random" will pick a random time
-    trainersanity_indication - Sets whether Trainersanity trainers have greyscale sprites until they are beaten
+    trainersanity_indication - Sets whether Trainersanity trainers have grayscale sprites until they are beaten
     turbo_button: none/a/b/a_or_b - Sets which buttons auto advance text when held
     """
     display_name = "Game Options"

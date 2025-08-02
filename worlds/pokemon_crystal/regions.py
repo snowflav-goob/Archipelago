@@ -237,7 +237,7 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
                 for trainer in region_data.trainers:
                     if exclude_scaling(trainer.name):
                         logging.debug(
-                            f"Excluding {trainer.name} from level scaling for {world.player_name}")
+                            f"Excluding %s from level scaling for %s", trainer.name, world.player_name)
                         continue
                     scaling_event = PokemonCrystalLocation(
                         world.player, trainer.name, new_region, None, None, None, frozenset({"trainer scaling"}))
