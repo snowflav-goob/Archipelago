@@ -290,6 +290,7 @@ class MiscOption(Enum):
     RadioChannels = 9
     MomItems = 10
     IcePath = 11
+    TooManyDogs = 12
 
     @staticmethod
     def all():

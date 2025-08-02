@@ -606,6 +606,9 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
             write_bytes(patch, [13, 3], data.rom_addresses["AP_Misc_IcePathWarp_1"])
             write_bytes(patch, [13, 13], data.rom_addresses["AP_Misc_IcePathWarp_2"])
 
+        if MiscOption.TooManyDogs.value in world.generated_misc.selected:
+            write_bytes(patch, [1], data.rom_addresses["AP_Misc_TooManyDogs"] + 1)
+
     if world.options.reusable_tms:
         address = data.rom_addresses["AP_Setting_ReusableTMs"] + 1
         write_bytes(patch, [1], address)
