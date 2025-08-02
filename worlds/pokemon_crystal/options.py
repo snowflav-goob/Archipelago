@@ -519,6 +519,8 @@ class Shopsanity(OptionSet):
     points. Five Blue Card Points are added to the item pool. Points are not spent when purchasing.
     - Game Corners: The Game Corner TM shops are added.
     - Apricorns: Kurt's Apricorn Ball shop is added, each slot requires a different Apricorn. Apricorns are progression.
+
+    IMPORTANT NOTE: There is a non-randomized shop on Pokecenter 2F, you can always buy Poke Balls there.
     """
     display_name = "Shopsanity"
     default = []
@@ -999,8 +1001,11 @@ class RandomizeTypes(Choice):
 
 class RandomizeEvolution(Choice):
     """
-    Vanilla: Pokemon evolve into the same Pokemon they do in vanilla
-    Match a Type: Pokemon evolve into a random Pokemon with a higher base stat total, that shares at least one type with it.
+    - Vanilla: Pokemon evolve into the same Pokemon they do in vanilla
+    - Match a Type: Pokemon evolve into a random Pokemon with a higher base stat total, that shares at least one type with it.
+
+    Note: This also affects breeding, when generating an egg the game will follow the evolution path backwards to
+    the base form. If the evolution path splits then the Pokemon with the lower ID will be selected.
     """
     display_name = "Randomize Evolution"
     default = 0
