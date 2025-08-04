@@ -1223,7 +1223,7 @@ class StartingMoney(NamedRange):
 
 class AllPokemonSeen(Toggle):
     """
-    Start will all Pokemon seen in your Pokedex.
+    Start with all Pokemon seen in your Pokedex.
     This allows you to see where the Pokemon can be encountered in the wild.
     """
     display_name = "All Pokemon Seen"
