@@ -96,6 +96,7 @@ MART_CATEGORIES = {
         "MART_UNDERGROUND",
         "MART_ROOFTOP_SALE",
         "MART_BARGAIN_SHOP",
+        "MART_INDIGO_PLATEAU",
     },
     "Kanto Marts": {
         "MART_VIRIDIAN",
@@ -112,7 +113,6 @@ MART_CATEGORIES = {
         "MART_FUCHSIA",
         "MART_SAFFRON",
         "MART_MT_MOON",
-        "MART_INDIGO_PLATEAU",
     },
     "Blue Card": {
         "MART_BLUE_CARD",
