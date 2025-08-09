@@ -51,7 +51,7 @@ FRIENDLY_MART_NAMES = {
     "MART_BLUE_CARD": "Radio Tower 2F - Blue Card Shop",
     "MART_GOLDENROD_GAME_CORNER": "Goldenrod Game Corner - Prize Shop",
     "MART_CELADON_GAME_CORNER_PRIZE_ROOM": "Celadon Game Corner - Prize Shop",
-    "MART_KURTS_BALLS": "Azalea Town - Kurt's Ball Shop"
+    "MART_KURTS_BALLS": "Azalea Town - Kurt's Ball Shop",
 }
 
 CUSTOM_MART_SLOT_NAMES = {
@@ -74,7 +74,7 @@ CUSTOM_MART_SLOT_NAMES = {
         "Five Point Item 3",
         "Five Point Item 4",
         "Five Point Item 5"
-    ]
+    ],
 }
 
 MART_CATEGORIES = {
@@ -126,7 +126,7 @@ MART_CATEGORIES = {
     },
     "invalid": {
         "MART_GOLDENROD_1F_S"
-    }
+    },
 }
 
 BETTER_MART_MARTS = {
@@ -156,7 +156,24 @@ REQUEST_POKEMON = [
     "ODDISH",
     "STARYU",
     "GROWLITHE",
-    "PICHU"
+    "PICHU",
+]
+
+ADHOC_TRAINERSANITY_TRAINERS = [
+    "OFFICER_DIRK",
+    "OFFICER_KEITH",
+    "POKEFANF_JAIME",
+    "LASS_ALICE",
+    "LASS_LINDA",
+    "PICNICKER_CINDY",
+    "CAMPER_BARRY",
+    "COOLTRAINERM_KEVIN",
+    "ROCKET_GRUNTM_31",
+    "ELITE_4_WILL",
+    "ELITE_4_KOGA",
+    "ELITE_4_BRUNO",
+    "ELITE_4_KAREN",
+    "CHAMPION_LANCE",
 ]
 
 
@@ -585,6 +602,7 @@ class PokemonCrystalData:
     phone_scripts: Sequence[PhoneScriptData]
     map_sizes: Mapping[str, tuple[int, int]]
     request_pokemon: Sequence[str]
+    adhoc_trainersanity: Mapping[int, int]
 
 
 def load_json_data(data_name: str) -> list[Any] | Mapping[str, Any]:
@@ -964,6 +982,14 @@ def _init() -> None:
         except Exception as ex:
             raise ValueError(f"Error processing phone script '{script_name}': {ex}") from ex
 
+    adhoc_trainersanity = {}
+
+    adhoc_trainers = [f"ITEM_FROM_{trainer}" for trainer in ADHOC_TRAINERSANITY_TRAINERS]
+
+    for loc_id, loc_data in locations.items():
+        if loc_id in adhoc_trainers:
+            adhoc_trainersanity[loc_data.rom_address] = rom_address_data[f"AP_AdhocTrainersanity_{loc_id}"]
+
     global data
     data = PokemonCrystalData(
         rom_version=data_json["rom_version"],
@@ -992,7 +1018,8 @@ def _init() -> None:
         game_settings=game_settings,
         phone_scripts=phone_scripts,
         map_sizes=map_sizes,
-        request_pokemon=REQUEST_POKEMON
+        request_pokemon=REQUEST_POKEMON,
+        adhoc_trainersanity=adhoc_trainersanity,
     )
 
 

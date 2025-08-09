@@ -136,7 +136,7 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
                 tags=frozenset({"dexcountsanity"})
             )
             pokedex_region.locations.append(new_location)
-        
+
         assert world.generated_dexcountsanity[-1]
 
         new_location = PokemonCrystalLocation(
@@ -301,7 +301,8 @@ LOCATION_GROUPS = {
     "Violet City": {loc.label for loc in data.locations.values() if "Violet" in loc.tags},
     "Whirl Islands": {loc.label for loc in data.locations.values() if "Whirl" in loc.tags},
     "Cherrygrove City": {loc.label for loc in data.locations.values() if "Cherrygrove" in loc.tags},
-    "One offs": {loc.label for loc in data.locations.values() if "One off" in loc.tags}, #locations with only one check 
+    # locations with only one check
+    "One offs": {loc.label for loc in data.locations.values() if "One off" in loc.tags},
     "New Bark Town": {loc.label for loc in data.locations.values() if "NewBark" in loc.tags},
     "Blackthorn City": {loc.label for loc in data.locations.values() if "Blackthorn" in loc.tags},
     "S.S. Aqua": {loc.label for loc in data.locations.values() if "Aqua" in loc.tags},

@@ -8007,12 +8007,12 @@
     "ITEM_FROM_SAGE_KOJI": {
         "label": "Wise Trios Room - Sage Koji",
         "flag": "EVENT_ITEM_FROM_SAGE_KOJI",
-        "type": "giveitem",
+        "type": "trainer",
         "tags": [
             "Trainersanity"
         ],
         "default_item": "NO_ITEM",
-        "script": "AP_NPC_WiseTriosRoom_SageKoji_NO_ITEM"
+        "script": "AP_Trainer_SAGE_KOJI"
     },
     "ITEM_FROM_SAGE_MASA": {
         "label": "Wise Trios Room - Sage Masa",

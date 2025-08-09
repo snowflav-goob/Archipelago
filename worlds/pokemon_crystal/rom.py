@@ -70,6 +70,11 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
 
     write_bytes(patch, option_bytes, data.rom_addresses["AP_Setting_DefaultOptions"])
 
+    def write_item(item: int, address: int) -> None:
+        write_bytes(patch, [item], address)
+        if address in data.adhoc_trainersanity:
+            write_bytes(patch, [1], data.adhoc_trainersanity[address])
+
     item_texts = []
     for location in world.multiworld.get_locations(world.player):
         if location.address is None:
@@ -85,7 +90,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         if not world.options.remote_items and location.item and location.item.player == world.player:
             item_id = location.item.code
             if item_id >= FLY_UNLOCK_OFFSET:
-                write_bytes(patch, [item_const_name_to_id("FLY_UNLOCK")], location_address)
+                write_item(item_const_name_to_id("FLY_UNLOCK"), location_address)
 
                 if location.address > POKEDEX_COUNT_OFFSET:
                     event_id = 0xFE00 + (location.address - POKEDEX_COUNT_OFFSET) - 1
@@ -98,7 +103,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
                 write_bytes(patch, event_id.to_bytes(2, "little"),
                             data.rom_addresses["AP_Setting_FlyUnlockTable"] + (fly_id * 3))
             else:
-                write_bytes(patch, [item_id], location_address)
+                write_item(item_id, location_address)
         else:
             # for in game text
             if location.address < POKEDEX_OFFSET:
@@ -107,7 +112,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
                 item_name = location.item.name.upper()
                 item_texts.append((player_name, item_name, item_flag, "shopsanity" in location.tags))
 
-            write_bytes(patch, [item_const_name_to_id("AP_ITEM")], location_address)
+            write_item(item_const_name_to_id("AP_ITEM"), location_address)
 
     # table has format: location id (2 bytes), string address (2 bytes), string bank (1 byte),
     # and is terminated by 0xFF
