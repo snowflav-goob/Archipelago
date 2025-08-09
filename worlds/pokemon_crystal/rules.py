@@ -1381,7 +1381,8 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
         # Fuchsia City
         if world.options.randomize_berry_trees:
-            set_rule(get_location("Fuchsia City - Berry Tree"), can_cut_kanto)
+            set_rule(get_entrance("REGION_FUCHSIA_CITY -> REGION_FUCHSIA_CITY:CUT"), can_cut_kanto)
+            set_rule(get_entrance("REGION_FUCHSIA_CITY:CUT -> REGION_FUCHSIA_CITY"), can_cut_kanto)
 
         set_rule(get_entrance("REGION_ROUTE_19_FUCHSIA_GATE -> REGION_ROUTE_19"),
                  lambda state: state.has("EVENT_CINNABAR_ROCKS_CLEARED", world.player) and can_surf_kanto(state))

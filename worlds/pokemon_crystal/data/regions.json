@@ -1391,7 +1391,7 @@
     "johto": false,
     "exits": [
       "REGION_ROUTE_18",
-      "REGION_FUCHSIA_MART",
+      "REGION_FUCHSIA_CITY:CUT",
       "REGION_SAFARI_ZONE_MAIN_OFFICE",
       "REGION_FUCHSIA_GYM",
       "REGION_BILLS_BROTHERS_HOUSE",
@@ -1401,14 +1401,23 @@
       "REGION_ROUTE_15_FUCHSIA_GATE",
       "REGION_ROUTE_19_FUCHSIA_GATE"
     ],
-    "locations": [
-      "FRUITTREE_FUCHSIA_CITY"
-    ],
+    "locations": [],
     "events": [],
     "wild_encounters": {
       "fishing": "Gyarados",
       "surfing": "FUCHSIA_CITY"
     }
+  },
+  "REGION_FUCHSIA_CITY:CUT": {
+    "johto": false,
+    "exits": [
+      "REGION_FUCHSIA_CITY",
+      "REGION_FUCHSIA_MART"
+    ],
+    "locations": [
+      "FRUITTREE_FUCHSIA_CITY"
+    ],
+    "events": []
   },
   "REGION_FUCHSIA_GYM": {
     "johto": false,
@@ -1438,7 +1447,7 @@
   "REGION_FUCHSIA_MART": {
     "johto": false,
     "exits": [
-      "REGION_FUCHSIA_CITY"
+      "REGION_FUCHSIA_CITY:CUT"
     ],
     "locations": [],
     "events": [],
