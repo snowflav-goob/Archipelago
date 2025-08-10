@@ -459,11 +459,14 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
             write_bytes(patch, [world.generated_moves[move_name].power], address)
 
     for pkmn_name, pkmn_data in world.generated_pokemon.items():
+        address = data.rom_addresses["AP_Stats_Types_" + pkmn_name]
         if world.options.randomize_types.value:
-            address = data.rom_addresses["AP_Stats_Types_" + pkmn_name]
             pkmn_types = [pkmn_data.types[0], pkmn_data.types[-1]]
             type_ids = [data.type_ids[pkmn_types[0]], data.type_ids[pkmn_types[1]]]
             write_bytes(patch, type_ids, address)
+
+        address += 15  # growth rate lives 15 bytes after type1
+        write_bytes(patch, [pkmn_data.growth_rate], address)
 
         if world.options.randomize_base_stats.value:
             address = data.rom_addresses["AP_Stats_Base_" + pkmn_name]
