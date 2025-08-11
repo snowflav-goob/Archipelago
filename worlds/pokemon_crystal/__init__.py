@@ -636,7 +636,7 @@ class PokemonCrystalWorld(World):
             spoiler_handle.write(f"Starting Town: {self.starting_town.name}\n")
 
         if self.options.randomize_evolution:
-            spoiler_handle.write("Evolutions:\n")
+            spoiler_handle.write("\nEvolutions:\n")
             for pokemon_id, evo_data in self.spoiler_evolutions.items():
                 for evo in evo_data:
                     pokemon_name = self.generated_pokemon[pokemon_id].friendly_name
@@ -668,11 +668,12 @@ class PokemonCrystalWorld(World):
                 spoiler_handle.write(f"{parent_name} -> {child_name}\n")
 
         if self.options.randomize_pokemon_requests:
-            request_pokemon = ", ".join(self.generated_request_pokemon)
-            spoiler_handle.write(f"Bill's Grandpa Pokemon: {request_pokemon}\n")
+            request_pokemon = ", ".join(
+                self.generated_pokemon[pokemon].friendly_name for pokemon in self.generated_request_pokemon)
+            spoiler_handle.write(f"\nBill's Grandpa Pokemon: {request_pokemon}\n")
 
         if self.options.enable_mischief:
-            spoiler_handle.write(f"Mischief:\n")
+            spoiler_handle.write(f"\nMischief:\n")
             get_misc_spoiler_log(self, spoiler_handle.write)
 
     def create_item(self, name: str) -> PokemonCrystalItem:
