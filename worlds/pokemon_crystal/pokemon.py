@@ -180,16 +180,18 @@ def fill_wild_encounter_locations(world: "PokemonCrystalWorld"):
     if world.options.dexsanity_starters.value == DexsanityStarters.option_available_early:
 
         locations = world.multiworld.get_reachable_locations(world.multiworld.state, world.player)
-        early_wild_regions = {loc.parent_region for loc in locations if "wild encounter" in loc.tags}
-        early_wild_regions = {region for region in early_wild_regions if
+        early_wild_regions = [loc.parent_region for loc in locations if "wild encounter" in loc.tags]
+        early_wild_regions = [region for region in early_wild_regions if
                               world.logic.wild_regions[region.key] is LogicalAccess.InLogic
-                              and region.key.encounter_type is not EncounterType.Static}
+                              and region.key.encounter_type is not EncounterType.Static]
+        world.random.shuffle(early_wild_regions)
 
-        other_wild_regions = {loc.parent_region for loc in world.multiworld.get_locations(world.player) if
+        other_wild_regions = [loc.parent_region for loc in world.multiworld.get_locations(world.player) if
                               "wild encounter" in loc.tags
                               and loc.parent_region not in early_wild_regions
                               and world.logic.wild_regions[loc.parent_region.key] is LogicalAccess.InLogic
-                              and loc.parent_region.key.encounter_type is not EncounterType.Static}
+                              and loc.parent_region.key.encounter_type is not EncounterType.Static]
+        world.random.shuffle(other_wild_regions)
 
         if early_wild_regions and other_wild_regions:
 
