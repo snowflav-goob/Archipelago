@@ -1,6 +1,5 @@
 from collections.abc import Iterable
 from dataclasses import replace
-from operator import indexOf
 from random import Random
 from typing import TYPE_CHECKING
 
