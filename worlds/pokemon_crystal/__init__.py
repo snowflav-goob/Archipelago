@@ -310,7 +310,7 @@ class PokemonCrystalWorld(World):
             if item_code > 0:
                 self.itempool.append(self.create_item_by_code(item_code))
             else:  # item is NO_ITEM, trainersanity checks
-                self.itempool.append(self.create_item_by_const_name(get_random_filler_item(self.random)))
+                self.itempool.append(self.create_item_by_const_name(get_random_filler_item(self)))
 
         if self.options.dexsanity:
             self.itempool.extend(
@@ -680,7 +680,7 @@ class PokemonCrystalWorld(World):
         return self.create_item_by_code(self.item_name_to_id[name])
 
     def get_filler_item_name(self) -> str:
-        item = get_random_filler_item(self.random)
+        item = get_random_filler_item(self)
         return item_const_name_to_label(item)
 
     def create_item_by_const_name(self, item_const: str) -> PokemonCrystalItem:
