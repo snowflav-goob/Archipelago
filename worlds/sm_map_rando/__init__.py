@@ -127,15 +127,6 @@ class SMMapRandoWorld(World):
                                 enumerate(itertools.chain(zip(  smmr_location_names, 
                                                                 map_rando_app_data.game_data.get_location_addresses())))}
     
-    
-    locations_idx_range_to_area = {
-        12 : "Crateria",
-        48 : "Brinstar",
-        80 : "Norfair",
-        135 : "Wrecked Ship",
-        154 : "Maridia"
-    }
-
     nothing_item_id = 22
 
     web = SMMapRandoWeb()
@@ -211,20 +202,27 @@ class SMMapRandoWorld(World):
                 self.locations[loc_name].step = spoilerSummary.step
                 remaining_locations.remove(loc_name)
 
-        self.multiworld.regions += self.region_dict
+        # if start location isnt Escape
+        if (len(self.randomizer_ap.spoiler_log.summary) > 0):
+            self.multiworld.regions += self.region_dict
 
-        for loc_name in remaining_locations:
-            region = self.multiworld.get_region(f"step {len(self.randomizer_ap.spoiler_log.summary) - 1}", self.player)
-            self.locations[loc_name].parent_region = region
-            region.locations.append(self.locations[loc_name])
+            for loc_name in remaining_locations:
+                region = self.multiworld.get_region(f"step {len(self.randomizer_ap.spoiler_log.summary) - 1}", self.player)
+                self.locations[loc_name].parent_region = region
+                region.locations.append(self.locations[loc_name])
 
-        for spoilerSummary in self.randomizer_ap.spoiler_log.summary[:-1]:
-            entrance = self.multiworld.get_entrance(f"to step {spoilerSummary.step + 1}", self.player)
-            entrance.connect(self.multiworld.get_region(f"step {spoilerSummary.step + 1}", self.player));
+            for spoilerSummary in self.randomizer_ap.spoiler_log.summary[:-1]:
+                entrance = self.multiworld.get_entrance(f"to step {spoilerSummary.step + 1}", self.player)
+                entrance.connect(self.multiworld.get_region(f"step {spoilerSummary.step + 1}", self.player));
 
-        self.multiworld.regions += [
-            self.create_region(self.multiworld, self.player, 'Menu', None, 'StartAP')
-        ]
+            self.multiworld.regions += [
+                self.create_region(self.multiworld, self.player, 'Menu', None, 'StartAP')
+            ]
+        else:
+            self.multiworld.regions += [
+                self.create_region(self.multiworld, self.player, 'Menu', None, 'StartAP'),
+                self.create_region(self.multiworld, self.player, 'step 1', SMMapRandoWorld.location_name_to_id.keys(), None)
+            ]
 
         startAP = self.multiworld.get_entrance('StartAP', self.player)
         startAP.connect(self.multiworld.get_region("step 1", self.player))
@@ -276,8 +274,11 @@ class SMMapRandoWorld(World):
             
         self.multiworld.itempool += pool
         
-    def set_rules(self):     
-        self.multiworld.completion_condition[self.player] = lambda state: state.can_reach(self.multiworld.get_entrance(f"to step {len(self.randomizer_ap.spoiler_log.summary)}", self.player))
+    def set_rules(self):
+        if (len(self.randomizer_ap.spoiler_log.summary) > 0):     
+            self.multiworld.completion_condition[self.player] = lambda state: state.can_reach(self.multiworld.get_entrance(f"to step {len(self.randomizer_ap.spoiler_log.summary)}", self.player))
+        else:
+            self.multiworld.completion_condition[self.player] = lambda state: True
 
     def fill_hook(self,
                   progitempool: List["Item"],
@@ -376,37 +377,6 @@ class SMMapRandoWorld(World):
         return data
         
     def generate_output(self, output_directory: str):
-        # sorted_item_locs = list(self.locations.values())
-        # items = [(itemLoc.item.code if isinstance(itemLoc.item, SMMRItem) else (self.item_name_to_id['ArchipelagoProgItem'] if itemLoc.item.classification == ItemClassification.progression else self.item_name_to_id['ArchipelagoItem'])) - items_start_id for itemLoc in sorted_item_locs if itemLoc.address is not None]
-        # spheres: List[Location] = getattr(self.multiworld, "_smmr_spheres", None)
-        # summary =   [   (
-        #                    sphere_idx, 
-        #                    loc.item.name, 
-        #                    self.region_area_name[loc.parent_region.index] if loc.player == self.player else 
-        #                    self.multiworld.get_player_name(loc.player) + " world" #+ itemloc.loc.name
-        #                ) 
-        #            for sphere_idx, sphere in enumerate(spheres) for loc in sphere if loc.item.player == self.player and not loc.item.name.startswith("f_") and loc.item.name != "Nothing"
-        #            ]
-        
-        #skill_assumption_settings = SkillAssumptionSettings(
-        #    "Hard",
-        #    20,
-        #    24,
-        #    35,
-        #    60,
-        #    1.75,
-        #    14,
-        #    2,
-        #    5,
-        #    9,
-        #    2,
-        #    0.5,
-        #    0.5,
-        #    0.3,
-        #    0.5,
-        #    0.5,
-        #    1.4,
-        #)
         with open(get_base_rom_path(), 'rb') as stream:
             self.rom = bytearray(stream.read())
 
@@ -465,8 +435,30 @@ class SMMapRandoWorld(World):
                 self.item_name_to_id['ArchipelagoItem']))
                 - items_start_id)
                     for itemLoc in sorted_item_locs if itemLoc.address is not None]
+        
+        # if start location isnt Escape
+        if (len(self.randomizer_ap.spoiler_log.summary) > 0):
+            spheres: List[Location] = getattr(self.multiworld, "_smmr_spheres", None)
+            summary =  [   (
+                            sphere_idx, 
+                            loc.item.code - items_start_id, 
+                            self.multiworld.get_player_name(loc.player) + " world" if loc.player != self.player else None
+                        ) 
+                    for sphere_idx, sphere in enumerate(spheres) for loc in sphere if loc.item.player == self.player and loc.item.name != "Nothing"
+                    ]
+            
+            item_spoiler_infos = []
+            for item_spoiler_info in self.randomizer_ap.randomization.essential_spoiler_data.item_spoiler_info:
+                for (step, item_id, location) in summary:
+                    if (item_spoiler_info.item.to_int() == item_id):
+                        if (location is not None):
+                            item_spoiler_info.step = step
+                            item_spoiler_info.area = location
+                        break
+                item_spoiler_infos.append(item_spoiler_info)
+        else:
+            item_spoiler_infos = None
 
-        #self.randomizer_ap.randomization.item_placement = items
         patched_rom_bytes = customize_seed_ap(
             customize_request, 
             map_rando_app_data, 
@@ -474,7 +466,8 @@ class SMMapRandoWorld(World):
             self.randomizer_ap.randomization,
             self.randomizer_ap.randomization.map,
             False,
-            items
+            items,
+            item_spoiler_infos
             )
         #patched_rom_bytes = None
         #with open(get_base_rom_path(), "rb") as stream:

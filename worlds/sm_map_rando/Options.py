@@ -336,7 +336,25 @@ class Moonwalk(Toggle):
     default = 0  
 
 class MapRandoOptions(OptionDict):
-    """MapRandoOptions"""
+    """
+    Map Rando Settings as defined by maprando.com.
+    If you dont need to change deeper settings, you can either:
+     - use the lighter minimal version (see the default)
+     - add a "name" field at the topmost level, beside "version", and name it as one of the existing Map Rando builtin complete Settings Preset (ie, "Community Race Season 3 (Save the animals)")
+    Otherwise, you can use your preferred Map Rando Settings Presets on maprando.com, export its JSON and directly embed it under here like so:
+
+    map_rando_options:
+      {
+        "version": 118,
+        "name": my_custom_preset,
+        ...
+      }
+    
+    In all cases, using one of the existing "preset" name (ie, "Basic") of a settings category (ie, "skill_assumption_settings") will make the
+    randomizer ignore all its children settings and use corresponding existing preset from Map Rando.
+
+    If "random_seed" is null, the seed from this world will be used instead of a random one to keep determinism in AP.
+    """
     display_name = "Map Rando Options"
     value: dict[str, dict[str, typing.Any]]
     default =   {
