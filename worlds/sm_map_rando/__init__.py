@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import Counter
 import logging
 import copy
 import os
@@ -171,7 +172,15 @@ class SMMapRandoWorld(World):
             entrance = Entrance(player, exit, ret)
             ret.exits.append(entrance)
             if items_required is not None:
-                set_rule(entrance, lambda state : state.has_all(items_required, player))
+                counter = Counter(items_required)
+                if counter.get("Missile", 0) > 3:
+                    counter["Missile"] = 3
+                if counter.get("Super", 0) > 2:
+                    counter["Super"] = 2
+                if counter.get("PowerBomb", 0) > 3:
+                    counter["PowerBomb"] = 3
+
+                set_rule(entrance, lambda state : state.has_all_counts(counter, player))
         return ret
 
     def create_regions(self):
