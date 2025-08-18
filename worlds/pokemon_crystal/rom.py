@@ -11,11 +11,9 @@ from .data import data, MiscOption, POKEDEX_COUNT_OFFSET, APWORLD_VERSION, POKED
     FishingRodType, \
     TreeRarity, FLY_UNLOCK_OFFSET, BETTER_MART_MARTS
 from .items import item_const_name_to_id
-from .moves import LOGIC_MOVES
 from .options import UndergroundsRequirePower, RequireItemfinder, Goal, Route2Access, \
     BlackthornDarkCaveAccess, NationalParkAccess, Route3Access, EncounterSlotDistribution, KantoAccessRequirement, \
-    FreeFlyLocation, HMBadgeRequirements, ShopsanityPrices, WildEncounterMethodsRequired, FlyCheese, Shopsanity, \
-    RandomizeMoveValues
+    FreeFlyLocation, HMBadgeRequirements, ShopsanityPrices, WildEncounterMethodsRequired, FlyCheese, Shopsanity
 from .utils import convert_to_ingame_text, write_bytes, replace_map_tiles
 
 if TYPE_CHECKING:
@@ -446,7 +444,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
 
         address = data.rom_addresses["AP_MoveData_Power_" + move_name]
         write_bytes(patch, [move.power], address)  # power 20-150
-        
+
         address = data.rom_addresses["AP_MoveData_PP_" + move_name]
         write_bytes(patch, [move.pp], address)  # 5-40 PP
 

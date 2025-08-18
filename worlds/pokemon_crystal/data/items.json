@@ -254,7 +254,8 @@
     "classification": "FILLER",
     "price": 950,
     "tags": [
-      "Stat Items"
+      "Battle Items",
+      "X Items"
     ]
   },
   "LEAF_STONE": {
@@ -312,7 +313,8 @@
     "classification": "FILLER",
     "price": 700,
     "tags": [
-      "Battle Items"
+      "Battle Items",
+      "X Items"
     ]
   },
   "SUPER_REPEL": {
@@ -332,7 +334,8 @@
     "classification": "FILLER",
     "price": 650,
     "tags": [
-      "Battle Items"
+      "Battle Items",
+      "X Items"
     ]
   },
   "FRESH_WATER": {
@@ -364,7 +367,8 @@
     "classification": "FILLER",
     "price": 500,
     "tags": [
-      "Battle Items"
+      "Battle Items",
+      "X Items"
     ]
   },
   "X_DEFEND": {
@@ -372,7 +376,8 @@
     "classification": "FILLER",
     "price": 550,
     "tags": [
-      "Battle Items"
+      "Battle Items",
+      "X Items"
     ]
   },
   "X_SPEED": {
@@ -380,7 +385,8 @@
     "classification": "FILLER",
     "price": 350,
     "tags": [
-      "Battle Items"
+      "Battle Items",
+      "X Items"
     ]
   },
   "X_SPECIAL": {
@@ -388,7 +394,8 @@
     "classification": "FILLER",
     "price": 350,
     "tags": [
-      "Battle Items"
+      "Battle Items",
+      "X Items"
     ]
   },
   "COIN_CASE": {

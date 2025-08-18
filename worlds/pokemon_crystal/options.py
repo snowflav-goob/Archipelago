@@ -613,6 +613,20 @@ class ShopsanityRestrictRareCandies(Toggle):
     display_name = "Shopsanity Restrict Rare Candies"
 
 
+class ShopsanityXItems(Choice):
+    """
+    Determines how Shopsanity treats X Items
+    - Anywhere: X Items will be shuffled into the multiworld pool
+    - Any Shop: At least one of each X Item will be available for purchase in a local shop
+
+    NOTE: You cannot purchase any shop item repeatedly when Remote Items is active
+    """
+    display_name = "Shopsanity X Items"
+    default = 0
+    option_anywhere = 0
+    option_any_shop = 1
+
+
 class RandomizePokegear(Toggle):
     """
     Shuffles the Pokegear and cards into the pool
@@ -1055,6 +1069,7 @@ class RandomizeEvolution(Choice):
     option_vanilla = 0
     option_match_a_type = 1
     option_increase_bst = 2
+
 
 class ConvergentEvolution(Choice):
     """
@@ -1539,6 +1554,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     shopsanity_maximum_price: MaximumShopsanityPrice
     provide_shop_hints: ProvideShopHints
     shopsanity_restrict_rare_candies: ShopsanityRestrictRareCandies
+    shopsanity_x_items: ShopsanityXItems
     randomize_pokegear: RandomizePokegear
     randomize_berry_trees: RandomizeBerryTrees
     randomize_pokemon_requests: RandomizePokemonRequests
@@ -1655,7 +1671,8 @@ OPTION_GROUPS = [
          MinimumShopsanityPrice,
          MaximumShopsanityPrice,
          ProvideShopHints,
-         ShopsanityRestrictRareCandies]
+         ShopsanityRestrictRareCandies,
+         ShopsanityXItems]
     ),
     OptionGroup(
         "HMs",

@@ -17,7 +17,7 @@ from .data import PokemonData, TrainerData, MiscData, TMHMData, data as crystal_
 from .evolution import randomize_evolution
 from .items import PokemonCrystalItem, create_item_label_to_code_map, get_item_classification, ITEM_GROUPS, \
     item_const_name_to_id, item_const_name_to_label, adjust_item_classifications, get_random_filler_item, \
-    get_random_ball
+    get_random_ball, place_x_items
 from .level_scaling import perform_level_scaling
 from .locations import create_locations, PokemonCrystalLocation, create_location_label_to_id_map, LOCATION_GROUPS
 from .misc import randomize_mischief, get_misc_spoiler_log
@@ -328,6 +328,16 @@ class PokemonCrystalWorld(World):
             # Replace the S.S. Ticket with the Silver Wing for Johto only seeds
             self.itempool = [item if item.name != "S.S. Ticket" else self.create_item_by_const_name("SILVER_WING")
                              for item in self.itempool]
+
+        x_items_to_remove = place_x_items(self)
+        if x_items_to_remove:
+            filtered_itempool = []
+            for item in self.itempool:
+                if item.name in x_items_to_remove:
+                    x_items_to_remove.remove(item.name)
+                    continue
+                filtered_itempool.append(item)
+            self.itempool = filtered_itempool
 
         adjust_item_classifications(self)
 
@@ -712,16 +722,17 @@ class PokemonCrystalWorld(World):
         def get_dexsanity_wild_hint_data(dexsanity_hint_data: dict[str, list[str]]):
             for key, encounters in self.generated_wild.items():
                 if (self.logic.wild_regions[key] is not LogicalAccess.InLogic) or \
-                   (key.encounter_type == EncounterType.Fish and \
-                       (key.region_id.startswith("Remoraid") or key.region_id.endswith("_Swarm"))
-                   ):
+                        (key.encounter_type == EncounterType.Fish and \
+                         (key.region_id.startswith("Remoraid") or key.region_id.endswith("_Swarm"))
+                        ):
                     continue
                 friendly_region_name = key.friendly_region_name()
-                if MiscOption.WhirlDexLocations in self.generated_misc.selected and friendly_region_name.startswith("Whirl"):
+                if MiscOption.WhirlDexLocations in self.generated_misc.selected and friendly_region_name.startswith(
+                        "Whirl"):
                     friendly_region_name = friendly_region_name.replace(" N" if " N" in friendly_region_name else " S",
                                                                         " S" if " N" in friendly_region_name else " N") \
-                                                               .replace("W " if "W " in friendly_region_name else "E ",
-                                                                        "E " if "W " in friendly_region_name else "W ")
+                        .replace("W " if "W " in friendly_region_name else "E ",
+                                 "E " if "W " in friendly_region_name else "W ")
                 for encounter in encounters:
                     if encounter.pokemon not in self.generated_dexsanity:
                         continue
@@ -747,9 +758,11 @@ class PokemonCrystalWorld(World):
                 for evo in pokemon_data.evolutions:
                     if evolution_in_logic(self, evo):
                         if evo.pokemon not in dexsanity_hint_data.keys():
-                            dexsanity_hint_data[evo.pokemon] = [f"Evolve {self.generated_pokemon[pokemon_id].friendly_name}"]
+                            dexsanity_hint_data[evo.pokemon] = [
+                                f"Evolve {self.generated_pokemon[pokemon_id].friendly_name}"]
                         else:
-                            dexsanity_hint_data[evo.pokemon].append(f"Evolve {self.generated_pokemon[pokemon_id].friendly_name}")
+                            dexsanity_hint_data[evo.pokemon].append(
+                                f"Evolve {self.generated_pokemon[pokemon_id].friendly_name}")
 
         player_hint_data = dict()
         if self.options.dexsanity:
@@ -760,8 +773,10 @@ class PokemonCrystalWorld(World):
                 get_dexsanity_static_hint_data(dexsanity_hint_data)
             if self.options.randomize_evolution:
                 get_dexsanity_evolution_hint_data(dexsanity_hint_data)
-            player_hint_data |= {self.location_name_to_id[f"Pokedex - {self.generated_pokemon[pokemon_id].friendly_name}"]: ", ".join(methods)
-                                 for pokemon_id, methods in dexsanity_hint_data.items()}
+            player_hint_data |= {
+                self.location_name_to_id[f"Pokedex - {self.generated_pokemon[pokemon_id].friendly_name}"]: ", ".join(
+                    methods)
+                for pokemon_id, methods in dexsanity_hint_data.items()}
 
         hint_data[self.player] = player_hint_data
 
