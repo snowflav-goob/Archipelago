@@ -368,6 +368,7 @@ class MiscOption(IntEnum):
     MomItems = 10
     IcePath = 11
     TooManyDogs = 12
+    WhirlDexLocations = 13
 
     @staticmethod
     def all():
@@ -476,6 +477,71 @@ class EncounterKey:
             return f"{str(self.encounter_type)}_{self.region_id}_{str(self.rarity)}"
         elif self.encounter_type is EncounterType.RockSmash:
             return f"{str(self.encounter_type)}"
+        else:
+            raise ValueError(f"Invalid encounter type: {self.encounter_type}")
+
+    def friendly_region_name(self):
+        if (self.encounter_type is EncounterType.Grass
+                or self.encounter_type is EncounterType.Water):
+            from re import search
+            # Replace underscores with spaces, capitalize every word that isn't a floor or a cardinal direction
+            pretty_region = " ".join([word.capitalize() if search("^(B?\\d+F|[NS][EW])$", word) is None else word
+                                     for word in self.region_id.split("_")])
+            pretty_region = pretty_region.replace("Digletts", "Diglett's") \
+                                         .replace("Dragons", "Dragon's") \
+                                         .replace(" Of ", " of ")
+            if pretty_region.startswith("Whirl"):
+                pretty_region = pretty_region.replace("Island", "Islands")
+            if self.encounter_type is EncounterType.Grass:
+                return f"{pretty_region} (Land)"
+            elif self.encounter_type is EncounterType.Water:
+                return f"{pretty_region} (Surf)"
+            elif self.encounter_type is EncounterType.Static:
+                return f"{pretty_region} (Static)"
+        elif self.encounter_type is EncounterType.Fish:
+            replacement_table = {
+                "WhirlIslands": "Whirl Islands",
+                "Gyarados": "Lake of Rage",
+                "Dratini": "Dragon's Den",
+                "Dratini_2": "Route 45",
+                "Qwilfish": "Routes 12, 13, 32",
+                "Qwilfish_Swarm": "Routes 12, 13, 32 (Swarm)"
+            }
+            fishing_spot = replacement_table[self.region_id] if self.region_id in replacement_table.keys() else self.region_id
+            return f"{fishing_spot} ({str(self.fishing_rod)} Rod)"
+        elif self.encounter_type is EncounterType.Tree:
+            return f"{self.region_id} Headbutt Trees ({str(self.rarity)})"
+        elif self.encounter_type is EncounterType.Static:
+            replacement_table = {
+                "UnionCaveLapras": "Union Cave B2F (Static)",
+                "EggTogepi": "Violet City (Egg from Aide)",
+                "OddEgg": "Route 34 (Odd Egg)",
+                "RocketHQTrap": "Rocket HQ (Trap)",
+                "RocketHQElectrode": "Rocket HQ (Electrode)",
+                "RedGyarados": "Lake of Rage (Static)",
+                "Ho_Oh": "Tin Tower Roof (Static)",
+                "Suicune": "Tin Tower 1F (Static)",
+                "Lugia": "Whirl Islands Lugia Chamber (Static)",
+                "Raikou": "Roaming",
+                "Entei": "Roaming",
+                "Sudowoodo": "Route 36 (Weird Tree)",
+                "Snorlax": "Vermilion City (Static)",
+                "CatchTutorial": "Catch Tutorial",
+                "Kenya": "Route 35 (Gift from Guard)",
+                "Celebi": "Ilex Forest (Shrine)",
+                "Shuckie": "Cianwood City (Gift from Mania)",
+                "Dratini": "Dragon's Den B1F (Gift from Elder)",
+                "Eevee": "Goldenrod City (Gift from Bill)",
+                "Tyrogue": "Mount Mortar B1F (Gift from Kiyo)",
+                "GoldenrodGameCorner": "Goldenrod Game Corner (Prize)",
+                "CeladonGameCornerPrizeRoom": "Celadon Game Corner (Prize)"
+            }
+            for key in [self.region_id, self.region_id[:-1]]:
+                if key in replacement_table.keys():
+                    return replacement_table[key]
+            raise ValueError(f"Invalid static type: {self.region_id}")
+        elif self.encounter_type is EncounterType.RockSmash:
+            return "Rock Smash"
         else:
             raise ValueError(f"Invalid encounter type: {self.encounter_type}")
 
