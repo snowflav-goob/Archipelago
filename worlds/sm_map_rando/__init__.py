@@ -161,7 +161,7 @@ class SMMapRandoWorld(World):
             raise Exception(f"Map Rando failed to randomize for player {self.player_name}")
 
     def create_region(self, world: MultiWorld, player: int, name: str, locations, exit, items_required = None):
-        print(f"create_region: {name} {locations} {items_required}")
+        logger.debug(f"create_region: {name} {locations} {items_required}")
         ret = Region(name, player, world)
         if locations is not None:
             for loc in locations:
@@ -194,7 +194,7 @@ class SMMapRandoWorld(World):
         self.region_dict = []
         for spoilerSummary in self.randomizer_ap.spoiler_log.summary:
             for spoilerItemSummary in spoilerSummary.items:
-                print(f"Map rando Item placement: {spoilerItemSummary.item} {spoilerItemSummary.location.room} {spoilerItemSummary.location.node}")
+                logger.debug(f"Map rando Item placement: {spoilerItemSummary.item} {spoilerItemSummary.location.room} {spoilerItemSummary.location.node}")
 
         cumulative_required_items = []
 
