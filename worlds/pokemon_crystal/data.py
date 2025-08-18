@@ -1,7 +1,7 @@
 import pkgutil
 from collections.abc import Sequence, Mapping
 from dataclasses import dataclass, field, replace
-from enum import Enum, StrEnum, IntEnum
+from enum import Enum, StrEnum, IntEnum, auto
 from typing import Any
 
 import orjson
@@ -355,20 +355,21 @@ class MartData:
 
 
 class MiscOption(IntEnum):
-    FuchsiaGym = 0
-    SaffronGym = 1
-    RadioTowerQuestions = 2
-    Amphy = 3
-    FanClubChairman = 4
-    SecretSwitch = 5
-    EcruteakGym = 6
-    RedGyarados = 7
-    OhkoMoves = 8
-    RadioChannels = 9
-    MomItems = 10
-    IcePath = 11
-    TooManyDogs = 12
-    WhirlDexLocations = 13
+    FuchsiaGym = auto()
+    SaffronGym = auto()
+    RadioTowerQuestions = auto()
+    Amphy = auto()
+    FanClubChairman = auto()
+    SecretSwitch = auto()
+    EcruteakGym = auto()
+    RedGyarados = auto()
+    OhkoMoves = auto()
+    RadioChannels = auto()
+    MomItems = auto()
+    IcePath = auto()
+    TooManyDogs = auto()
+    WhirlDexLocations = auto()
+    Farfetchd = auto()
 
     @staticmethod
     def all():
@@ -486,10 +487,10 @@ class EncounterKey:
             from re import search
             # Replace underscores with spaces, capitalize every word that isn't a floor or a cardinal direction
             pretty_region = " ".join([word.capitalize() if search("^(B?\\d+F|[NS][EW])$", word) is None else word
-                                     for word in self.region_id.split("_")])
+                                      for word in self.region_id.split("_")])
             pretty_region = pretty_region.replace("Digletts", "Diglett's") \
-                                         .replace("Dragons", "Dragon's") \
-                                         .replace(" Of ", " of ")
+                .replace("Dragons", "Dragon's") \
+                .replace(" Of ", " of ")
             if pretty_region.startswith("Whirl"):
                 pretty_region = pretty_region.replace("Island", "Islands")
             if self.encounter_type is EncounterType.Grass:
@@ -507,7 +508,8 @@ class EncounterKey:
                 "Qwilfish": "Routes 12, 13, 32",
                 "Qwilfish_Swarm": "Routes 12, 13, 32 (Swarm)"
             }
-            fishing_spot = replacement_table[self.region_id] if self.region_id in replacement_table.keys() else self.region_id
+            fishing_spot = replacement_table[
+                self.region_id] if self.region_id in replacement_table.keys() else self.region_id
             return f"{fishing_spot} ({str(self.fishing_rod)} Rod)"
         elif self.encounter_type is EncounterType.Tree:
             return f"{self.region_id} Headbutt Trees ({str(self.rarity)})"
