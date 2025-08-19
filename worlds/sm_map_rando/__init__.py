@@ -320,7 +320,7 @@ class SMMapRandoWorld(World):
             setattr(self.multiworld, "_smmr_spheres", spheres)
     
     def create_item(self, name: str) -> Item:
-        return SMMRItem(name, ItemClassification.progression, self.item_name_to_id[name], player=self.player)
+        return SMMRItem(name, ItemClassification.progression, self.item_name_to_id[name], player=self.player, step=0)
 
     def get_filler_item_name(self) -> str:
         return "Missile"
