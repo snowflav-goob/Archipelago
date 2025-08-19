@@ -42,9 +42,12 @@ try:
 except (ImportError, WrongVersionError, PackageNotFoundError) as e:
     python_version = f"cp{sys.version_info.major}{sys.version_info.minor}"
     if sys.platform.startswith('win'):
-        abi_version = "none-win_amd64"
+        abi_version = f"cp{sys.version_info.major}{sys.version_info.minor}-win_amd64"
     elif sys.platform.startswith('linux'):
-        abi_version = f"{python_version}-manylinux_2_17_{platform.machine()}.manylinux2014_{platform.machine()}"
+        if platform.machine() == 'x86_64':
+            abi_version = f"{python_version}-manylinux_2_17_{platform.machine()}.manylinux2014_{platform.machine()}"
+        else:
+            abi_version = f"{python_version}-manylinux_2_28_{platform.machine()}"
     elif sys.platform.startswith('darwin'):
         mac_ver = platform.mac_ver()[0].split('.')
         abi_version = f"{python_version}-macosx_10_12_x86_64.macosx_11_0_arm64.macosx_10_12_universal2"
