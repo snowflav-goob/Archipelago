@@ -774,9 +774,10 @@ class EncounterSlotDistribution(Choice):
     Remove 1%'s modifies grass/cave encounters to 30%/25%/20%/10%/5%/5%/5% and does not modify any others.
     Balanced sets the following:
         Grass/Cave: 20%/20%/15%/15%/10%/10%/10%
+        Surf (unchanged): 60%/30%/10%
         Headbutt:  20%/20%/20%/15%/15%/10%
         Rock Smash: 70%/30%
-        Fishing (vanilla):
+        Fishing (unchanged):
             Old Rod: 70%/15%/15%
             Good Rod: 35%/35%/20%/10%
             Super Rod: 40%/30%/20%/10%
