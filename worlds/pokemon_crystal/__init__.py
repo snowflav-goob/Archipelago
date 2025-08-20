@@ -1,7 +1,6 @@
 import logging
 import pkgutil
 from collections import defaultdict
-from collections.abc import Sequence
 from dataclasses import replace
 from threading import Event
 from typing import ClassVar, Any
