@@ -20,7 +20,7 @@ def is_rival_starter_pokemon(trainer_name, trainer_data, index):
 
 def get_last_evolution(world: "PokemonCrystalWorld", pokemon):
     """
-    Returns the latest possible evolution for a pokemon.
+    Returns the latest possible evolution for a Pokemon.
     If there's more than one way down through the evolution line, one is picked at random
     """
     pkmn_data = world.generated_pokemon[pokemon]

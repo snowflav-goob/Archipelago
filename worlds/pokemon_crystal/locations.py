@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING,  Dict, Set
+from collections.abc import Sequence
+from typing import TYPE_CHECKING, Dict, Set
 
 from BaseClasses import Location, Region, LocationProgressType
 from . import item_const_name_to_id
@@ -6,7 +7,6 @@ from .data import data, POKEDEX_OFFSET, POKEDEX_COUNT_OFFSET, FLY_UNLOCK_OFFSET
 from .options import Goal, DexsanityStarters
 from .pokemon import get_priority_dexsanity, get_excluded_dexsanity
 from .utils import evolution_in_logic, evolution_location_name, get_fly_regions, get_mart_slot_location_name
-
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
@@ -221,6 +221,34 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
 
             parent_region.locations.append(location)
 
+    # Delete trainersanity locations if there are more than the amount specified in the settings
+    def remove_excess_trainersanity(trainer_locations: Sequence[PokemonCrystalLocation], locs_to_remove: int):
+        if locs_to_remove:
+            priority_trainer_locations = [loc for loc in trainer_locations
+                                          if loc.name in world.options.priority_locations.value]
+            non_priority_trainer_locations = [loc for loc in trainer_locations
+                                              if loc.name not in world.options.priority_locations.value]
+            world.random.shuffle(priority_trainer_locations)
+            world.random.shuffle(non_priority_trainer_locations)
+            trainer_locations = non_priority_trainer_locations + priority_trainer_locations
+            for location in trainer_locations:
+                region = location.parent_region
+                region.locations.remove(location)
+                locs_to_remove -= 1
+                if locs_to_remove <= 0:
+                    break
+
+    if world.options.johto_trainersanity or world.options.kanto_trainersanity:
+        trainer_locations = [loc for loc in world.get_locations() if
+                             "Trainersanity" in loc.tags and "Johto" in loc.tags]
+        locs_to_remove = len(trainer_locations) - world.options.johto_trainersanity.value
+        remove_excess_trainersanity(trainer_locations, locs_to_remove)
+
+        trainer_locations = [loc for loc in world.get_locations() if
+                             "Trainersanity" in loc.tags and "Johto" not in loc.tags]
+        locs_to_remove = len(trainer_locations) - world.options.kanto_trainersanity.value
+        remove_excess_trainersanity(trainer_locations, locs_to_remove)
+
 
 def create_location_label_to_id_map() -> dict[str, int]:
     """
@@ -265,9 +293,8 @@ LOCATION_GROUPS: Dict[str, Set[str]] = {
     "Fly Unlocks": {f"Visit {region.name}" for region in data.fly_regions},
 }
 
-excluded_location_tags = ("VanillaClairOn", "VanillaClairOff", "RequiresSaffronGatehouses", "Badge", "NPCGift", "Hidden", "KeyItem", "HM", "BillsGrandpa", "BerryTree")
-
-
+excluded_location_tags = ("VanillaClairOn", "VanillaClairOff", "RequiresSaffronGatehouses", "Badge", "NPCGift",
+                          "Hidden", "KeyItem", "HM", "BillsGrandpa", "BerryTree")
 
 for location in data.locations.values():
     for tag in location.tags:
@@ -276,6 +303,3 @@ for location in data.locations.values():
         if tag not in LOCATION_GROUPS:
             LOCATION_GROUPS[tag] = set()
         LOCATION_GROUPS[tag].add(location.label)
-
-
-

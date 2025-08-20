@@ -36,7 +36,7 @@ from .regions import create_regions, setup_free_fly_regions
 from .rom import generate_output, PokemonCrystalProcedurePatch
 from .rules import set_rules, PokemonCrystalLogic, verify_hm_accessibility
 from .trainers import boost_trainer_pokemon, randomize_trainers, vanilla_trainer_movesets
-from .utils import get_free_fly_locations, get_random_starting_town, \
+from .utils import get_free_fly_locations, randomize_starting_town, \
     adjust_options, evolution_in_logic
 from .wild import randomize_wild_pokemon, randomize_static_pokemon
 
@@ -192,8 +192,7 @@ class PokemonCrystalWorld(World):
         self.logic.set_hm_compatible_pokemon(self)
 
     def create_regions(self) -> None:
-        if self.options.randomize_starting_town:
-            get_random_starting_town(self)
+        randomize_starting_town(self)
 
         regions = create_regions(self)
 
@@ -213,34 +212,6 @@ class PokemonCrystalWorld(World):
             setup_free_fly_regions(self)
 
     def create_items(self) -> None:
-
-        # Delete trainersanity locations if there are more than the amount specified in the settings
-        def remove_excess_trainersanity(trainer_locations: Sequence[PokemonCrystalLocation], locs_to_remove: int):
-            if locs_to_remove > 0:
-                priority_trainer_locations = [loc for loc in trainer_locations
-                                              if loc.name in self.options.priority_locations.value]
-                non_priority_trainer_locations = [loc for loc in trainer_locations
-                                                  if loc.name not in self.options.priority_locations.value]
-                self.random.shuffle(priority_trainer_locations)
-                self.random.shuffle(non_priority_trainer_locations)
-                trainer_locations = non_priority_trainer_locations + priority_trainer_locations
-                for location in trainer_locations:
-                    region = location.parent_region
-                    region.locations.remove(location)
-                    locs_to_remove -= 1
-                    if locs_to_remove <= 0:
-                        break
-
-        if self.options.johto_trainersanity or self.options.kanto_trainersanity:
-            trainer_locations = [loc for loc in self.get_locations() if
-                                 "Trainersanity" in loc.tags and "Johto" in loc.tags]
-            locs_to_remove = len(trainer_locations) - self.options.johto_trainersanity.value
-            remove_excess_trainersanity(trainer_locations, locs_to_remove)
-
-            trainer_locations = [loc for loc in self.get_locations() if
-                                 "Trainersanity" in loc.tags and "Johto" not in loc.tags]
-            locs_to_remove = len(trainer_locations) - self.options.kanto_trainersanity.value
-            remove_excess_trainersanity(trainer_locations, locs_to_remove)
 
         item_locations = [
             location
@@ -354,8 +325,18 @@ class PokemonCrystalWorld(World):
 
     def set_rules(self) -> None:
         set_rules(self)
+
+    def generate_basic(self) -> None:
         fill_wild_encounter_locations(self)
         verify_hm_accessibility(self)
+        randomize_move_values(self)
+        cap_hm_move_power(self)
+        randomize_traded_pokemon(self)
+        randomize_music(self)
+        randomize_mischief(self)
+        randomize_tms(self)
+
+        self.auth = self.random.randbytes(16)
 
     def pre_fill(self) -> None:
         if (self.options.randomize_fly_unlocks == RandomizeFlyUnlocks.option_exclude_silver_cave
@@ -407,16 +388,6 @@ class PokemonCrystalWorld(World):
 
             self.logic.guaranteed_hm_access = False
             verify_hm_accessibility(self)
-
-    def generate_basic(self) -> None:
-        randomize_move_values(self)
-        cap_hm_move_power(self)
-        randomize_traded_pokemon(self)
-        randomize_music(self)
-        randomize_mischief(self)
-        randomize_tms(self)
-
-        self.auth = self.random.randbytes(16)
 
     @classmethod
     def stage_generate_output(cls, multiworld: MultiWorld, output_directory: str):

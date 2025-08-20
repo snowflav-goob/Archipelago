@@ -248,7 +248,9 @@ def __adjust_options_pokemon_requests(world: "PokemonCrystalWorld"):
         world.options.randomize_pokemon_requests.value = RandomizePokemonRequests.option_off
 
 
-def get_random_starting_town(world: "PokemonCrystalWorld"):
+def randomize_starting_town(world: "PokemonCrystalWorld"):
+    if not world.options.randomize_starting_town: return
+
     location_pool = data.starting_towns[:]
     location_pool = [loc for loc in location_pool if _starting_town_valid(world, loc)]
 
