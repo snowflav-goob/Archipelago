@@ -27,7 +27,7 @@ from .ips import IPS_Patch
 from .Client import SMMRSNIClient
 from importlib.metadata import version, PackageNotFoundError
 
-required_pysmmaprando_version = "0.118.1"
+required_pysmmaprando_version = "0.118.2"
 
 class WrongVersionError(Exception):
     pass

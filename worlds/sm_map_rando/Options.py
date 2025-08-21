@@ -186,7 +186,7 @@ class TileTheme(Choice):
     option_Yellow_Maridia = 13
     option_Mecha_Tourian = 14
     option_Metroid_Habitat = 15
-    option_Practice_Outlines = 16
+    option_Outline = 16
     option_Invisible = 17
     default = 0
 
@@ -343,12 +343,11 @@ class MapRandoOptions(OptionDict):
      - add a "name" field at the topmost level, beside "version", and name it as one of the existing Map Rando builtin complete Settings Preset (ie, "Community Race Season 3 (Save the animals)")
     Otherwise, you can use your preferred Map Rando Settings Presets on maprando.com, export its JSON and directly embed it under here like so:
 
-    map_rando_options:
-      {
-        "version": 118,
-        "name": my_custom_preset,
+    map_rando_options: {
+      "version": 118,
+      "name": my_custom_preset,
         ...
-      }
+    }
     
     In all cases, using one of the existing "preset" name (ie, "Basic") of a settings category (ie, "skill_assumption_settings") will make the
     randomizer ignore all its children settings and use corresponding existing preset from Map Rando.
