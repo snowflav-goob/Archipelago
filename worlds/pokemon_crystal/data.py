@@ -235,7 +235,7 @@ class EvolutionType(IntEnum):
     Trade = 4
 
     @staticmethod
-    def from_string(evo_type_string):
+    def from_string(evo_type_string: str):
         if evo_type_string == "EVOLVE_LEVEL": return EvolutionType.Level
         if evo_type_string == "EVOLVE_ITEM": return EvolutionType.Item
         if evo_type_string == "EVOLVE_HAPPINESS": return EvolutionType.Happiness
@@ -277,7 +277,7 @@ class GrowthRate(IntEnum):
     Slow = 5
 
     @staticmethod
-    def from_string(growth_rate_string):
+    def from_string(growth_rate_string: str):
         if growth_rate_string == "GROWTH_MEDIUM_FAST": return GrowthRate.MediumFast
         if growth_rate_string == "GROWTH_SLIGHTLY_FAST": return GrowthRate.SlightlyFast
         if growth_rate_string == "GROWTH_SLIGHTLY_SLOW": return GrowthRate.SlightlySlow
@@ -309,7 +309,7 @@ class MoveCategory(IntEnum):
     Status = 0b11000000
 
     @staticmethod
-    def from_string(move_category_string):
+    def from_string(move_category_string: str):
         if move_category_string == "PHYSICAL": return MoveCategory.Physical
         if move_category_string == "SPECIAL": return MoveCategory.Special
         if move_category_string == "STATUS": return MoveCategory.Status
@@ -676,8 +676,50 @@ ON_OFF = {"off": 0, "on": 1}
 INVERTED_ON_OFF = {"off": 1, "on": 0}
 
 
+class MapPalette(IntEnum):
+    Auto = 0
+    Day = 1
+    Nite = 2
+    Morn = 3
+    Dark = 4
+
+    @staticmethod
+    def from_string(palette_string: str):
+        if palette_string == "PALETTE_AUTO": return MapPalette.Auto
+        if palette_string == "PALETTE_DAY": return MapPalette.Day
+        if palette_string == "PALETTE_NITE": return MapPalette.Nite
+        if palette_string == "PALETTE_MORN": return MapPalette.Morn
+        if palette_string == "PALETTE_DARK": return MapPalette.Dark
+        raise ValueError(f"Invalid palette string: {palette_string}")
+
+
+class MapEnvironment(IntEnum):
+    Town = 1
+    Route = 2
+    Indoor = 3
+    Cave = 4
+    Unused = 5
+    Gate = 6
+    Dungeon = 7
+
+    @staticmethod
+    def from_string(map_env_string: str):
+        if map_env_string == "TOWN": return MapEnvironment.Town
+        if map_env_string == "ROUTE": return MapEnvironment.Route
+        if map_env_string == "INDOOR": return MapEnvironment.Indoor
+        if map_env_string == "CAVE": return MapEnvironment.Cave
+        if map_env_string == "ENVIRONMENT_5": return MapEnvironment.Unused
+        if map_env_string == "GATE": return MapEnvironment.Gate
+        if map_env_string == "DUNGEON": return MapEnvironment.Dungeon
+        raise ValueError(f"Invalid map environment string: {map_env_string}")
+
+
 @dataclass(frozen=True)
-class PokemonCrystalMapSizeData:
+class MapData:
+    name: str
+    environment: MapEnvironment
+    phone_service: bool
+    palette: MapPalette
     width: int
     height: int
 
@@ -700,6 +742,7 @@ class PokemonCrystalData:
     types: Sequence[str]
     type_ids: Mapping[str, int]
     tmhm: Mapping[str, TMHMData]
+    maps: Mapping[str, MapData]
     marts: Mapping[str, MartData]
     misc: MiscData
     music: MusicData
@@ -709,7 +752,6 @@ class PokemonCrystalData:
     starting_towns: Sequence[StartingTown]
     game_settings: Mapping[str, PokemonCrystalGameSetting]
     phone_scripts: Sequence[PhoneScriptData]
-    map_sizes: Mapping[str, tuple[int, int]]
     request_pokemon: Sequence[str]
     adhoc_trainersanity: Mapping[int, int]
 
@@ -1041,7 +1083,7 @@ def _init() -> None:
         StartingTown(22, "Ecruteak City", "REGION_ECRUTEAK_CITY", True),
         StartingTown(23, "Mahogany Town", "REGION_MAHOGANY_TOWN", True),
         StartingTown(24, "Lake of Rage", "REGION_LAKE_OF_RAGE", True),
-        StartingTown(25, "Blackthorn City", "REGION_BLACKTHORN_CITY", True)
+        StartingTown(25, "Blackthorn City", "REGION_BLACKTHORN_CITY", True),
     ]
 
     game_settings = {
@@ -1082,9 +1124,6 @@ def _init() -> None:
         "more_uncaught_encounters": PokemonCrystalGameSetting(4, 6, 1, ON_OFF, 0),
     }
 
-    map_sizes = {map_name: (map_size[0], map_size[1]) for map_name, map_size in
-                 map_size_data.items()}
-
     phone_scripts = []
     phone_yaml = load_yaml_data("phone_data.yaml")
     for script_name, script_data in phone_yaml.items():
@@ -1101,6 +1140,19 @@ def _init() -> None:
     for loc_id, loc_data in locations.items():
         if loc_id in adhoc_trainers:
             adhoc_trainersanity[loc_data.rom_address] = rom_address_data[f"AP_AdhocTrainersanity_{loc_id}"]
+
+    maps = {}
+
+    for map_name, map_data in data_json["maps"].items():
+        size = map_size_data[map_name]
+        maps[map_name] = MapData(
+            map_name,
+            MapEnvironment.from_string(map_data["environment"]),
+            map_data["phone_service"],
+            MapPalette.from_string(map_data["palette"]),
+            size[0],
+            size[1]
+        )
 
     global data
     data = PokemonCrystalData(
@@ -1120,6 +1172,7 @@ def _init() -> None:
         types=types,
         type_ids=type_ids,
         tmhm=tmhm,
+        maps=maps,
         marts=marts,
         misc=misc,
         music=music,
@@ -1129,7 +1182,6 @@ def _init() -> None:
         starting_towns=starting_towns,
         game_settings=game_settings,
         phone_scripts=phone_scripts,
-        map_sizes=map_sizes,
         request_pokemon=REQUEST_POKEMON,
         adhoc_trainersanity=adhoc_trainersanity,
     )

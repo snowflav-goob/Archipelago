@@ -2,7 +2,8 @@ from dataclasses import dataclass
 
 from Options import Toggle, Choice, DefaultOnToggle, Range, PerGameCommonOptions, NamedRange, OptionSet, \
     StartInventoryPool, OptionDict, Visibility, DeathLink, OptionGroup, OptionList
-from .data import data
+from .data import data, MapPalette
+from .maps import FLASH_MAP_GROUPS
 
 
 class Goal(Choice):
@@ -259,6 +260,17 @@ class KantoAccessCount(Range):
     default = 8
     range_start = 0
     range_end = 16
+
+
+class DarkAreas(OptionSet):
+    """
+    Sets which areas are dark until Flash is used
+    """
+    display_name = "Dark Areas"
+    default = sorted(area for area, maps in FLASH_MAP_GROUPS.items() if data.maps[maps[0]].palette is MapPalette.Dark)
+    valid_keys = sorted(area for area in FLASH_MAP_GROUPS.keys())
+
+    __doc__ = __doc__ + "\nAllowed areas: " + ", ".join(valid_keys)
 
 
 class RedGyaradosAccess(Choice):
@@ -1562,6 +1574,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     require_itemfinder: RequireItemfinder
     item_pool_fill: ItemPoolFill
     route_32_condition: Route32Condition
+    dark_areas: DarkAreas
     victory_road_access: VictoryRoadAccess
     kanto_access_requirement: KantoAccessRequirement
     kanto_access_count: KantoAccessCount
@@ -1681,6 +1694,7 @@ OPTION_GROUPS = [
          Route44AccessRequirement, Route44AccessCount,
          KantoAccessRequirement, KantoAccessCount,
          VictoryRoadAccess,
+         DarkAreas,
          Route32Condition,
          Route2Access,
          Route3Access,

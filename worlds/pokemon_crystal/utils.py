@@ -30,6 +30,7 @@ def __adjust_option_problems(world: "PokemonCrystalWorld"):
     __adjust_options_encounters_and_breeding(world)
     __adjust_options_race_mode(world)
     __adjust_options_pokemon_requests(world)
+    __adjust_options_dark_areas(world)
 
 
 def __saffron_tea_random(world: "PokemonCrystalWorld"):
@@ -243,9 +244,17 @@ def __adjust_options_race_mode(world: "PokemonCrystalWorld"):
 def __adjust_options_pokemon_requests(world: "PokemonCrystalWorld"):
     if world.options.randomize_pokemon_requests == RandomizePokemonRequests.option_items and not world.options.randomize_wilds:
         logging.warning("Pokemon Crystal: Randomize Pokemon Requests items only is not compatible with vanilla wilds. "
-                        "Disabling Randomize Pokemon Requests for player %s (%s).", world.player_name,
-                        world.player_name)
+                        "Disabling Randomize Pokemon Requests for player %s (%s).", world.player, world.player_name)
         world.options.randomize_pokemon_requests.value = RandomizePokemonRequests.option_off
+
+
+def __adjust_options_dark_areas(world: "PokemonCrystalWorld"):
+    if (world.options.dark_areas != world.options.dark_areas.default
+            and world.options.randomize_badges != RandomizeBadges.option_completely_random):
+        logging.warning(
+            "Pokemon Crystal: Non-vanilla dark areas are not compatible with badges that are not completely random. "
+            "Resetting dark areas to vanilla for %s (%s).", world.player, world.player_name)
+        world.options.dark_areas.value = world.options.dark_areas.default
 
 
 def randomize_starting_town(world: "PokemonCrystalWorld"):
@@ -292,6 +301,10 @@ def _starting_town_valid(world: "PokemonCrystalWorld", starting_town: StartingTo
                 (full_johto_trainersanity and immediate_hiddens) or johto_shopsanity)
     if starting_town.name in ("Lake of Rage", "Mahogany Town"):
         return not world.options.mount_mortar_access or full_johto_trainersanity or johto_shopsanity
+
+    if starting_town.name == "Azalea Town":
+        return ("Slowpoke Well" not in world.options.dark_areas
+                or "Union Cave" not in world.options.dark_areas)
 
     if starting_town.name in ("Pallet Town", "Viridian City", "Pewter City"):
         return (immediate_hiddens or world.options.route_3_access == Route3Access.option_vanilla or kanto_shopsanity
@@ -427,7 +440,7 @@ def bound(value: int, lower_bound: int, upper_bound: int) -> int:
 
 def replace_map_tiles(patch, map_name: str, x: int, y: int, tiles):
     # x and y are 0 indexed
-    tile_index = (y * data.map_sizes[map_name][0]) + x
+    tile_index = (y * data.maps[map_name].width) + x
     base_address = data.rom_addresses[f"{map_name}_Blocks"]
 
     logging.debug(f"Writing {len(tiles)} new tile(s) to map {map_name} at {x},{y}")

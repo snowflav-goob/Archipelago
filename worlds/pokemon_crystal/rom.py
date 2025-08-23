@@ -9,8 +9,9 @@ from settings import get_settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APPatchExtension
 from .data import data, MiscOption, POKEDEX_COUNT_OFFSET, APWORLD_VERSION, POKEDEX_OFFSET, EncounterType, \
     FishingRodType, \
-    TreeRarity, FLY_UNLOCK_OFFSET, BETTER_MART_MARTS
+    TreeRarity, FLY_UNLOCK_OFFSET, BETTER_MART_MARTS, MapPalette
 from .items import item_const_name_to_id
+from .maps import FLASH_MAP_GROUPS
 from .options import UndergroundsRequirePower, RequireItemfinder, Goal, Route2Access, \
     BlackthornDarkCaveAccess, NationalParkAccess, Route3Access, EncounterSlotDistribution, KantoAccessRequirement, \
     FreeFlyLocation, HMBadgeRequirements, ShopsanityPrices, WildEncounterMethodsRequired, FlyCheese, Shopsanity
@@ -978,6 +979,15 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
 
     if world.options.always_unlock_fly_destinations:
         write_bytes(patch, [1], data.rom_addresses["AP_Setting_FlyUnlocksQoLEnabled"] + 2)
+
+    for map_group in world.options.dark_areas.valid_keys:
+        maps = FLASH_MAP_GROUPS[map_group]
+        for map in maps:
+            map_data = data.maps[map]
+            default_palette = map_data.palette if map_data.palette is not MapPalette.Dark else MapPalette.Nite
+            resolved_palette = MapPalette.Dark if map_group in world.options.dark_areas else default_palette
+            palette_byte = (map_data.phone_service << 4) | resolved_palette
+            write_bytes(patch, [palette_byte], data.rom_addresses[f"AP_MapPalette_{map}"])
 
     # Set slot auth
     ap_version_text = convert_to_ingame_text(APWORLD_VERSION)[:19]
