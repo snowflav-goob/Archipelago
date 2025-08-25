@@ -5,13 +5,14 @@ from BaseClasses import CollectionState
 from worlds.generic.Rules import add_rule, set_rule, CollectionRule
 from .data import data, EvolutionType, EvolutionData, FishingRodType, EncounterKey, \
     TreeRarity, LogicalAccess
+from .evolution import evolution_location_name, evolution_in_logic
 from .options import Goal, JohtoOnly, Route32Condition, UndergroundsRequirePower, Route2Access, \
     BlackthornDarkCaveAccess, NationalParkAccess, KantoAccessRequirement, Route3Access, BreedingMethodsRequired, \
     MtSilverRequirement, FreeFlyLocation, HMBadgeRequirements, EliteFourRequirement, RedRequirement, \
     Route44AccessRequirement, RandomizeBadges, RadioTowerRequirement, PokemonCrystalOptions, Shopsanity, FlyCheese, \
     RequireFlash
 from .pokemon import add_hm_compatibility
-from .utils import evolution_in_logic, evolution_location_name, get_fly_regions, get_mart_slot_location_name
+from .utils import get_fly_regions, get_mart_slot_location_name
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
@@ -20,6 +21,7 @@ if TYPE_CHECKING:
 class PokemonCrystalLogic:
     available_pokemon: set[str]
     all_pokemon: set[str]
+    breeding: dict[str, set[str]]
     wild_regions: dict[EncounterKey, LogicalAccess]
     guaranteed_hm_access: bool
 
@@ -42,6 +44,7 @@ class PokemonCrystalLogic:
     def __init__(self, world: "PokemonCrystalWorld"):
         self.available_pokemon = set()
         self.all_pokemon = set(world.generated_pokemon.keys())
+        self.breeding = defaultdict(set)
         self.wild_regions = defaultdict(lambda: LogicalAccess.Inaccessible)
         self.compatible_hm_pokemon = defaultdict(list)
         self.guaranteed_hm_access = False
@@ -1592,7 +1595,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         return False
 
     if world.options.breeding_methods_required:
-        for base_form_id, breeders in world.generated_breeding.items():
+        for base_form_id, breeders in world.logic.breeding.items():
             set_rule(
                 get_location(f"Hatch {world.generated_pokemon[base_form_id].friendly_name}"),
                 lambda state, b=breeders: breeding_logic(state, b)

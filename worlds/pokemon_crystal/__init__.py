@@ -9,11 +9,12 @@ import settings
 from BaseClasses import Tutorial, ItemClassification, MultiWorld, CollectionState, Item
 from Fill import fill_restrictive, FillError
 from worlds.AutoWorld import World, WebWorld
+from .breeding import randomize_breeding, generate_breeding_data, can_breed
 from .client import PokemonCrystalClient
 from .data import PokemonData, TrainerData, MiscData, TMHMData, data as crystal_data, StaticPokemon, \
     MusicData, MoveData, FlyRegion, TradeData, MiscOption, APWORLD_VERSION, POKEDEX_OFFSET, StartingTown, \
     LogicalAccess, EncounterType, EncounterKey, EncounterMon, MartData, EvolutionType
-from .evolution import randomize_evolution
+from .evolution import randomize_evolution, generate_evolution_data, evolution_in_logic
 from .items import PokemonCrystalItem, create_item_label_to_code_map, get_item_classification, ITEM_GROUPS, \
     item_const_name_to_id, item_const_name_to_label, adjust_item_classifications, get_random_filler_item, \
     get_random_ball, place_x_items
@@ -29,14 +30,13 @@ from .options import PokemonCrystalOptions, JohtoOnly, RandomizeBadges, Goal, HM
 from .phone import generate_phone_traps
 from .phone_data import PhoneScript
 from .pokemon import randomize_pokemon_data, randomize_starters, randomize_traded_pokemon, \
-    fill_wild_encounter_locations, generate_breeding_data, generate_evolution_data, randomize_requested_pokemon, \
-    can_breed
+    fill_wild_encounter_locations, randomize_requested_pokemon
 from .regions import create_regions, setup_free_fly_regions
 from .rom import generate_output, PokemonCrystalProcedurePatch
 from .rules import set_rules, PokemonCrystalLogic, verify_hm_accessibility
 from .trainers import boost_trainer_pokemon, randomize_trainers, vanilla_trainer_movesets
 from .utils import get_free_fly_locations, randomize_starting_town, \
-    adjust_options, evolution_in_logic
+    adjust_options
 from .wild import randomize_wild_pokemon, randomize_static_pokemon
 
 
@@ -108,7 +108,6 @@ class PokemonCrystalWorld(World):
     generated_starters: tuple[list[str], list[str], list[str]]
     generated_starter_helditems: tuple[str, str, str]
     generated_palettes: dict[str, list[int]]
-    generated_breeding: dict[str, set[str]]
     generated_request_pokemon: list[str]
 
     generated_music: MusicData
@@ -134,7 +133,6 @@ class PokemonCrystalWorld(World):
     finished_level_scaling: Event
 
     spoiler_evolutions: dict[str, list[dict]]
-    spoiler_breeding: dict[str, str]
 
     def __init__(self, multiworld: MultiWorld, player: int):
         super().__init__(multiworld, player)
@@ -153,7 +151,6 @@ class PokemonCrystalWorld(World):
                                    ["CHIKORITA", "BAYLEEF", "MEGANIUM"])
         self.generated_starter_helditems = ("BERRY", "BERRY", "BERRY")
         self.generated_palettes = {}
-        self.generated_breeding = defaultdict(set)
         self.generated_request_pokemon = list(crystal_data.request_pokemon)
         self.generated_music = replace(crystal_data.music)
         self.generated_misc = replace(crystal_data.misc)
@@ -195,12 +192,13 @@ class PokemonCrystalWorld(World):
 
         regions = create_regions(self)
 
-        random_evolutions_dict = randomize_evolution(self)
+        preevolutions = randomize_evolution(self)
+        randomize_breeding(self, preevolutions)
         randomize_wild_pokemon(self)
         randomize_static_pokemon(self)
         randomize_starters(self)
-        generate_breeding_data(random_evolutions_dict, self)
         generate_evolution_data(self)
+        generate_breeding_data(self)
         randomize_requested_pokemon(self)
 
         create_locations(self, regions)
@@ -557,7 +555,6 @@ class PokemonCrystalWorld(World):
         reverse_evolution_data = defaultdict(list)
 
         self.spoiler_evolutions = defaultdict(list)
-        self.spoiler_breeding = dict()
 
         for pokemon_id, pokemon_data in self.generated_pokemon.items():
             evo_data = list()
@@ -579,19 +576,9 @@ class PokemonCrystalWorld(World):
 
         breeding_data = dict()
 
-        def recursive_resolve_breeding(parent: str) -> str:
-            if parent not in reverse_evolution_data: return parent
-            children = [(child, self.generated_pokemon[child].id) for child in reverse_evolution_data[parent]]
-
-            children.sort(key=lambda x: x[1])
-
-            return recursive_resolve_breeding(children[0][0])
-
         for pokemon_id, pokemon_data in self.generated_pokemon.items():
-            if can_breed(self, pokemon_id):
-                child = recursive_resolve_breeding(pokemon_id)
-                breeding_data[pokemon_data.id] = self.generated_pokemon[child].id
-                self.spoiler_breeding[pokemon_id] = child
+            if not can_breed(self, pokemon_id): continue
+            breeding_data[pokemon_data.id] = self.generated_pokemon[pokemon_data.produces_egg].id
 
         slot_data["breeding_info"] = breeding_data
 
@@ -674,9 +661,11 @@ class PokemonCrystalWorld(World):
                     spoiler_handle.write(f"{pokemon_name} -> {method} -> {evo_name}\n")
 
             spoiler_handle.write("\nBreeding:\n")
-            for parent, child in self.spoiler_breeding.items():
-                parent_name = self.generated_pokemon[parent].friendly_name
-                child_name = self.generated_pokemon[child].friendly_name
+            for pokemon, data in self.generated_pokemon.items():
+                if not can_breed(self, pokemon): continue
+                parent_name = self.generated_pokemon[pokemon].friendly_name
+                child_name = self.generated_pokemon[data.produces_egg].friendly_name
+                if child_name == "Nidoran F": child_name = "Nidoran F/Nidoran M"
                 spoiler_handle.write(f"{parent_name} -> {child_name}\n")
 
         if self.options.randomize_pokemon_requests:

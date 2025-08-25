@@ -1,4 +1,5 @@
 import logging
+from collections.abc import Iterable
 from typing import TYPE_CHECKING
 
 from Options import Toggle
@@ -257,6 +258,21 @@ def __adjust_options_dark_areas(world: "PokemonCrystalWorld"):
         world.options.dark_areas.value = world.options.dark_areas.default
 
 
+def pokemon_convert_friendly_to_ids(world: "PokemonCrystalWorld", pokemon: Iterable[str]) -> set[str]:
+    if not pokemon: return set()
+
+    pokemon = set(pokemon)
+    if "_Legendaries" in pokemon:
+        pokemon.discard("_Legendaries")
+        pokemon.update({"Articuno", "Zapdos", "Moltres", "Mewtwo", "Mew", "Entei", "Raikou", "Suicune", "Celebi",
+                        "Lugia", "Ho-Oh"})
+
+    pokemon_ids = {pokemon_id for pokemon_id, pokemon_data in world.generated_pokemon.items() if
+                   pokemon_data.friendly_name in pokemon}
+
+    return pokemon_ids
+
+
 def randomize_starting_town(world: "PokemonCrystalWorld"):
     if not world.options.randomize_starting_town: return
 
@@ -392,23 +408,6 @@ def get_free_fly_locations(world: "PokemonCrystalWorld"):
     if world.options.free_fly_location.value in (FreeFlyLocation.option_free_fly_and_map_card,
                                                  FreeFlyLocation.option_map_card):
         world.map_card_fly_location = location_pool.pop()
-
-
-def evolution_in_logic(world: "PokemonCrystalWorld", evolution: EvolutionData):
-    if evolution.evo_type is EvolutionType.Level:
-        return "Level" in world.options.evolution_methods_required.value
-    if evolution.evo_type is EvolutionType.Happiness:
-        return "Happiness" in world.options.evolution_methods_required.value
-    if evolution.evo_type is EvolutionType.Item:
-        return "Use Item" in world.options.evolution_methods_required.value
-    if evolution.evo_type is EvolutionType.Stats:
-        return "Level Tyrogue" in world.options.evolution_methods_required.value
-    return False
-
-
-def evolution_location_name(world: "PokemonCrystalWorld", from_pokemon: str, to_pokemon: str):
-    return (f"Evolve {world.generated_pokemon[from_pokemon].friendly_name} "
-            f"into {world.generated_pokemon[to_pokemon].friendly_name}")
 
 
 def get_mart_slot_location_name(mart: str, index: int):

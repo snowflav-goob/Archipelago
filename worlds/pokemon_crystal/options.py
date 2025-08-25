@@ -1114,9 +1114,36 @@ class EvolutionBlocklist(OptionSet):
     """
     No Pokemon will evolve into these Pokemon. Does nothing if evolution is not randomized.
     You can use "_Legendaries" as a shortcut for all legendary Pokemon.
-    Blocklists are best effort, other constraints may cause them to be ignored
+    Blocklists are best effort, other constraints may cause them to be ignored.
     """
     display_name = "Evolution Blocklist"
+    valid_keys = sorted(pokemon.friendly_name for pokemon in data.pokemon.values()) + ["_Legendaries"]
+
+
+class RandomizeBreeding(Choice):
+    """
+    - Vanilla: Breeding is unchanged
+    - Random Line Base: Each Pokemon will produce eggs for a random base Pokemon that evolves into it
+    - Random Any Base: Each Pokemon will produce eggs for a random base Pokemon
+    - Random Lower BST: Each Pokemon will produce eggs for a random Pokemon with equal or lower BST
+    - Completely Random: Each Pokemon will produce eggs for a random Pokemon
+    """
+    display_name = "Randomize Breeding"
+    default = 0
+    option_vanilla = 0
+    option_line_base = 1
+    option_any_base = 2
+    option_decrease_bst = 3
+    option_completely_random = 4
+
+
+class BreedingBlocklist(OptionSet):
+    """
+    No Pokemon will produce eggs containing these Pokemon.
+    You can use "_Legendaries" as a shortcut for all legendary Pokemon.
+    Blocklists are best effort, other constraints may cause them to be ignored.
+    """
+    display_name = "Breeding Blocklist"
     valid_keys = sorted(pokemon.friendly_name for pokemon in data.pokemon.values()) + ["_Legendaries"]
 
 
@@ -1656,6 +1683,8 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     randomize_evolution: RandomizeEvolution
     convergent_evolution: ConvergentEvolution
     evolution_blocklist: EvolutionBlocklist
+    randomize_breeding: RandomizeBreeding
+    breeding_blocklist: BreedingBlocklist
     randomize_palettes: RandomizePalettes
     randomize_music: RandomizeMusic
     # randomize_sfx: RandomizeSFX
@@ -1768,6 +1797,8 @@ OPTION_GROUPS = [
          RandomizeEvolution,
          ConvergentEvolution,
          EvolutionBlocklist,
+         RandomizeBreeding,
+         BreedingBlocklist,
          RandomizeTrades,
          EncounterGrouping,
          EncounterSlotDistribution]

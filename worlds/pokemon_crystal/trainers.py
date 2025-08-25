@@ -5,7 +5,8 @@ from .data import data as crystal_data, TrainerPokemon
 from .items import get_random_filler_item
 from .moves import get_random_move_from_learnset
 from .options import RandomizeTrainerParties, RandomizeLearnsets, BoostTrainerPokemonLevels
-from .pokemon import get_random_pokemon, get_random_nezumi, pokemon_convert_friendly_to_ids
+from .pokemon import get_random_pokemon, get_random_nezumi
+from .utils import pokemon_convert_friendly_to_ids
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld

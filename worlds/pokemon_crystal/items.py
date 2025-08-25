@@ -2,7 +2,6 @@ from random import Random
 from typing import TYPE_CHECKING, Dict, Set
 
 from BaseClasses import Item, ItemClassification
-from Fill import fill_restrictive
 from .data import data
 from .options import Shopsanity, ItemPoolFill, ShopsanityXItems
 

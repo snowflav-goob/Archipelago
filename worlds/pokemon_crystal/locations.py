@@ -4,9 +4,10 @@ from typing import TYPE_CHECKING, Dict, Set
 from BaseClasses import Location, Region, LocationProgressType
 from . import item_const_name_to_id
 from .data import data, POKEDEX_OFFSET, POKEDEX_COUNT_OFFSET, FLY_UNLOCK_OFFSET
+from .evolution import evolution_location_name, evolution_in_logic
 from .options import Goal, DexsanityStarters
 from .pokemon import get_priority_dexsanity, get_excluded_dexsanity
-from .utils import evolution_in_logic, evolution_location_name, get_fly_regions, get_mart_slot_location_name
+from .utils import get_fly_regions, get_mart_slot_location_name
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
@@ -172,7 +173,7 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
 
     if world.options.breeding_methods_required:
         breeding_region = regions["Breeding"]
-        for pokemon_id in world.generated_breeding.keys():
+        for pokemon_id in world.logic.breeding.keys():
             new_location = PokemonCrystalLocation(
                 world.player,
                 f"Hatch {world.generated_pokemon[pokemon_id].friendly_name}",

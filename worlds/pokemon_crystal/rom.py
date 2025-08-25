@@ -507,6 +507,14 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         tm_address = data.rom_addresses["AP_Stats_TMHM_" + pkmn_name]
         write_bytes(patch, tm_bytes, tm_address)
 
+    if world.options.randomize_breeding:
+        base_address = data.rom_addresses["AP_Setting_EggMons"]
+
+        for pokemon_data in world.generated_pokemon.values():
+            index = pokemon_data.id - 1
+            produces_egg_id = world.generated_pokemon[pokemon_data.produces_egg].id
+            write_bytes(patch, [produces_egg_id], base_address + index)
+
     for trainer_name, trainer_data in world.generated_trainers.items():
         address = data.rom_addresses["AP_TrainerParty_" + trainer_name]
         address += trainer_data.name_length + 1  # skip name and type

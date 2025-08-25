@@ -305,6 +305,7 @@ class PokemonData:
     egg_groups: Sequence[str]
     gender_ratio: str
     growth_rate: GrowthRate
+    produces_egg: str
 
 
 class MoveCategory(IntEnum):
@@ -976,6 +977,7 @@ def _init() -> None:
             pokemon_data["egg_groups"],
             pokemon_data["gender_ratio"],
             GrowthRate.from_string(pokemon_data["growth_rate"]),
+            pokemon_data["produces_egg"],
         )
 
     moves = {

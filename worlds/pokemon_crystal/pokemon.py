@@ -1,15 +1,15 @@
 from collections.abc import Iterable
 from dataclasses import replace
-from random import Random
 from typing import TYPE_CHECKING
 
 from BaseClasses import ItemClassification
-from .data import data as crystal_data, LogicalAccess, PokemonData, EncounterType
+from .data import data as crystal_data, LogicalAccess, EncounterType
+from .evolution import get_random_pokemon_evolution
 from .items import get_random_filler_item
 from .moves import get_tmhm_compatibility, randomize_learnset, moves_convert_friendly_to_ids
 from .options import RandomizeTypes, RandomizePalettes, RandomizeBaseStats, RandomizeStarters, RandomizeTrades, \
-    DexsanityStarters, EncounterGrouping, BreedingMethodsRequired, RandomizePokemonRequests
-from .utils import evolution_in_logic
+    DexsanityStarters, EncounterGrouping, RandomizePokemonRequests
+from .utils import pokemon_convert_friendly_to_ids
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
@@ -264,48 +264,6 @@ def fill_wild_encounter_locations(world: "PokemonCrystalWorld"):
             location.place_locked_item((world.create_event(static.pokemon)))
 
 
-def generate_breeding_data(random_evolutions_dict: dict[str, str], world: "PokemonCrystalWorld"):
-    if not world.options.breeding_methods_required: return
-
-    def recursive_process_evolution(base: str, evo_pkmn: str):
-        if evo_pkmn in world.logic.available_pokemon:
-            evo_pkmn_data = world.generated_pokemon[evo_pkmn]
-            if "EGG_NONE" in evo_pkmn_data.egg_groups or evo_pkmn_data.gender_ratio == "GENDER_UNKNOWN": return
-            if (world.options.breeding_methods_required.value == BreedingMethodsRequired.option_any
-                    and evo_pkmn_data.gender_ratio in ("GENDER_F100", "GENDER_F0")): return
-            world.generated_breeding[base].add(evo_pkmn)
-
-        for evos_evo in world.generated_pokemon[evo_pkmn].evolutions:
-            recursive_process_evolution(base, evos_evo.pokemon)
-
-    if random_evolutions_dict:
-        potentially_reachable_bases = {v for v in random_evolutions_dict.values() if world.generated_pokemon[v].is_base}
-    else:
-        potentially_reachable_bases = {k for k, v in world.generated_pokemon.items() if v.is_base}
-
-    for pokemon_id in potentially_reachable_bases:
-        for evolution in world.generated_pokemon[pokemon_id].evolutions:
-            recursive_process_evolution(pokemon_id, evolution.pokemon)
-
-    world.logic.available_pokemon.update(world.generated_breeding.keys())
-
-
-def generate_evolution_data(world: "PokemonCrystalWorld"):
-    evolution_pokemon = set()
-
-    def recursive_evolution_add(evolving_pokemon):
-        for evo in world.generated_pokemon[evolving_pokemon].evolutions:
-            if evolution_in_logic(world, evo) and evo.pokemon not in evolution_pokemon:
-                evolution_pokemon.add(evo.pokemon)
-                recursive_evolution_add(evo.pokemon)
-        return
-
-    for pokemon in world.logic.available_pokemon:
-        recursive_evolution_add(pokemon)
-
-    world.logic.available_pokemon.update(evolution_pokemon)
-
-
 def get_random_pokemon(world: "PokemonCrystalWorld", priority_pokemon: set[str] | None = None, types=None,
                        base_only=False, force_fully_evolved_at=None, current_level=None, starter=False,
                        exclude_unown=False, blocklist: set[str] | None = None):
@@ -375,35 +333,6 @@ def get_random_nezumi(random):
     pokemon_pool = ["RATTATA", "RATICATE", "NIDORAN_F", "NIDORAN_M", "NIDORINA", "NIDORINO", "PIKACHU", "RAICHU",
                     "SANDSHREW", "SANDSLASH", "CYNDAQUIL", "QUILAVA", "SENTRET", "FURRET", "MARILL"]
     return random.choice(pokemon_pool)
-
-
-def get_random_pokemon_evolution(random: Random, pkmn_name: str, pkmn_data: PokemonData):
-    # if the Pokemon has no evolutions
-    if not pkmn_data.evolutions:
-        # return the same Pokemon
-        return pkmn_name
-    return random.choice(pkmn_data.evolutions).pokemon
-
-
-def pokemon_convert_friendly_to_ids(world: "PokemonCrystalWorld", pokemon: Iterable[str]) -> set[str]:
-    if not pokemon: return set()
-
-    pokemon = set(pokemon)
-    if "_Legendaries" in pokemon:
-        pokemon.discard("_Legendaries")
-        pokemon.update({"Articuno", "Zapdos", "Moltres", "Mewtwo", "Mew", "Entei", "Raikou", "Suicune", "Celebi",
-                        "Lugia", "Ho-Oh"})
-
-    pokemon_ids = {pokemon_id for pokemon_id, pokemon_data in world.generated_pokemon.items() if
-                   pokemon_data.friendly_name in pokemon}
-
-    return pokemon_ids
-
-
-def can_breed(world: "PokemonCrystalWorld", parent: str) -> bool:
-    data = world.generated_pokemon[parent]
-    if "EGG_DITTO" in data.egg_groups or "EGG_NONE" in data.egg_groups: return False
-    return True
 
 
 def _locations_to_pokemon(world: "PokemonCrystalWorld", locations: Iterable[str]):
