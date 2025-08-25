@@ -603,9 +603,8 @@ class PokemonCrystalWorld(World):
         if self.options.randomize_starting_town:
             spoiler_handle.write(f"Starting Town: {self.starting_town.name}\n")
 
-        encounters_per_pokemon = None
+        encounters_per_pokemon = dict()
         if self.options.randomize_wilds:
-            encounters_per_pokemon = dict()
             for key, encounters in self.generated_wild.items():
                 if key.encounter_type == EncounterType.Fish and key.region_id.startswith("Remoraid"):
                     # The Remoraid table is only for GS, not Crystal
@@ -617,8 +616,6 @@ class PokemonCrystalWorld(World):
                     else:
                         encounters_per_pokemon[encounter.pokemon].append(friendly_region_name)
         if self.options.randomize_static_pokemon:
-            if encounters_per_pokemon is None:
-                encounters_per_pokemon = dict()
             for key, static in self.generated_static.items():
                 if static.level_type == "ignore":
                     continue
@@ -626,7 +623,11 @@ class PokemonCrystalWorld(World):
                     encounters_per_pokemon[static.pokemon] = [key.friendly_region_name()]
                 else:
                     encounters_per_pokemon[static.pokemon].append(key.friendly_region_name())
-        if encounters_per_pokemon is not None:
+        else:
+            key = EncounterKey.static("OddEgg")
+            odd_egg = self.generated_static[key]
+            encounters_per_pokemon[odd_egg.pokemon].append(key.friendly_region_name())
+        if encounters_per_pokemon:
             spoiler_handle.write("\nRandomized Pokemon:\n")
             lines = [f"{self.generated_pokemon[pokemon_id].friendly_name}: {', '.join(locations)}\n"
                      for pokemon_id, locations in encounters_per_pokemon.items()]

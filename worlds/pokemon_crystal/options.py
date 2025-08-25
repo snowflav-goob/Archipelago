@@ -165,9 +165,9 @@ class VanillaClair(Toggle):
 class RandomizeBadges(Choice):
     """
     Shuffles gym badge locations into the pool
-    Vanilla: Does not randomize gym badges
-    Shuffle: Randomizes gym badges between gym leaders
-    Completely Random: Randomizes badges with all other items
+    - Vanilla: Does not randomize gym badges
+    - Shuffle: Randomizes gym badges between gym leaders
+    - Completely Random: Randomizes badges with all other items
     """
     display_name = "Randomize Badges"
     default = 2
@@ -202,10 +202,10 @@ class ItemPoolFill(Choice):
     """
     Changes how non-progression items are put into the pool.
 
-    Vanilla: item pool filled similarly to vanilla.
-    Balanced: all filler items uniformly randomized.
-    Youngster: item pool filled with items reflecting that of a young trainer.
-    Cooltrainer: item pool filled with items reflecting that of a cooltrainer.
+    - Vanilla: item pool filled similarly to vanilla.
+    - Balanced: all filler items uniformly randomized.
+    - Youngster: item pool filled with items reflecting that of a young trainer.
+    - Cooltrainer: item pool filled with items reflecting that of a cooltrainer.
     """
     display_name = "Item Pool Fill"
     default = 0
@@ -218,11 +218,11 @@ class ItemPoolFill(Choice):
 class Route32Condition(Choice):
     """
     Sets the condition required to pass between the north and south parts of Route 32
-    Egg from aide: Collect the Egg from the aide in the Violet City Pokemon Center after beating Falkner
-    Any badge: Obtain any badge
-    Any gym: Beat any gym
-    Zephyr Badge: Obtain the Zephyr Badge
-    None: No requirement
+    - Egg from aide: Collect the Egg from the aide in the Violet City Pokemon Center after beating Falkner
+    - Any badge: Obtain any badge
+    - Any gym: Beat any gym
+    - Zephyr Badge: Obtain the Zephyr Badge
+    - None: No requirement
     """
     display_name = "Route 32 Access Condition"
     default = 0
@@ -236,10 +236,10 @@ class Route32Condition(Choice):
 class KantoAccessRequirement(Choice):
     """
     Sets the requirement to pass between Victory Road gate and Kanto
-    Wake Snorlax: Wake the Snorlax outside of Diglett's Cave
-    Badges: Requires the number of badges specified by kanto_access_count
-    Gyms: Requires beating the number of gyms specified by kanto_access_count
-    Become Champion: Defeat Lance and enter the Hall of Fame
+    - Wake Snorlax: Wake the Snorlax outside of Diglett's Cave
+    - Badges: Requires the number of badges specified by kanto_access_count
+    - Gyms: Requires beating the number of gyms specified by kanto_access_count
+    - Become Champion: Defeat Lance and enter the Hall of Fame
 
     This setting does nothing if Johto Only is enabled
     """
@@ -286,9 +286,9 @@ class RedGyaradosAccess(Choice):
 class Route2Access(Choice):
     """
     Sets the roadblock for moving between the west of Route 2 and Diglett's cave
-    Vanilla: Cut is required
-    Ledge: A ledge is added north of Diglett's cave allowing east -> west access without Cut
-    Open: No requirement
+    - Vanilla: Cut is required
+    - Ledge: A ledge is added north of Diglett's cave allowing east -> west access without Cut
+    - Open: No requirement
     """
     display_name = "Route 2 Access"
     default = 1
@@ -300,8 +300,8 @@ class Route2Access(Choice):
 class Route3Access(Choice):
     """
     Sets the roadblock for moving between Pewter City and Route 3
-    Vanilla: No requirement
-    Boulder Badge: The Boulder Badge is required to pass
+    - Vanilla: No requirement
+    - Boulder Badge: The Boulder Badge is required to pass
     """
     display_name = "Route 3 Access"
     default = 0
@@ -312,8 +312,8 @@ class Route3Access(Choice):
 class BlackthornDarkCaveAccess(Choice):
     """
     Sets the roadblock for travelling from Route 31 to Blackthorn City through Dark Cave
-    Vanilla: Traversal is not possible
-    Waterfall: A waterfall is added to the Violet side of Dark Cave and a ledge is removed on the Blackthorn side,
+    - Vanilla: Traversal is not possible
+    - Waterfall: A waterfall is added to the Violet side of Dark Cave and a ledge is removed on the Blackthorn side,
     allowing passage with Flash, Surf and Waterfall
     """
     display_name = "Blackthorn Dark Cave Access"
@@ -325,8 +325,8 @@ class BlackthornDarkCaveAccess(Choice):
 class NationalParkAccess(Choice):
     """
     Sets the requirement to enter National Park
-    Vanilla: No requirement
-    Bicycle: The Bicycle is required
+    - Vanilla: No requirement
+    - Bicycle: The Bicycle is required
     """
     display_name = "National Park Access"
     default = 0
@@ -337,8 +337,8 @@ class NationalParkAccess(Choice):
 class MountMortarAccess(Choice):
     """
     Sets the requirement to pass through Mount Mortar east <> west
-    Vanilla: No requirement
-    Rock Smash: Rock Smash is required
+    - Vanilla: No requirement
+    - Rock Smash: Rock Smash is required
     """
     display_name = "Mount Mortar Access"
     default = 0
@@ -479,9 +479,9 @@ class DexcountsanityLeniency(Range):
 class DexsanityStarters(Choice):
     """
     Controls how Dexsanity treats starter Pokemon
-    Allow: Starter Pokemon will be allowed as Dexsanity checks
-    Block: Starter Pokemon will not be allowed as Dexsanity Checks
-    Available Early: Starter Pokemon will all be obtainable in the wild immediately, unless there is nowhere to obtain
+    - Allow: Starter Pokemon will be allowed as Dexsanity checks
+    - Block: Starter Pokemon will not be allowed as Dexsanity Checks
+    - Available Early: Starter Pokemon will all be obtainable in the wild immediately, unless there is nowhere to obtain
     wild Pokemon immediately
     """
     display_name = "Dexsanity Starters"
@@ -819,6 +819,8 @@ class RandomizeStaticPokemon(Toggle):
     """
     Randomizes species of static Pokemon encounters
     This includes overworld Pokemon, gift Pokemon and gift egg Pokemon
+
+    NOTE: If this setting is disabled, the Odd Egg will still be fixed to a single possible Pokemon
     """
     display_name = "Randomize Static Pokemon"
 
@@ -951,15 +953,15 @@ class LearnsetTypeBias(NamedRange):
 
 class RandomizeMoveValues(Choice):
     """
-    Restricted: Generates values based on vanilla move values
+    - Restricted: Generates values based on vanilla move values
     Multiplies the power of each move with a random number between 0.5 and 1.5
     Adds or subtracts 0, 5 or 10 from original PP | Min 5, Max 40
 
-    Full Exclude Accuracy: Fully randomizes move Power and PP
+    - Full Exclude Accuracy: Fully randomizes move Power and PP
     Randomizes each move's Power [20-150], PP [5-40] linearly. All possible values have the same weight.
     Multi-hit moves have their power divided by their average hit count.
 
-    Full: Previous + also randomizes accuracy.
+    - Full: Previous + also randomizes accuracy.
     Accuracy has a flat chance of 70% to be 100%, if not it is linearly distributed between 30-100.
     Does not randomize accuracy of OHKO moves, status moves (e.g. Toxic) and unique damage moves (e.g. Seismic Toss)
     """
@@ -1051,9 +1053,9 @@ class HMPowerCap(NamedRange):
 
 class RandomizeBaseStats(Choice):
     """
-    Vanilla: Vanilla base stats
-    Keep BST: Random base stats, but base stat total is preserved
-    Completely Random: Base stats and BST are completely random
+    - Vanilla: Vanilla base stats
+    - Keep BST: Random base stats, but base stat total is preserved
+    - Completely Random: Base stats and BST are completely random
     """
     display_name = "Randomize Base Stats"
     default = 0
@@ -1064,9 +1066,9 @@ class RandomizeBaseStats(Choice):
 
 class RandomizeTypes(Choice):
     """
-    Vanilla: Vanilla Pokemon types
-    Follow Evolutions: Types are randomized but preserved when evolved
-    Completely Random: Types are completely random
+    - Vanilla: Vanilla Pokemon types
+    - Follow Evolutions: Types are randomized but preserved when evolved
+    - Completely Random: Types are completely random
     """
     display_name = "Randomize Types"
     default = 0
@@ -1149,9 +1151,9 @@ class BreedingBlocklist(OptionSet):
 
 class RandomizePalettes(Choice):
     """
-    Vanilla: Vanilla Pokemon color palettes
-    Match Types: Color palettes match Pokemon Type
-    Completely Random: Color palettes are completely random
+    - Vanilla: Vanilla Pokemon color palettes
+    - Match Types: Color palettes match Pokemon Type
+    - Completely Random: Color palettes are completely random
     """
     display_name = "Randomize Palettes"
     default = 0
@@ -1183,9 +1185,9 @@ class RandomizeMusic(Choice):
 
 class FreeFlyLocation(Choice):
     """
-    Free Fly: Unlocks a random Fly destination when Fly is obtained.
-    Free Fly and Map Card: Additionally unlocks a random Fly destination after obtaining both the Pokegear and Map Card.
-    Map Card: Unlocks a single random Fly destination only after obtaining both the Pokegear and Map card.
+    - Free Fly: Unlocks a random Fly destination when Fly is obtained.
+    - Free Fly and Map Card: Additionally unlocks a random Fly destination after obtaining both the Pokegear and Map Card.
+    - Map Card: Unlocks a single random Fly destination only after obtaining both the Pokegear and Map card.
 
     Indigo Plateau cannot be chosen as a free Fly location.
     """
@@ -1224,10 +1226,10 @@ class FlyCheese(Choice):
 
 class HMBadgeRequirements(Choice):
     """
-    Vanilla: HMs require their vanilla badges
-    No Badges: HMs do not require a badge to use
-    Add Kanto: HMs can be used with the Johto or Kanto badge
-    Regional: HMs can be used in Johto with the Johto badge or in Kanto with the Kanto badge
+    - Vanilla: HMs require their vanilla badges
+    - No Badges: HMs do not require a badge to use
+    - Add Kanto: HMs can be used with the Johto or Kanto badge
+    - Regional: HMs can be used in Johto with the Johto badge or in Kanto with the Kanto badge
         This does not apply to Fly which will accept either badge
         Routes 26, 27, 28 and Tohjo Falls are in Johto for HM purposes
     """
