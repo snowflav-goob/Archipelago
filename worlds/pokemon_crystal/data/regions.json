@@ -431,7 +431,10 @@
       "REGION_CELADON_DEPT_STORE_ELEVATOR"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_CELADON_VENDING_MACHINE"
+    ]
   },
   "REGION_CELADON_DEPT_STORE_ELEVATOR": {
     "johto": false,
@@ -1575,7 +1578,10 @@
       "REGION_GOLDENROD_DEPT_STORE_ROOF"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "marts": [
+      "MART_GOLDENROD_VENDING_MACHINE"
+    ]
   },
   "REGION_GOLDENROD_DEPT_STORE_B1F": {
     "johto": true,

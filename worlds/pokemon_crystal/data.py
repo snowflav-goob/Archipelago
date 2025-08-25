@@ -52,6 +52,8 @@ FRIENDLY_MART_NAMES = {
     "MART_GOLDENROD_GAME_CORNER": "Goldenrod Game Corner - Prize Shop",
     "MART_CELADON_GAME_CORNER_PRIZE_ROOM": "Celadon Game Corner - Prize Shop",
     "MART_KURTS_BALLS": "Azalea Town - Kurt's Ball Shop",
+    "MART_GOLDENROD_VENDING_MACHINE": "Goldenrod Dept. Store 6F - Vending Machine",
+    "MART_CELADON_VENDING_MACHINE": "Celadon Dept. Store 6F - Vending Machine",
 }
 
 CUSTOM_MART_SLOT_NAMES = {
@@ -97,6 +99,7 @@ MART_CATEGORIES = {
         "MART_ROOFTOP_SALE",
         "MART_BARGAIN_SHOP",
         "MART_INDIGO_PLATEAU",
+        "MART_GOLDENROD_VENDING_MACHINE",
     },
     "Kanto Marts": {
         "MART_VIRIDIAN",
@@ -113,6 +116,7 @@ MART_CATEGORIES = {
         "MART_FUCHSIA",
         "MART_SAFFRON",
         "MART_MT_MOON",
+        "MART_CELADON_VENDING_MACHINE",
     },
     "Blue Card": {
         "MART_BLUE_CARD",
