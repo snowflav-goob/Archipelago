@@ -603,7 +603,7 @@ class PokemonCrystalWorld(World):
         if self.options.randomize_starting_town:
             spoiler_handle.write(f"Starting Town: {self.starting_town.name}\n")
 
-        encounters_per_pokemon = dict()
+        encounters_per_pokemon = defaultdict(list)
         if self.options.randomize_wilds:
             for key, encounters in self.generated_wild.items():
                 if key.encounter_type == EncounterType.Fish and key.region_id.startswith("Remoraid"):
@@ -611,22 +611,17 @@ class PokemonCrystalWorld(World):
                     continue
                 friendly_region_name = key.friendly_region_name()
                 for encounter in encounters:
-                    if encounter.pokemon not in encounters_per_pokemon.keys():
-                        encounters_per_pokemon[encounter.pokemon] = [friendly_region_name]
-                    else:
-                        encounters_per_pokemon[encounter.pokemon].append(friendly_region_name)
+                    encounters_per_pokemon[encounter.pokemon].append(friendly_region_name)
         if self.options.randomize_static_pokemon:
             for key, static in self.generated_static.items():
                 if static.level_type == "ignore":
                     continue
-                if static.pokemon not in encounters_per_pokemon.keys():
-                    encounters_per_pokemon[static.pokemon] = [key.friendly_region_name()]
-                else:
-                    encounters_per_pokemon[static.pokemon].append(key.friendly_region_name())
+                encounters_per_pokemon[static.pokemon].append(key.friendly_region_name())
         else:
             key = EncounterKey.static("OddEgg")
             odd_egg = self.generated_static[key]
             encounters_per_pokemon[odd_egg.pokemon].append(key.friendly_region_name())
+            
         if encounters_per_pokemon:
             spoiler_handle.write("\nRandomized Pokemon:\n")
             lines = [f"{self.generated_pokemon[pokemon_id].friendly_name}: {', '.join(locations)}\n"
