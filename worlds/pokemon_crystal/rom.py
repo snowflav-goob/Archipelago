@@ -8,8 +8,7 @@ import bsdiff4
 from settings import get_settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APPatchExtension
 from .data import data, MiscOption, POKEDEX_COUNT_OFFSET, APWORLD_VERSION, POKEDEX_OFFSET, EncounterType, \
-    FishingRodType, \
-    TreeRarity, FLY_UNLOCK_OFFSET, BETTER_MART_MARTS, MapPalette
+    FishingRodType, TreeRarity, FLY_UNLOCK_OFFSET, BETTER_MART_MARTS, MapPalette
 from .items import item_const_name_to_id
 from .maps import FLASH_MAP_GROUPS
 from .options import UndergroundsRequirePower, RequireItemfinder, Goal, Route2Access, \

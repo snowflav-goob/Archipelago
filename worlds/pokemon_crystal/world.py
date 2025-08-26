@@ -463,7 +463,9 @@ class PokemonCrystalWorld(World):
             "mount_mortar_access",
             "randomize_pokemon_requests",
             "randomize_evolution",
-            "dark_areas"
+            "dark_areas",
+            "require_flash",
+            "victory_road_access",
         )
         slot_data["apworld_version"] = self.apworld_version
         slot_data["tea_north"] = 1 if "North" in self.options.saffron_gatehouse_tea.value else 0
