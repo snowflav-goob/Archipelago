@@ -5620,7 +5620,9 @@
     "locations": [
       "SILVER_CAVE_OUTSIDE_HIDDEN_FULL_RESTORE"
     ],
-    "events": [],
+    "events": [
+      "EVENT_SILVER_CAVE_ACCESS"
+    ],
     "wild_encounters": {
       "grass": "SILVER_CAVE_OUTSIDE",
       "surfing": "SILVER_CAVE_OUTSIDE",
@@ -5907,7 +5909,9 @@
     "locations": [
       "TIN_TOWER_1F_RAINBOW_WING"
     ],
-    "events": []
+    "events": [
+      "EVENT_FOUGHT_SUICUNE"
+    ]
   },
   "REGION_TIN_TOWER_2F": {
     "johto": true,
@@ -6024,7 +6028,9 @@
     "locations": [
       "TIN_TOWER_9F_HP_UP"
     ],
-    "events": [],
+    "events": [
+      "EVENT_FOUGHT_HO_OH"
+    ],
     "wild_encounters": {
       "grass": "TIN_TOWER_9F"
     }
@@ -6625,7 +6631,9 @@
       "Lugia"
     ],
     "locations": [],
-    "events": [],
+    "events": [
+      "EVENT_FOUGHT_LUGIA"
+    ],
     "wild_encounters": {
       "grass": "WHIRL_ISLAND_LUGIA_CHAMBER",
       "surfing": "WHIRL_ISLAND_LUGIA_CHAMBER",

@@ -563,8 +563,7 @@ class Shopsanity(OptionSet):
     - Game Corners: The Game Corner TM shops are added.
     - Apricorns: Kurt's Apricorn Ball shop is added, each slot requires a different Apricorn. Apricorns are progression.
 
-    IMPORTANT NOTE: There is a non-randomized shop on Pokecenter 2F, you can always buy Poke Balls, Potions, Escape
-    Ropes and Repels there.
+    IMPORTANT NOTE: There is a non-randomized shop on Pokecenter 2F, you can always buy Poke Balls, and Escape Ropes there.
     """
     display_name = "Shopsanity"
     default = []
@@ -883,6 +882,24 @@ class LevelScaling(Choice):
     option_off = 0
     option_spheres = 1
     option_spheres_and_distance = 2
+
+
+class LockKantoGyms(Choice):
+    """
+    Logically lock entering all Kanto Gyms behind access to a high level Pokemon, included locations:
+    - Snorlax
+    - Ho-oh
+    - Lugia
+    - Suicune
+    - Silver Cave entrance
+
+    You can still enter gyms without access to any of these.
+
+    NOTE: It's not recommended to use this option with Level Scaling, as the Gym and wild Pokemon levels will be scaled
+    """
+    display_name = "Lock Kanto Gyms"
+    option_off = 0
+    option_high_level_pokemon = 1
 
 
 class BoostTrainerPokemonLevels(Choice):
@@ -1679,6 +1696,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     randomize_static_pokemon: RandomizeStaticPokemon
     static_blocklist: StaticBlocklist
     level_scaling: LevelScaling
+    lock_kanto_gyms: LockKantoGyms
     randomize_trades: RandomizeTrades
     randomize_trainer_parties: RandomizeTrainerParties
     trainer_party_blocklist: TrainerPartyBlocklist
@@ -1886,6 +1904,7 @@ OPTION_GROUPS = [
         "Quality of Life",
         [GameOptions,
          LevelScaling,
+         LockKantoGyms,
          AllPokemonSeen,
          StartingMoney,
          BetterMarts,
