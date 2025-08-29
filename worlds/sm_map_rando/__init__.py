@@ -27,7 +27,7 @@ from .ips import IPS_Patch
 from .Client import SMMRSNIClient
 from importlib.metadata import version, PackageNotFoundError
 
-required_pysmmaprando_version = "0.118.2"
+required_pysmmaprando_version = "0.119.1"
 
 class WrongVersionError(Exception):
     pass
@@ -387,6 +387,16 @@ class SMMapRandoWorld(World):
             data.append(w0)
             data.append(w1)
         return data
+    
+    def current_key_pascal(self, option):
+        """Converts a snake_case string to PascalCase."""
+        # Replace underscores with spaces
+        temp_string = option.current_key.replace("_", " ")
+        # Capitalize the first letter of each word
+        titled_string = temp_string.title()
+        # Remove spaces to form PascalCase
+        pascal_case_string = titled_string.replace(" ", "")
+        return pascal_case_string
         
     def generate_output(self, output_directory: str):
         with open(get_base_rom_path(), 'rb') as stream:
@@ -396,15 +406,18 @@ class SMMapRandoWorld(World):
             self.rom,
             "",
             f"{self.options.etank_color_red.value:02X}{self.options.etank_color_green.value:02X}{self.options.etank_color_blue.value:02X}",
+            self.current_key_pascal(self.options.item_dot_change),
+            self.options.transition_letters.value == 1,
             bool(self.options.reserve_hud_style.value),
             self.options.room_palettes.current_key,
-            self.options.tile_theme.current_key_pascal(),
+            self.current_key_pascal(self.options.tile_theme),
             self.options.door_colors.current_key,
             self.options.music.current_key,
             bool(self.options.disable_beeping.value),
             self.options.screen_shaking.current_key.title(),
             self.options.screen_flashing.current_key.title(),
             bool(self.options.screw_attack_animation.value),
+            bool(self.options.room_names.value),
             self.options.shot.current_key.title(),
             self.options.jump.current_key.title(),
             self.options.dash.current_key.title(),
@@ -476,7 +489,6 @@ class SMMapRandoWorld(World):
             map_rando_app_data, 
             self.map_rando_settings,
             self.randomizer_ap.randomization,
-            self.randomizer_ap.randomization.map,
             False,
             items,
             item_spoiler_infos
