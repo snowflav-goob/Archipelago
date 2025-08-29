@@ -6370,7 +6370,9 @@
     "locations": [
       "VICTORY_ROAD_HIDDEN_FULL_HEAL"
     ],
-    "events": [],
+    "events": [
+      "EVENT_VICTORY_ROAD_ACCESS"
+    ],
     "wild_encounters": {
       "grass": "VICTORY_ROAD"
     }

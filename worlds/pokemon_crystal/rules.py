@@ -405,7 +405,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
     kanto_gyms_access = lambda state: state.has_any(
         ("EVENT_SILVER_CAVE_ACCESS", "EVENT_FOUGHT_SNORLAX", "EVENT_FOUGHT_LUGIA", "EVENT_FOUGHT_HO_OH",
-         "EVENT_FOUGHT_SUICUNE"), world.player
+         "EVENT_FOUGHT_SUICUNE", "EVENT_VICTORY_ROAD_ACCESS"), world.player
     )
 
     # Goal

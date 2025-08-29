@@ -469,6 +469,7 @@ class PokemonCrystalWorld(World):
             "dark_areas",
             "require_flash",
             "victory_road_access",
+            "lock_kanto_gyms",
         )
         slot_data["apworld_version"] = self.apworld_version
         slot_data["tea_north"] = 1 if "North" in self.options.saffron_gatehouse_tea.value else 0
