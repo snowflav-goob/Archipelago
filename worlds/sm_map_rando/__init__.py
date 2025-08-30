@@ -456,7 +456,7 @@ class SMMapRandoWorld(World):
                 (itemLoc.item.code 
                     if isinstance(itemLoc.item, SMMRItem) else 
                 (self.item_name_to_id['ArchipelagoProgItem'] 
-                    if itemLoc.item.classification == ItemClassification.progression else
+                    if itemLoc.item.advancement else
                 self.item_name_to_id['ArchipelagoItem']))
                 - items_start_id)
                     for itemLoc in sorted_item_locs if itemLoc.address is not None]
