@@ -321,7 +321,8 @@
       "BURNED_TOWER_B1F_TM_ENDURE"
     ],
     "events": [
-      "EVENT_BURNED_TOWER_MORTY"
+      "EVENT_BURNED_TOWER_MORTY",
+      "EVENT_RELEASED_THE_BEASTS"
     ],
     "wild_encounters": {
       "grass": "BURNED_TOWER_B1F"
@@ -746,7 +747,8 @@
     ],
     "events": [
       "EVENT_FOUGHT_EUSINE",
-      "ENGINE_FLYPOINT_CIANWOOD"
+      "ENGINE_FLYPOINT_CIANWOOD",
+      "EVENT_SAW_SUICUNE_AT_CIANWOOD_CITY"
     ],
     "wild_encounters": {
       "rock_smash": true,
@@ -1711,7 +1713,8 @@
       "REGION_POKECENTER_2F"
     ],
     "locations": [
-      "GS_BALL_FROM_GOLDENROD_POKEMON_CENTER"
+      "GS_BALL_FROM_GOLDENROD_POKEMON_CENTER",
+      "REVIVE_FROM_GOLDENROD_POKEMON_CENTER"
     ],
     "events": []
   },
@@ -4504,7 +4507,9 @@
       "ITEM_FROM_SCHOOLBOY_ALAN",
       "ITEM_FROM_PSYCHIC_MARK"
     ],
-    "events": [],
+    "events": [
+      "EVENT_SAW_SUICUNE_ON_ROUTE_36"
+    ],
     "wild_encounters": {
       "grass": "ROUTE_36",
       "headbutt": "Route"
@@ -4822,7 +4827,9 @@
       "FRUITTREE_ROUTE_42_2",
       "FRUITTREE_ROUTE_42_3"
     ],
-    "events": [],
+    "events": [
+      "EVENT_SAW_SUICUNE_ON_ROUTE_42"
+    ],
     "wild_encounters": {
       "headbutt": "Town"
     }
@@ -5909,7 +5916,8 @@
       "TIN_TOWER_1F_RAINBOW_WING"
     ],
     "events": [
-      "EVENT_FOUGHT_SUICUNE"
+      "EVENT_FOUGHT_SUICUNE",
+      "EVENT_GOT_EON_MAIL_FROM_EUSINE"
     ]
   },
   "REGION_TIN_TOWER_2F": {

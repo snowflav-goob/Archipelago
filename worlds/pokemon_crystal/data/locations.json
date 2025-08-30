@@ -1238,6 +1238,18 @@
     "default_item": "GS_BALL",
     "script": "AP_NPC_GoldenrodPokecenter1F_GS_BALL"
   },
+  "REVIVE_FROM_GOLDENROD_POKEMON_CENTER": {
+    "label": "Goldenrod City - Exchange Eon Mail in Pokecenter",
+    "flag": "EVENT_TRADED_EON_MAIL_FOR_REVIVE",
+    "type": "giveitem",
+    "tags": [
+      "NPCGift",
+      "NPC Gifts",
+      "Goldenrod City"
+    ],
+    "default_item": "REVIVE",
+    "script": "AP_NPC_GoldenrodPokecenter1F_REVIVE"
+  },
   "SQUIRTBOTTLE": {
     "label": "Goldenrod City - Squirtbottle from Flower Shop",
     "flag": "EVENT_GOT_SQUIRTBOTTLE",

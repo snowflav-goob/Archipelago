@@ -13,6 +13,7 @@ from .options import Goal, JohtoOnly, Route32Condition, UndergroundsRequirePower
     RequireFlash
 from .pokemon import add_hm_compatibility
 from .utils import get_fly_regions, get_mart_slot_location_name
+from ..adventure import static_item_element_size
 
 if TYPE_CHECKING:
     from .world import PokemonCrystalWorld
@@ -717,6 +718,9 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         set_rule(get_entrance("REGION_GOLDENROD_MAGNET_TRAIN_STATION -> REGION_SAFFRON_MAGNET_TRAIN_STATION"),
                  lambda state: state.has("Pass", world.player))
 
+    set_rule(get_location("Goldenrod City - Exchange Eon Mail in Pokecenter"),
+             lambda state: state.has("EVENT_GOT_EON_MAIL_FROM_EUSINE", world.player))
+
     # Underground
 
     if "Goldenrod Underground" in world.options.dark_areas:
@@ -841,6 +845,9 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     set_rule(get_entrance("REGION_ROUTE_35 -> REGION_ROUTE_36:WEST"), can_cut)
     set_rule(get_entrance("REGION_ROUTE_36:WEST -> REGION_ROUTE_35"), can_cut)
 
+    set_rule(get_location("EVENT_SAW_SUICUNE_ON_ROUTE_36"),
+             lambda state: state.has("EVENT_RELEASED_THE_BEASTS", world.player))
+
     if rematchsanity():
         set_rule(get_location("SCHOOLBOY_ALAN_OLIVINE"),
                  lambda state: state.has("ENGINE_FLYPOINT_OLIVINE", world.player))
@@ -880,6 +887,10 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
     set_rule(get_location("Tin Tower 1F - Rainbow Wing"),
              lambda state: state.has("EVENT_BEAT_ELITE_FOUR", world.player))
+
+    set_rule(get_location("EVENT_GOT_EON_MAIL_FROM_EUSINE"), lambda state: state.has_all(
+        ("EVENT_SAW_SUICUNE_ON_ROUTE_36", "EVENT_SAW_SUICUNE_ON_ROUTE_42", "EVENT_SAW_SUICUNE_AT_CIANWOOD_CITY"),
+        world.player))
 
     # Route 38
     if rematchsanity():
@@ -974,7 +985,10 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
     if world.options.level_scaling:
         set_rule(get_location("MYSTICALMAN_EUSINE"),
-                 lambda state: state.has("EVENT_BURNED_TOWER_MORTY", world.player))
+                 lambda state: state.has("EVENT_RELEASED_THE_BEASTS", world.player))
+
+    set_rule(get_location("EVENT_SAW_SUICUNE_AT_CIANWOOD_CITY"),
+             lambda state: state.has("EVENT_RELEASED_THE_BEASTS", world.player))
 
     # Route 42
     set_rule(get_entrance("REGION_ROUTE_42:WEST -> REGION_ROUTE_42:CENTER"), can_surf)
@@ -984,6 +998,9 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     set_rule(get_entrance("REGION_ROUTE_42:CENTER -> REGION_ROUTE_42:EAST"), can_surf)
 
     set_rule(get_entrance("REGION_ROUTE_42:CENTER -> REGION_ROUTE_42:CENTERFRUIT"), can_cut)
+
+    set_rule(get_location("EVENT_SAW_SUICUNE_ON_ROUTE_42"),
+             lambda state: state.has("EVENT_RELEASED_THE_BEASTS", world.player))
 
     if hidden():
         set_rule(get_location("Route 42 - Hidden Item in Pond Rock"), can_surf)
