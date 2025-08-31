@@ -7097,6 +7097,17 @@
     "default_item": "NO_ITEM",
     "script": "AP_Trainer_BURGLAR_COREY"
   },
+  "ITEM_FROM_SAILOR_STANLY": {
+    "label": "S.S. Aqua 1F - Sailor Stanly",
+    "flag": "EVENT_ITEM_FROM_SAILOR_STANLY",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity",
+      "S.S. Aqua"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_FastShipCabins_NNW_NNE_NE_SailorStanly_NO_ITEM"
+  },
   "ITEM_FROM_COOLTRAINERF_CAROL": {
     "label": "S.S. Aqua 1F - Cool Trainer Carol (Eastbound)",
     "flag": "EVENT_ITEM_FROM_COOLTRAINERF_CAROL",
@@ -7622,13 +7633,13 @@
   "ITEM_FROM_ROCKET_GRUNTM_1": {
     "label": "Slowpoke Well B1F - Grunt 4",
     "flag": "EVENT_ITEM_FROM_ROCKET_GRUNTM_1",
-    "type": "giveitem",
+    "type": "trainer",
     "tags": [
       "Trainersanity",
       "Slowpoke Well"
     ],
     "default_item": "NO_ITEM",
-    "script": "AP_NPC_SlowpokeWellB1F_GruntM1_NO_ITEM"
+    "script": "AP_Trainer_GRUNTM_GRUNTM_1"
   },
   "ITEM_FROM_ROCKET_GRUNTM_2": {
     "label": "Slowpoke Well B1F - Grunt 3",

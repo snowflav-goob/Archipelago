@@ -195,6 +195,7 @@ ADHOC_TRAINERSANITY_TRAINERS = [
     "BLAINE",
     "BLUE"
     "ROCKET_GRUNTM_1",
+    "SAILOR_STANLY"
 ]
 
 
@@ -270,7 +271,6 @@ class EvolutionType(IntEnum):
         if self is EvolutionType.Happiness: return "EVOLVE_HAPPINESS"
         if self is EvolutionType.Stats: return "EVOLVE_STAT"
         if self is EvolutionType.Trade: return "EVOLVE_TRADE"
-        raise ValueError(f"Invalid evolution type")
 
     def friendly_name(self):
         if self is EvolutionType.Level: return "Level "
