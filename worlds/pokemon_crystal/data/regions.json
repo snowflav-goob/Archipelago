@@ -747,7 +747,8 @@
     "locations": [
       "CIANWOOD_CITY_HIDDEN_MAX_ETHER",
       "CIANWOOD_CITY_HIDDEN_REVIVE",
-      "HM02_FLY"
+      "HM02_FLY",
+      "ITEM_FROM_MYSTICALMAN_EUSINE"
     ],
     "events": [
       "EVENT_FOUGHT_EUSINE",

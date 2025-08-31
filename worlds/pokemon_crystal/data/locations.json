@@ -608,6 +608,17 @@
     ],
     "script": "CianwoodCityHiddenMaxEther"
   },
+  "ITEM_FROM_MYSTICALMAN_EUSINE": {
+    "label": "Cianwood City - Mysticalman Eusine",
+    "flag": "EVENT_ITEM_FROM_MYSTICALMAN_EUSINE",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity",
+      "Cianwood City"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_CianwoodCity_Mysticalman_Eusine_NO_ITEM"
+  },
   "ITEM_FROM_BLACKBELT_LAO": {
     "label": "Cianwood Gym - Blackbelt Lao",
     "flag": "EVENT_ITEM_FROM_BLACKBELT_LAO",

@@ -983,6 +983,9 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
     set_rule(get_entrance("REGION_CIANWOOD_GYM -> REGION_CIANWOOD_GYM:STRENGTH"), can_strength)
 
+    safe_set_rule("Cianwood City - Mysticalman Eusine",
+                  lambda state: state.has("EVENT_RELEASED_THE_BEASTS", world.player))
+
     if world.options.level_scaling:
         set_rule(get_location("MYSTICALMAN_EUSINE"),
                  lambda state: state.has("EVENT_RELEASED_THE_BEASTS", world.player))
