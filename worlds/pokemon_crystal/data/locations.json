@@ -3303,6 +3303,28 @@
     "default_item": "CLEAR_BELL",
     "script": "AP_NPC_RadioTower5F_CLEAR_BELL"
   },
+  "ITEM_FROM_ROCKET_EXECUTIVEM_3": {
+    "label": "Radio Tower 5F - False Director",
+    "flag": "EVENT_ITEM_FROM_ROCKET_EXECUTIVEM_3",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity",
+      "Radio Tower"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_RadioTower5F_Rocket_ExecutiveM_3_NO_ITEM"
+  },
+  "ITEM_FROM_ROCKET_EXECUTIVEM_1": {
+    "label": "Radio Tower 5F - Rocket Executive 2",
+    "flag": "EVENT_ITEM_FROM_ROCKET_EXECUTIVEM_1",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity",
+      "Radio Tower"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_RadioTower5F_Rocket_ExecutiveM_1_NO_ITEM"
+  },
   "RADIO_TOWER_5F_ULTRA_BALL": {
     "label": "Radio Tower 5F - Item",
     "flag": "EVENT_RADIO_TOWER_5F_ULTRA_BALL",
@@ -3315,7 +3337,7 @@
     "default_item": "ULTRA_BALL"
   },
   "ITEM_FROM_ROCKET_EXECUTIVEF_1": {
-    "label": "Radio Tower 5F - Rocket Executive",
+    "label": "Radio Tower 5F - Rocket Executive 1",
     "flag": "EVENT_ITEM_FROM_ROCKET_EXECUTIVEF_1",
     "type": "trainer",
     "tags": [
@@ -3528,6 +3550,17 @@
     "default_item": "HM_WHIRLPOOL",
     "script": "AP_NPC_TeamRocketBaseB2F_HM_WHIRLPOOL"
   },
+  "ITEM_FROM_ROCKET_EXECUTIVEF_2": {
+    "label": "Rocket HQ B2F - Rocket Executive",
+    "flag": "EVENT_ITEM_FROM_ROCKET_EXECUTIVEF_2",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity",
+      "Team Rocket HQ"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_TeamRocketBaseB2F_Rocket_ExecutiveF_2_NO_ITEM"
+  },
   "TEAM_ROCKET_BASE_B2F_HIDDEN_FULL_HEAL": {
     "label": "Rocket HQ B2F - Hidden Item",
     "flag": "EVENT_TEAM_ROCKET_BASE_B2F_HIDDEN_FULL_HEAL",
@@ -3572,6 +3605,17 @@
     ],
     "script": "TeamRocketBaseB3FFullHeal",
     "default_item": "FULL_HEAL"
+  },
+  "ITEM_FROM_ROCKET_EXECUTIVEM_4": {
+    "label": "Rocket HQ B3F - Rocket Executive",
+    "flag": "EVENT_ITEM_FROM_ROCKET_EXECUTIVEM_4",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity",
+      "Team Rocket HQ"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_TeamRocketBaseB3F_Rocket_ExecutiveM_4_NO_ITEM"
   },
   "ITEM_FROM_ROCKET_GRUNTF_5": {
     "label": "Rocket HQ B3F - Grunt 1",
