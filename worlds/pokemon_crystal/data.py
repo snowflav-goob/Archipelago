@@ -178,6 +178,22 @@ ADHOC_TRAINERSANITY_TRAINERS = [
     "ELITE_4_BRUNO",
     "ELITE_4_KAREN",
     "CHAMPION_LANCE",
+    "FALKNER",
+    "BUGSY",
+    "WHITNEY",
+    "MORTY",
+    "CHUCK",
+    "JASMINE",
+    "PRYCE",
+    "CLAIR",
+    "BROCK",
+    "MISTY",
+    "LTSURGE",
+    "ERIKA",
+    "SABRINA",
+    "JANINE",
+    "BLAINE",
+    "BLUE"
 ]
 
 

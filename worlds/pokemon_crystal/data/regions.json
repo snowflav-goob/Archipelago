@@ -15,6 +15,7 @@
     "locations": [
       "TM49_FURY_CUTTER",
       "HIVE_BADGE_FROM_BUGSY",
+      "ITEM_FROM_BUGSY",
       "ITEM_FROM_TWINS_AMY_AND_MAY",
       "ITEM_FROM_BUG_CATCHER_BENNY",
       "ITEM_FROM_BUG_CATCHER_AL",
@@ -211,6 +212,7 @@
     "locations": [
       "TM24_DRAGONBREATH_GYM",
       "RISING_BADGE_FROM_CLAIR_GYM",
+      "ITEM_FROM_CLAIR",
       "ITEM_FROM_COOLTRAINERF_LOLA"
     ],
     "trainers": [
@@ -485,6 +487,7 @@
     "locations": [
       "TM19_GIGA_DRAIN",
       "RAINBOW_BADGE_FROM_ERIKA",
+      "ITEM_FROM_ERIKA",
       "ITEM_FROM_LASS_MICHELLE",
       "ITEM_FROM_PICNICKER_TANYA",
       "ITEM_FROM_BEAUTY_JULIA",
@@ -598,6 +601,7 @@
     "locations": [
       "CERULEAN_GYM_MACHINE_PART",
       "CASCADE_BADGE_FROM_MISTY",
+      "ITEM_FROM_MISTY",
       "ITEM_FROM_SWIMMERF_DIANA",
       "ITEM_FROM_SWIMMERF_BRIANA",
       "ITEM_FROM_SWIMMERM_PARKER"
@@ -786,6 +790,7 @@
     "locations": [
       "TM01_DYNAMICPUNCH",
       "STORM_BADGE_FROM_CHUCK",
+      "ITEM_FROM_CHUCK",
       "ITEM_FROM_BLACKBELT_LUNG"
     ],
     "events": [
@@ -1186,6 +1191,7 @@
     "locations": [
       "TM30_SHADOW_BALL",
       "FOG_BADGE_FROM_MORTY",
+      "ITEM_FROM_MORTY",
       "ITEM_FROM_SAGE_JEFFREY",
       "ITEM_FROM_SAGE_PING",
       "ITEM_FROM_MEDIUM_MARTHA",
@@ -1439,6 +1445,7 @@
     "locations": [
       "TM06_TOXIC",
       "SOUL_BADGE_FROM_JANINE",
+      "ITEM_FROM_JANINE",
       "ITEM_FROM_LASS_ALICE",
       "ITEM_FROM_LASS_LINDA",
       "ITEM_FROM_PICNICKER_CINDY",
@@ -1670,6 +1677,7 @@
     "locations": [
       "TM45_ATTRACT",
       "PLAIN_BADGE_FROM_WHITNEY",
+      "ITEM_FROM_WHITNEY",
       "ITEM_FROM_LASS_CARRIE",
       "ITEM_FROM_LASS_BRIDGET",
       "ITEM_FROM_BEAUTY_VICTORIA",
@@ -2282,6 +2290,7 @@
     "locations": [
       "TM16_ICY_WIND",
       "GLACIER_BADGE_FROM_PRYCE",
+      "ITEM_FROM_PRYCE",
       "ITEM_FROM_SKIER_ROXANNE",
       "ITEM_FROM_SKIER_CLARISSA",
       "ITEM_FROM_BOARDER_RONALD",
@@ -2795,7 +2804,8 @@
     ],
     "locations": [
       "TM23_IRON_TAIL",
-      "MINERAL_BADGE_FROM_JASMINE"
+      "MINERAL_BADGE_FROM_JASMINE",
+      "ITEM_FROM_JASMINE"
     ],
     "events": [
       "EVENT_MINERAL_BADGE_FROM_JASMINE",
@@ -3012,6 +3022,7 @@
     ],
     "locations": [
       "BOULDER_BADGE_FROM_BROCK",
+      "ITEM_FROM_BROCK",
       "ITEM_FROM_CAMPER_JERRY"
     ],
     "events": [
@@ -5535,6 +5546,7 @@
     ],
     "locations": [
       "MARSH_BADGE_FROM_SABRINA",
+      "ITEM_FROM_SABRINA",
       "ITEM_FROM_MEDIUM_REBECCA",
       "ITEM_FROM_PSYCHIC_FRANKLIN",
       "ITEM_FROM_MEDIUM_DORIS",
@@ -5583,7 +5595,8 @@
       "LEADER_BLAINE"
     ],
     "locations": [
-      "VOLCANO_BADGE_FROM_BLAINE"
+      "VOLCANO_BADGE_FROM_BLAINE",
+      "ITEM_FROM_BLAINE"
     ],
     "events": [
       "EVENT_VOLCANO_BADGE_FROM_BLAINE",
@@ -6306,6 +6319,7 @@
     ],
     "locations": [
       "THUNDER_BADGE_FROM_LTSURGE",
+      "ITEM_FROM_LTSURGE",
       "ITEM_FROM_GENTLEMAN_GREGORY",
       "ITEM_FROM_GUITARIST_VINCENT",
       "ITEM_FROM_JUGGLER_HORTON"
@@ -6462,6 +6476,7 @@
     "locations": [
       "TM31_MUD_SLAP",
       "ZEPHYR_BADGE_FROM_FALKNER",
+      "ITEM_FROM_FALKNER",
       "ITEM_FROM_BIRD_KEEPER_ROD",
       "ITEM_FROM_BIRD_KEEPER_ABE"
     ],
@@ -6540,7 +6555,8 @@
       "LEADER_BLUE"
     ],
     "locations": [
-      "EARTH_BADGE_FROM_BLUE"
+      "EARTH_BADGE_FROM_BLUE",
+      "ITEM_FROM_BLUE"
     ],
     "events": [
       "EVENT_EARTH_BADGE_FROM_BLUE",

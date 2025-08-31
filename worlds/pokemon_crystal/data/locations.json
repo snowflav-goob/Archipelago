@@ -56,6 +56,16 @@
     "default_item": "TM_49",
     "script": "AP_NPC_AzaleaGym_TM_FURY_CUTTER"
   },
+  "ITEM_FROM_BUGSY": {
+    "label": "Azalea Gym - Leader Bugsy",
+    "flag": "EVENT_ITEM_FROM_BUGSY",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_AzaleaGym_Bugsy_NO_ITEM"
+  },
   "ITEM_FROM_TWINS_AMY_AND_MAY": {
     "label": "Azalea Gym - Twins Amy & May",
     "flag": "EVENT_ITEM_FROM_TWINS_AMY_AND_MAY",
@@ -192,6 +202,16 @@
     ],
     "default_item": "RISING_BADGE",
     "script": "AP_Badge_BlackthornGym_RISING_BADGE"
+  },
+  "ITEM_FROM_CLAIR": {
+    "label": "Blackthorn Gym - Leader Clair",
+    "flag": "EVENT_ITEM_FROM_CLAIR",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_BlackthornGym_Clair_NO_ITEM"
   },
   "TM24_DRAGONBREATH_GYM": {
     "label": "Blackthorn Gym - TM24 from Clair",
@@ -401,6 +421,16 @@
     "default_item": "RAINBOW_BADGE",
     "script": "AP_Badge_CeladonGym_RAINBOW_BADGE"
   },
+  "ITEM_FROM_ERIKA": {
+    "label": "Celadon Gym - Leader Erika",
+    "flag": "EVENT_ITEM_FROM_ERIKA",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_CeladonGym_Erika_NO_ITEM"
+  },
   "TM19_GIGA_DRAIN": {
     "label": "Celadon Gym - TM19 from Erika",
     "flag": "EVENT_GOT_TM19_GIGA_DRAIN",
@@ -447,6 +477,16 @@
     ],
     "default_item": "CASCADE_BADGE",
     "script": "AP_Badge_CeruleanGym_CASCADE_BADGE"
+  },
+  "ITEM_FROM_MISTY": {
+    "label": "Cerulean Gym - Leader Misty",
+    "flag": "EVENT_ITEM_FROM_MISTY",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_CeruleanGym_Misty_NO_ITEM"
   },
   "CERULEAN_GYM_MACHINE_PART": {
     "label": "Cerulean Gym - Machine Part in Water",
@@ -635,6 +675,16 @@
     ],
     "default_item": "TM_1",
     "script": "AP_NPC_CianwoodGym_TM_DYNAMICPUNCH"
+  },
+  "ITEM_FROM_CHUCK": {
+    "label": "Cianwood Gym - Leader Chuck",
+    "flag": "EVENT_ITEM_FROM_CHUCK",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_CianwoodGym_Chuck_NO_ITEM"
   },
   "SECRETPOTION_FROM_PHARMACY": {
     "label": "Cianwood Pharmacy - Secretpotion",
@@ -969,6 +1019,16 @@
     "default_item": "FOG_BADGE",
     "script": "AP_Badge_EcruteakGym_FOG_BADGE"
   },
+  "ITEM_FROM_MORTY": {
+    "label": "Ecruteak Gym - Leader Morty",
+    "flag": "EVENT_ITEM_FROM_MORTY",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_EcruteakGym_Morty_NO_ITEM"
+  },
   "HM03_SURF": {
     "label": "Ecruteak City - HM03 from Theater Director",
     "flag": "EVENT_GOT_HM03_SURF",
@@ -1201,6 +1261,16 @@
     "default_item": "SOUL_BADGE",
     "script": "AP_Badge_FuchsiaGym_SOUL_BADGE"
   },
+  "ITEM_FROM_JANINE": {
+    "label": "Fuchsia Gym - Leader Janine",
+    "flag": "EVENT_ITEM_FROM_JANINE",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_FuchsiaGym_Janine_NO_ITEM"
+  },
   "TM06_TOXIC": {
     "label": "Fuchsia Gym - TM06 from Janine",
     "flag": "EVENT_GOT_TM06_TOXIC",
@@ -1397,6 +1467,16 @@
     ],
     "default_item": "TM_45",
     "script": "AP_NPC_GoldenrodGym_TM_ATTRACT"
+  },
+  "ITEM_FROM_WHITNEY": {
+    "label": "Goldenrod Gym - Leader Whitney",
+    "flag": "EVENT_ITEM_FROM_WHITNEY",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_GoldenrodGym_Whitney_NO_ITEM"
   },
   "GOLDENROD_UNDERGROUND_HIDDEN_SUPER_POTION": {
     "label": "Goldenrod UG - Center Hidden Item",
@@ -2169,6 +2249,16 @@
     "default_item": "GLACIER_BADGE",
     "script": "AP_Badge_MahoganyGym_GLACIER_BADGE"
   },
+  "ITEM_FROM_PRYCE": {
+    "label": "Mahogany Gym - Leader Pryce",
+    "flag": "EVENT_ITEM_FROM_PRYCE",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_MahoganyGym_Pryce_NO_ITEM"
+  },
   "ITEM_FROM_SKIER_CLARISSA": {
     "label": "Mahogany Gym - Skier Clarissa",
     "flag": "EVENT_ITEM_FROM_SKIER_CLARISSA",
@@ -2676,6 +2766,16 @@
     "default_item": "TM_23",
     "script": "AP_NPC_OlivineGym_TM_IRON_TAIL"
   },
+  "ITEM_FROM_JASMINE": {
+    "label": "Olivine Gym - Leader Jasmine",
+    "flag": "EVENT_ITEM_FROM_JASMINE",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_OlivineGym_Jasmine_NO_ITEM"
+  },
   "ITEM_FROM_GENTLEMAN_ALFRED": {
     "label": "Olivine Lighthouse 2F - Gentleman Alfred",
     "flag": "EVENT_ITEM_FROM_GENTLEMAN_ALFRED",
@@ -2925,6 +3025,16 @@
     ],
     "default_item": "BOULDER_BADGE",
     "script": "AP_Badge_PewterGym_BOULDER_BADGE"
+  },
+  "ITEM_FROM_BROCK": {
+    "label": "Pewter Gym - Leader Brock",
+    "flag": "EVENT_ITEM_FROM_BROCK",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_PewterGym_Brock_NO_ITEM"
   },
   "ITEM_FROM_CAMPER_JERRY": {
     "label": "Pewter Gym - Camper Jerry",
@@ -7264,6 +7374,16 @@
     "default_item": "MARSH_BADGE",
     "script": "AP_Badge_SaffronGym_MARSH_BADGE"
   },
+  "ITEM_FROM_SABRINA": {
+    "label": "Saffron Gym - Leader Sabrina",
+    "flag": "EVENT_ITEM_FROM_SABRINA",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_SaffronGym_Sabrina_NO_ITEM"
+  },
   "ITEM_FROM_MEDIUM_DORIS": {
     "label": "Saffron Gym - Medium Doris",
     "flag": "EVENT_ITEM_FROM_MEDIUM_DORIS",
@@ -7319,6 +7439,16 @@
     ],
     "default_item": "VOLCANO_BADGE",
     "script": "AP_Badge_SeafoamGym_VOLCANO_BADGE"
+  },
+  "ITEM_FROM_BLAINE": {
+    "label": "Seafoam Gym - Blaine",
+    "flag": "EVENT_ITEM_FROM_BLAINE",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_SeafoamGym_Blaine_NO_ITEM"
   },
   "UP_GRADE": {
     "label": "Silph Co 1F - Up-Grade from Guard",
@@ -8183,6 +8313,16 @@
     "default_item": "THUNDER_BADGE",
     "script": "AP_Badge_VermillionGym_THUNDER_BADGE"
   },
+  "ITEM_FROM_LTSURGE": {
+    "label": "Vermilion Gym - Leader Lt. Surge",
+    "flag": "EVENT_ITEM_FROM_LTSURGE",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_VermilionGym_LtSurge_NO_ITEM"
+  },
   "VERMILION_PORT_HIDDEN_IRON": {
     "label": "Vermilion Port - Hidden Item in Buoy",
     "flag": "EVENT_VERMILION_PORT_HIDDEN_IRON",
@@ -8342,6 +8482,16 @@
     "default_item": "NO_ITEM",
     "script": "AP_Trainer_BIRD_KEEPER_ROD"
   },
+  "ITEM_FROM_FALKNER": {
+    "label": "Violet Gym - Leader Falkner",
+    "flag": "EVENT_ITEM_FROM_FALKNER",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_VioletGym_Falkner_NO_ITEM"
+  },
   "TM31_MUD_SLAP": {
     "label": "Violet Gym - TM31 from Falkner",
     "flag": "EVENT_GOT_TM31_MUD_SLAP",
@@ -8389,6 +8539,16 @@
     ],
     "default_item": "EARTH_BADGE",
     "script": "AP_Badge_ViridianGym_EARTH_BADGE"
+  },
+  "ITEM_FROM_BLUE": {
+    "label": "Viridian Gym - Leader Blue",
+    "flag": "EVENT_ITEM_FROM_BLUE",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_ViridianGym_Blue_NO_ITEM"
   },
   "WHIRL_ISLAND_NE_ULTRA_BALL": {
     "label": "Whirl Islands 1F - Item in Northeast Island",
