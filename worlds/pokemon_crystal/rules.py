@@ -365,12 +365,12 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
         return world.multiworld.get_location(location, world.player)
 
-    def safe_set_rule(entrance_name: str, rule: CollectionRule) -> None:
+    def safe_set_location_rule(spot: str, rule: CollectionRule) -> None:
         try:
-            entrance = world.get_entrance(entrance_name)
+            location = world.get_location(spot)
         except KeyError:
             return
-        set_rule(entrance, rule)
+        set_rule(location, rule)
 
     def hidden():
         return world.options.randomize_hidden_items
@@ -470,6 +470,9 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
     # Cherrygrove
     set_rule(get_location("Cherrygrove City - Mystic Water from Island Man"), can_surf)
+
+    safe_set_location_rule("Cherrygrove City - Item from Rival",
+                           lambda state: state.has("EVENT_GOT_MYSTERY_EGG_FROM_MR_POKEMON", world.player))
 
     # Route 31
     if "Dark Cave" in world.options.dark_areas:
@@ -622,6 +625,9 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
     set_rule(get_entrance("REGION_AZALEA_TOWN -> REGION_AZALEA_GYM"),
              lambda state: state.has("EVENT_CLEARED_SLOWPOKE_WELL", world.player))
+
+    safe_set_location_rule("Azalea Town - Item from Rival",
+                           lambda state: state.has("EVENT_CLEARED_SLOWPOKE_WELL", world.player))
 
     set_rule(get_location("Azalea Town - Lure Ball from Kurt"),
              lambda state: state.has("EVENT_CLEARED_SLOWPOKE_WELL", world.player))
@@ -784,7 +790,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     if world.options.level_scaling:
         set_rule(get_location("GRUNTM_3"), has_rockets_requirement)
 
-    safe_set_rule("Radio Tower 1F - Grunt", has_rockets_requirement)
+    safe_set_location_rule("Radio Tower 1F - Grunt", has_rockets_requirement)
 
     # Route 35
     set_rule(get_location("Route 35 - HP Up after delivering Kenya"),
@@ -983,8 +989,8 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
     set_rule(get_entrance("REGION_CIANWOOD_GYM -> REGION_CIANWOOD_GYM:STRENGTH"), can_strength)
 
-    safe_set_rule("Cianwood City - Mysticalman Eusine",
-                  lambda state: state.has("EVENT_RELEASED_THE_BEASTS", world.player))
+    safe_set_location_rule("Cianwood City - Mysticalman Eusine",
+                           lambda state: state.has("EVENT_RELEASED_THE_BEASTS", world.player))
 
     if world.options.level_scaling:
         set_rule(get_location("MYSTICALMAN_EUSINE"),
@@ -1198,7 +1204,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     set_rule(get_location("Route 27 - West Item across Water"), can_surf)
 
     set_rule(get_location("Route 27 - East Item behind Whirlpool"), can_surf_and_whirlpool)
-    safe_set_rule("Route 27 - Bird Keeper Jose", can_surf_and_whirlpool)
+    safe_set_location_rule("Route 27 - Bird Keeper Jose", can_surf_and_whirlpool)
 
     if rematchsanity():
         if world.options.goal == Goal.option_red:
@@ -1321,8 +1327,8 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
 
         # Cerulean
         set_rule(get_entrance("REGION_ROUTE_24 -> REGION_CERULEAN_CITY:SURF"), can_surf_kanto)
-        safe_set_rule("Route 24 - Grunt",
-                      lambda state: state.has("EVENT_CERULEAN_GYM_ROCKET", world.player))
+        safe_set_location_rule("Route 24 - Grunt",
+                               lambda state: state.has("EVENT_CERULEAN_GYM_ROCKET", world.player))
 
         set_rule(get_entrance("REGION_CERULEAN_CITY -> REGION_ROUTE_9"), can_cut_kanto)
 

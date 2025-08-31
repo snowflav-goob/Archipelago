@@ -65,7 +65,8 @@
     ],
     "locations": [
       "AZALEA_TOWN_HIDDEN_FULL_HEAL",
-      "FRUITTREE_AZALEA_TOWN"
+      "FRUITTREE_AZALEA_TOWN",
+      "ITEM_FROM_RIVAL_2"
     ],
     "events": [
       "EVENT_RIVAL_AZALEA_TOWN"
@@ -301,7 +302,8 @@
     "locations": [
       "BURNED_TOWER_1F_HIDDEN_ETHER",
       "BURNED_TOWER_1F_HIDDEN_ULTRA_BALL",
-      "BURNED_TOWER_1F_HP_UP"
+      "BURNED_TOWER_1F_HP_UP",
+      "ITEM_FROM_RIVAL_3"
     ],
     "events": [
       "EVENT_RIVAL_BURNED_TOWER"
@@ -683,7 +685,8 @@
     ],
     "locations": [
       "MYSTIC_WATER_IN_CHERRYGROVE",
-      "MAP_CARD"
+      "MAP_CARD",
+      "ITEM_FROM_RIVAL_1"
     ],
     "events": [
       "EVENT_RIVAL_CHERRYGROVE_CITY"
@@ -2064,7 +2067,9 @@
       "RIVAL_TYPHLOSION_INDIGO",
       "RIVAL_FERALIGATR_INDIGO"
     ],
-    "locations": [],
+    "locations": [
+      "ITEM_FROM_RIVAL_6"
+    ],
     "events": []
   },
   "REGION_KARENS_ROOM": {
@@ -2396,7 +2401,9 @@
       "RIVAL_TYPHLOSION_MTMOON",
       "RIVAL_FERALIGATR_MTMOON"
     ],
-    "locations": [],
+    "locations": [
+      "ITEM_FROM_RIVAL_5"
+    ],
     "events": [
       "EVENT_BEAT_RIVAL_IN_MT_MOON"
     ],
@@ -6422,7 +6429,8 @@
       "VICTORY_ROAD_HIDDEN_MAX_POTION",
       "VICTORY_ROAD_HP_UP",
       "VICTORY_ROAD_MAX_REVIVE",
-      "VICTORY_ROAD_TM_EARTHQUAKE"
+      "VICTORY_ROAD_TM_EARTHQUAKE",
+      "ITEM_FROM_RIVAL_4"
     ],
     "events": [
       "EVENT_RIVAL_VICTORY_ROAD"

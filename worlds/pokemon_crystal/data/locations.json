@@ -101,6 +101,18 @@
     ],
     "script": "AzaleaTownHiddenFullHeal"
   },
+  "ITEM_FROM_RIVAL_2": {
+    "label": "Azalea Town - Item from Rival",
+    "flag": "EVENT_ITEM_FROM_RIVAL_2",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity",
+      "Azalea Town",
+      "Rival"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_AzaleaTown_Rival2_NO_ITEM"
+  },
   "KURT_GAVE_YOU_LURE_BALL": {
     "label": "Azalea Town - Lure Ball from Kurt",
     "flag": "EVENT_KURT_GAVE_YOU_LURE_BALL",
@@ -315,6 +327,18 @@
       "Burned Tower"
     ],
     "script": "BurnedTower1FHiddenUltraBall"
+  },
+  "ITEM_FROM_RIVAL_3": {
+    "label": "Burned Tower 1F - Item from Rival",
+    "flag": "EVENT_ITEM_FROM_RIVAL_3",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity",
+      "Burned Tower",
+      "Rival"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_BurnedTower1F_Rival3_NO_ITEM"
   },
   "BURNED_TOWER_B1F_TM_ENDURE": {
     "label": "Burned Tower B1F - Item",
@@ -561,6 +585,18 @@
     ],
     "default_item": "MAP_CARD",
     "script": "AP_NPC_CherrygroveCity_MAP_CARD"
+  },
+  "ITEM_FROM_RIVAL_1": {
+    "label": "Cherrygrove City - Item from Rival",
+    "flag": "EVENT_ITEM_FROM_RIVAL_1",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity",
+      "Cherrygrove City",
+      "Rival"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_CherrygroveCity_Rival1_NO_ITEM"
   },
   "MYSTIC_WATER_IN_CHERRYGROVE": {
     "label": "Cherrygrove City - Mystic Water from Island Man",
@@ -2013,6 +2049,17 @@
     "script": "IlexForestXAttack",
     "default_item": "X_ATTACK"
   },
+  "ITEM_FROM_RIVAL_6": {
+    "label": "Indigo Plateau - Item from Rival",
+    "flag": "EVENT_ITEM_FROM_RIVAL_6",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity",
+      "Rival"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_IndigoPlateauPokecenter1F_Rival6_NO_ITEM"
+  },
   "ITEM_FROM_CHAMPION_LANCE": {
     "label": "Indigo Plateau - Champion Lance",
     "flag": "EVENT_ITEM_FROM_CHAMPION_LANCE",
@@ -2317,6 +2364,17 @@
     ],
     "default_item": "TM_13",
     "script": "AP_NPC_Route39Farmhouse_TM_SNORE"
+  },
+  "ITEM_FROM_RIVAL_5": {
+    "label": "Mount Moon - Item from Rival",
+    "flag": "EVENT_ITEM_FROM_RIVAL_5",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity",
+      "Rival"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_MountMoon_Rival5_NO_ITEM"
   },
   "MOUNT_MOON_SQUARE_HIDDEN_MOON_STONE": {
     "label": "Mount Moon Square - Hidden Item under Rock",
@@ -8485,6 +8543,18 @@
     ],
     "script": "VictoryRoadHPUp",
     "default_item": "HP_UP"
+  },
+  "ITEM_FROM_RIVAL_4": {
+    "label": "Victory Road - Item from Rival",
+    "flag": "EVENT_ITEM_FROM_RIVAL_4",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity",
+      "Victory Road",
+      "Rival"
+    ],
+    "default_item": "NO_ITEM",
+    "script": "AP_NPC_VictoryRoad_Rival4_NO_ITEM"
   },
   "FRUITTREE_VIOLET_CITY": {
     "label": "Violet City - Berry Tree",
