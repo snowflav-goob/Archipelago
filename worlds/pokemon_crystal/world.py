@@ -466,6 +466,7 @@ class PokemonCrystalWorld(World):
             "mount_mortar_access",
             "randomize_pokemon_requests",
             "randomize_evolution",
+            "randomize_breeding",
             "dark_areas",
             "require_flash",
             "victory_road_access",
