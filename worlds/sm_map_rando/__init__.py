@@ -126,7 +126,8 @@ class SMMapRandoWorld(World):
 
     item_name_to_id = {item_name: items_start_id + idx for idx, item_name in 
                                 enumerate(itertools.chain(map_rando_app_data.game_data.item_isv.keys,
-                                                          ["ArchipelagoItem", "ArchipelagoProgItem"]))}
+                                                          ["ArchipelagoItem", "ArchipelagoProgItem",
+                                                           "ProgMissile", "ProgSuper", "ProgPowerBomb"]))}
     location_name_to_id = {loc_name: locations_start_id + location_address_to_id[str(addr)] for idx, (loc_name, addr) in 
                                 enumerate(itertools.chain(zip(  smmr_location_names, 
                                                                 map_rando_app_data.game_data.get_location_addresses())))}
@@ -175,15 +176,7 @@ class SMMapRandoWorld(World):
             entrance = Entrance(player, exit, ret)
             ret.exits.append(entrance)
             if items_required is not None:
-                counter = Counter(items_required)
-                if counter.get("Missile", 0) > 3:
-                    counter["Missile"] = 3
-                if counter.get("Super", 0) > 2:
-                    counter["Super"] = 2
-                if counter.get("PowerBomb", 0) > 3:
-                    counter["PowerBomb"] = 3
-
-                set_rule(entrance, lambda state : state.has_all_counts(counter, player))
+                set_rule(entrance, lambda state : state.has_all_counts(Counter(items_required), player))
         return ret
 
     def create_regions(self):
@@ -202,7 +195,22 @@ class SMMapRandoWorld(World):
         cumulative_required_items = []
 
         for spoilerSummary in self.randomizer_ap.spoiler_log.summary:
-            cumulative_required_items.extend([spoilerItemSummary.item for spoilerItemSummary in spoilerSummary.items])
+            counter = Counter(cumulative_required_items)
+            for spoilerItemSummary in spoilerSummary.items:
+                if spoilerItemSummary.item == "Missile":
+                    if counter.get("ProgMissile", 0) < 3:
+                        counter["ProgMissile"] += 1
+                        cumulative_required_items.append("ProgMissile")
+                elif spoilerItemSummary.item == "Super":
+                    if counter.get("ProgSuper", 0) < 2:
+                        counter["ProgSuper"] += 1
+                        cumulative_required_items.append("ProgSuper")
+                elif spoilerItemSummary.item == "PowerBomb":
+                    if counter.get("ProgPowerBomb", 0) < 3:
+                        counter["ProgPowerBomb"] += 1
+                        cumulative_required_items.append("ProgPowerBomb")
+                else:
+                    cumulative_required_items.append(spoilerItemSummary.item)
             self.region_dict.append(self.create_region(  self.multiworld, 
                                                         self.player, 
                                                         f"step {spoilerSummary.step}",
@@ -242,33 +250,34 @@ class SMMapRandoWorld(World):
     def create_items(self):
         pool = []
         item_placement = [item.to_int() for item in self.randomizer_ap.randomization.item_placement]
-        seen_item_type = set() 
         weaponCount = [0, 0, 0]         
-
         for spoilerSummary in self.randomizer_ap.spoiler_log.summary:
             for spoilerItemSummary in spoilerSummary.items:
                 isAdvancement = True
-                if spoilerItemSummary.item == 'Missile':
+                new_item_name = spoilerItemSummary.item
+                if new_item_name == 'Missile':
                     if weaponCount[0] < 3:
                         weaponCount[0] += 1
+                        new_item_name = 'ProgMissile'
                     else:
                         isAdvancement = False
-                elif spoilerItemSummary.item == 'Super':
+                elif new_item_name == 'Super':
                     if weaponCount[1] < 2:
                         weaponCount[1] += 1
+                        new_item_name = 'ProgSuper'
                     else:
                         isAdvancement = False
-                elif spoilerItemSummary.item == 'PowerBomb':
+                elif new_item_name == 'PowerBomb':
                     if weaponCount[2] < 3:
                         weaponCount[2] += 1
+                        new_item_name = 'ProgPowerBomb'
                     else:
                         isAdvancement = False
-                elif spoilerItemSummary.item == 'Nothing':
+                elif new_item_name == 'Nothing':
                     isAdvancement = False
                 new_item_id = SMMapRandoWorld.item_name_to_id[spoilerItemSummary.item]
                 item_placement[SMMapRandoWorld.smmr_location_names.index(f"{spoilerItemSummary.location.room} {spoilerItemSummary.location.node}")] = -1
-                seen_item_type.add(new_item_id)
-                mr_item = SMMRItem(spoilerItemSummary.item, 
+                mr_item = SMMRItem(new_item_name,
                             ItemClassification.progression if isAdvancement else ItemClassification.filler, 
                             new_item_id, 
                             player=self.player,
@@ -320,7 +329,8 @@ class SMMapRandoWorld(World):
             setattr(self.multiworld, "_smmr_spheres", spheres)
     
     def create_item(self, name: str) -> Item:
-        return SMMRItem(name, ItemClassification.progression, self.item_name_to_id[name], player=self.player, step=0)
+        is_progression = name != 'Missile' and name != 'Super' and name != 'PowerBomb' and name != 'Nothing'
+        return SMMRItem(name, ItemClassification.progression if is_progression else ItemClassification.filler, self.item_name_to_id[name], player=self.player, step=0)
 
     def get_filler_item_name(self) -> str:
         return "Missile"
