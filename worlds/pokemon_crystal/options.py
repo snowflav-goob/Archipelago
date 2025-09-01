@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from Options import Toggle, Choice, DefaultOnToggle, Range, PerGameCommonOptions, NamedRange, OptionSet, \
-    StartInventoryPool, OptionDict, Visibility, DeathLink, OptionGroup, OptionList
+    StartInventoryPool, OptionDict, Visibility, DeathLink, OptionGroup, OptionList, FreeText
 from .data import data, MapPalette
 from .maps import FLASH_MAP_GROUPS
 
@@ -1560,6 +1560,15 @@ class AlwaysUnlockFly(Toggle):
     display_name = "Always Unlock Fly Destinations"
 
 
+class TrainerName(FreeText):
+    """
+    Preset your trainer name, this skips the name prompt.
+
+    Only the first seven characters will be used, unsupported characters will be replaced with '?'.
+    """
+    display_name = "Trainer Name"
+
+
 class GameOptions(OptionDict):
     """
     Presets in-game options. These can be changed in-game later. Any omitted options will use their default.
@@ -1767,6 +1776,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     paralysis_trap_weight: ParalysisTrapWeight
     remote_items: RemoteItems
     game_options: GameOptions
+    trainer_name: TrainerName
     enable_mischief: EnableMischief
     start_inventory_from_pool: StartInventoryPool
     death_link: PokemonCrystalDeathLink
@@ -1928,6 +1938,7 @@ OPTION_GROUPS = [
          SkipEliteFour,
          MinimumCatchRate,
          AlwaysUnlockFly,
+         TrainerName,
          PokemonCrystalDeathLink]
     ),
     OptionGroup(
