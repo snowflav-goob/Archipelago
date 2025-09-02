@@ -132,7 +132,9 @@ class SMMapRandoWorld(World):
                                 enumerate(itertools.chain(zip(  smmr_location_names, 
                                                                 map_rando_app_data.game_data.get_location_addresses())))}
     
+    missile_item_id = 1
     nothing_item_id = 22
+    prog_missile_item_id = 25
 
     web = SMMapRandoWeb()
 
@@ -333,7 +335,7 @@ class SMMapRandoWorld(World):
         return SMMRItem(name, ItemClassification.progression if is_progression else ItemClassification.filler, self.item_name_to_id[name], player=self.player, step=0)
 
     def get_filler_item_name(self) -> str:
-        return "Missile"
+        return self.multiworld.random.choice(['Missile', 'Missile', 'Missile', 'Missile', 'Missile', 'Super', 'PowerBomb'])
 
     def getWordArray(self, w: int) -> List[int]:
         """ little-endian convert a 16-bit number to an array of numbers <= 255 each """
@@ -462,21 +464,24 @@ class SMMapRandoWorld(World):
             bool(self.options.moonwalk.value)
         )
         sorted_item_locs = list(self.locations.values())
-        items = [MapRandoItem(
-                (itemLoc.item.code 
-                    if isinstance(itemLoc.item, SMMRItem) else 
-                (self.item_name_to_id['ArchipelagoProgItem'] 
-                    if itemLoc.item.advancement else
-                self.item_name_to_id['ArchipelagoItem']))
-                - items_start_id)
-                    for itemLoc in sorted_item_locs if itemLoc.address is not None]
+        items = []
+        for itemLoc in sorted_item_locs:
+            if itemLoc.address is not None:
+                item_code = items_start_id
+                if isinstance(itemLoc.item, SMMRItem):
+                    item_code = itemLoc.item.code if itemLoc.item.code - items_start_id < SMMapRandoWorld.prog_missile_item_id else itemLoc.item.code - SMMapRandoWorld.prog_missile_item_id + SMMapRandoWorld.missile_item_id
+                elif itemLoc.item.advancement:
+                    item_code = self.item_name_to_id['ArchipelagoProgItem']
+                else:
+                    item_code = self.item_name_to_id['ArchipelagoItem']
+                items.append(MapRandoItem(item_code - items_start_id))
         
         # if start location isnt Escape
         if (len(self.randomizer_ap.spoiler_log.summary) > 0):
             spheres: List[Location] = getattr(self.multiworld, "_smmr_spheres", None)
             summary =  [   (
                             sphere_idx, 
-                            loc.item.code - items_start_id, 
+                            (loc.item.code if loc.item.code - items_start_id < SMMapRandoWorld.prog_missile_item_id else loc.item.code - SMMapRandoWorld.prog_missile_item_id + SMMapRandoWorld.missile_item_id) - items_start_id, 
                             self.multiworld.get_player_name(loc.player) + " world" if loc.player != self.player else None
                         ) 
                     for sphere_idx, sphere in enumerate(spheres) for loc in sphere if loc.item.player == self.player and loc.item.name != "Nothing"
