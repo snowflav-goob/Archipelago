@@ -126,7 +126,7 @@ class SMMapRandoWorld(World):
 
     item_name_to_id = {item_name: items_start_id + idx for idx, item_name in 
                                 enumerate(itertools.chain(map_rando_app_data.game_data.item_isv.keys,
-                                                          ["ArchipelagoItem", "ArchipelagoProgItem",
+                                                          ["ArchipelagoItem", "ArchipelagoProgItem", "ArchipelagoUsefulItem", "ArchipelagoUsefulProgItem",
                                                            "ProgMissile", "ProgSuper", "ProgPowerBomb"]))}
     location_name_to_id = {loc_name: locations_start_id + location_address_to_id[str(addr)] for idx, (loc_name, addr) in 
                                 enumerate(itertools.chain(zip(  smmr_location_names, 
@@ -134,7 +134,7 @@ class SMMapRandoWorld(World):
     
     missile_item_id = 1
     nothing_item_id = 22
-    prog_missile_item_id = 25
+    prog_missile_item_id = 27
 
     web = SMMapRandoWeb()
 
@@ -471,9 +471,15 @@ class SMMapRandoWorld(World):
                 if isinstance(itemLoc.item, SMMRItem):
                     item_code = itemLoc.item.code if itemLoc.item.code - items_start_id < SMMapRandoWorld.prog_missile_item_id else itemLoc.item.code - SMMapRandoWorld.prog_missile_item_id + SMMapRandoWorld.missile_item_id
                 elif itemLoc.item.advancement:
-                    item_code = self.item_name_to_id['ArchipelagoProgItem']
+                    if itemLoc.item.useful:
+                        item_code = self.item_name_to_id['ArchipelagoUsefulProgItem']
+                    else:
+                        item_code = self.item_name_to_id['ArchipelagoProgItem']
                 else:
-                    item_code = self.item_name_to_id['ArchipelagoItem']
+                    if itemLoc.item.useful:
+                        item_code = self.item_name_to_id['ArchipelagoUsefulItem']
+                    else:
+                        item_code = self.item_name_to_id['ArchipelagoItem']
                 items.append(MapRandoItem(item_code - items_start_id))
         
         # if start location isnt Escape
