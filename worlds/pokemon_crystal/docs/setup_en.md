@@ -22,9 +22,9 @@ Once you have installed BizHawk, open `EmuHawk.exe` and change the following set
   This reduces the possibility of losing save data in emulator crashes.
 - In `Config -> Customize`, enable `Run in background`. This will prevent the game from losing connection to the client
   when tabbed out.
-- Open a Game Boy or Game Boy Color game (`.gb` or `.gbc`) and then navigate to `Config -> Controllers...`. This menu
-  may
-  not be available if a game is not already open.
+- To adjust controller settings, open a Game Boy or Game Boy Color game (`.gb` or `.gbc`) and then navigate to
+  `Config -> Controllers...`. This menu may not be available if a game is not already open.
+- Ensure that `Config -> Preferred Cores -> GB in SGB` is disabled.
 
 ### Configuring mGBA
 
