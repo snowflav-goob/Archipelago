@@ -13,7 +13,6 @@ from .options import Goal, JohtoOnly, Route32Condition, UndergroundsRequirePower
     RequireFlash
 from .pokemon import add_hm_compatibility
 from .utils import get_fly_regions, get_mart_slot_location_name
-from ..adventure import static_item_element_size
 
 if TYPE_CHECKING:
     from .world import PokemonCrystalWorld
