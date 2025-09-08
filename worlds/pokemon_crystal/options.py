@@ -1297,7 +1297,7 @@ class RequireFlash(Choice):
     - Logically Required: Dark areas will expect you to be able to use Flash for logic, but you can traverse them without
     - Hard Required: You will not be able to traverse dark areas without the ability to use Flash there
     """
-    display_name = "Require Itemfinder"
+    display_name = "Require Flash"
     default = 1
     option_not_required = 0
     option_logically_required = 1
