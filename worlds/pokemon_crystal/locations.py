@@ -2,9 +2,9 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
 from BaseClasses import Location, Region, LocationProgressType
-from .items import item_const_name_to_id
 from .data import data, POKEDEX_OFFSET, POKEDEX_COUNT_OFFSET, FLY_UNLOCK_OFFSET
 from .evolution import evolution_location_name, evolution_in_logic
+from .items import item_const_name_to_id
 from .options import Goal, DexsanityStarters
 from .pokemon import get_priority_dexsanity, get_excluded_dexsanity
 from .utils import get_fly_regions, get_mart_slot_location_name
@@ -241,7 +241,7 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
                 if locs_to_remove <= 0:
                     break
 
-    if world.options.johto_trainersanity or world.options.kanto_trainersanity and not world.is_universal_tracker:
+    if (world.options.johto_trainersanity or world.options.kanto_trainersanity) and not world.is_universal_tracker:
         trainer_locations = [loc for loc in world.get_locations() if
                              "Trainersanity" in loc.tags and "Johto" in loc.tags]
         locs_to_remove = len(trainer_locations) - world.options.johto_trainersanity.value

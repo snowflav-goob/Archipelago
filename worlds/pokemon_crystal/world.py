@@ -246,13 +246,13 @@ class PokemonCrystalWorld(World):
             badge_option_counts.append(self.options.radio_tower_count.value)
         if self.options.elite_four_requirement == EliteFourRequirement.option_badges:
             badge_option_counts.append(self.options.elite_four_count.value)
-        if self.options.route_44_access_requirement.value == Route44AccessRequirement.option_badges:
+        if self.options.route_44_access_requirement == Route44AccessRequirement.option_badges:
             badge_option_counts.append(self.options.route_44_access_count.value)
 
-        if self.options.johto_only.value == JohtoOnly.option_include_silver_cave:
-            if self.options.mt_silver_requirement.value == MtSilverRequirement.option_badges:
+        if self.options.johto_only == JohtoOnly.option_include_silver_cave:
+            if self.options.mt_silver_requirement == MtSilverRequirement.option_badges:
                 badge_option_counts.append(self.options.mt_silver_count.value)
-            if self.options.red_requirement.value == RedRequirement.option_badges:
+            if self.options.red_requirement == RedRequirement.option_badges:
                 badge_option_counts.append(self.options.red_count.value)
 
         required_badges = max(badge_option_counts)
