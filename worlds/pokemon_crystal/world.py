@@ -205,8 +205,11 @@ class PokemonCrystalWorld(World):
             randomize_static_pokemon(self)
             randomize_starters(self)
 
-        generate_evolution_data(self)
-        generate_breeding_data(self)
+        previous_logically_available_pokemon_count = 0
+        while previous_logically_available_pokemon_count != len(self.logic.available_pokemon):
+            previous_logically_available_pokemon_count = len(self.logic.available_pokemon)
+            generate_evolution_data(self)
+            generate_breeding_data(self)
 
         if not self.is_universal_tracker:
             randomize_requested_pokemon(self)
