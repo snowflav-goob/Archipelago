@@ -9,7 +9,7 @@ import settings
 from BaseClasses import Tutorial, ItemClassification, MultiWorld, CollectionState, Item
 from Fill import fill_restrictive, FillError
 from worlds.AutoWorld import World, WebWorld
-from .breeding import randomize_breeding, generate_breeding_data, can_breed
+from .breeding import randomize_breeding, generate_breeding_data, can_breed, breeding_is_randomized
 from .data import PokemonData, TrainerData, MiscData, TMHMData, data as crystal_data, StaticPokemon, \
     MusicData, MoveData, FlyRegion, TradeData, MiscOption, APWORLD_VERSION, POKEDEX_OFFSET, StartingTown, \
     LogicalAccess, EncounterType, EncounterKey, EncounterMon, EvolutionType, TypeData
@@ -641,10 +641,12 @@ class PokemonCrystalWorld(World):
                     continue
                 friendly_region_name = key.friendly_region_name()
                 for encounter in encounters:
-                    encounters_per_pokemon[encounter.pokemon].append(friendly_region_name)
+                    if friendly_region_name not in encounters_per_pokemon[encounter.pokemon]:
+                        encounters_per_pokemon[encounter.pokemon].append(friendly_region_name)
         if self.options.randomize_static_pokemon:
             for key, static in self.generated_static.items():
-                if static.level_type == "ignore":
+                if static.level_type == "ignore" or \
+                        key.friendly_region_name() in encounters_per_pokemon[static.pokemon]:
                     continue
                 encounters_per_pokemon[static.pokemon].append(key.friendly_region_name())
         else:
@@ -687,6 +689,7 @@ class PokemonCrystalWorld(World):
 
                     spoiler_handle.write(f"{pokemon_name} -> {method} -> {evo_name}\n")
 
+        if breeding_is_randomized(self):
             spoiler_handle.write("\nBreeding:\n")
             for pokemon, data in self.generated_pokemon.items():
                 if not can_breed(self, pokemon): continue
@@ -723,9 +726,7 @@ class PokemonCrystalWorld(World):
                 for encounter in encounters:
                     if encounter.pokemon not in self.generated_dexsanity:
                         continue
-                    if encounter.pokemon not in dexsanity_hint_data.keys():
-                        dexsanity_hint_data[encounter.pokemon] = [friendly_region_name]
-                    else:
+                    if friendly_region_name not in dexsanity_hint_data[encounter.pokemon]:
                         dexsanity_hint_data[encounter.pokemon].append(friendly_region_name)
 
         def get_dexsanity_static_hint_data(dexsanity_hint_data: dict[str, list[str]]):
@@ -735,31 +736,38 @@ class PokemonCrystalWorld(World):
                 friendly_region_name = key.friendly_region_name()
                 if static.pokemon not in self.generated_dexsanity:
                     continue
-                if static.pokemon not in dexsanity_hint_data.keys():
-                    dexsanity_hint_data[static.pokemon] = [friendly_region_name]
-                else:
+                if friendly_region_name not in dexsanity_hint_data[static.pokemon]:
                     dexsanity_hint_data[static.pokemon].append(friendly_region_name)
 
         def get_dexsanity_evolution_hint_data(dexsanity_hint_data: dict[str, list[str]]):
             for pokemon_id, pokemon_data in self.generated_pokemon.items():
                 for evo in pokemon_data.evolutions:
-                    if evolution_in_logic(self, evo):
-                        if evo.pokemon not in dexsanity_hint_data.keys():
-                            dexsanity_hint_data[evo.pokemon] = [
-                                f"Evolve {self.generated_pokemon[pokemon_id].friendly_name}"]
-                        else:
-                            dexsanity_hint_data[evo.pokemon].append(
-                                f"Evolve {self.generated_pokemon[pokemon_id].friendly_name}")
+                    if evo.pokemon in self.generated_dexsanity and evolution_in_logic(self, evo):
+                        dexsanity_hint_data[evo.pokemon].append(
+                            f"Evolve {self.generated_pokemon[pokemon_id].friendly_name}")
+
+        def get_dexsanity_breeding_hint_data(dexsanity_hint_data: dict[str, list[str]]):
+            for pokemon, data in self.generated_pokemon.items():
+                if not can_breed(self, pokemon): continue
+                child = data.produces_egg
+                if pokemon == child: continue
+                parent_name = self.generated_pokemon[pokemon].friendly_name
+                if child == "NIDORAN_F" and "NIDORAN_M" in self.generated_dexsanity:
+                    dexsanity_hint_data["NIDORAN_M"].append(f"Breed {parent_name}")
+                if child in self.generated_dexsanity:
+                    dexsanity_hint_data[child].append(f"Breed {parent_name}")
 
         player_hint_data = dict()
         if self.options.dexsanity:
-            dexsanity_hint_data = dict()
+            dexsanity_hint_data = defaultdict(list)
             if self.options.randomize_wilds:
                 get_dexsanity_wild_hint_data(dexsanity_hint_data)
             if self.options.randomize_static_pokemon and self.options.static_pokemon_required:
                 get_dexsanity_static_hint_data(dexsanity_hint_data)
             if self.options.randomize_evolution:
                 get_dexsanity_evolution_hint_data(dexsanity_hint_data)
+            if self.options.breeding_methods_required and breeding_is_randomized(self):
+                get_dexsanity_breeding_hint_data(dexsanity_hint_data)
             player_hint_data |= {
                 self.location_name_to_id[f"Pokedex - {self.generated_pokemon[pokemon_id].friendly_name}"]: ", ".join(
                     methods)
