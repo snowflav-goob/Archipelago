@@ -7570,7 +7570,7 @@
     "script": "AP_Badge_SeafoamGym_VOLCANO_BADGE"
   },
   "ITEM_FROM_BLAINE": {
-    "label": "Seafoam Gym - Blaine",
+    "label": "Seafoam Gym - Leader Blaine",
     "flag": "EVENT_ITEM_FROM_BLAINE",
     "type": "giveitem",
     "tags": [

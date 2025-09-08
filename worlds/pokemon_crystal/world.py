@@ -808,7 +808,7 @@ class PokemonCrystalWorld(World):
     def get_pre_fill_items(self):
         pre_fill_items = self.pre_fill_items.copy()
         if self.logic.guaranteed_hm_access:
-            for hm in ["CUT", "FLY", "SURF", "STRENGTH", "FLASH", "WHIRLPOOL", "WATERFALL", "HEADBUTT", "ROCK_SMASH"]:
+            for hm in ("CUT", "FLY", "SURF", "STRENGTH", "FLASH", "WHIRLPOOL", "WATERFALL", "HEADBUTT", "ROCK_SMASH"):
                 pre_fill_items.append(self.create_event(f"Teach {hm}"))
         return pre_fill_items
 
