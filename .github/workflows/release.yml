@@ -5,7 +5,7 @@ on:
       - '**'
 jobs:
   release:
-    uses: gerbiljames/ap-actions/.github/workflows/release-apworld.yml@immutable-create
+    uses: Eijebong/ap-actions/.github/workflows/release-apworld.yml@main
     with:
       apworld-path: worlds/pokemon_crystal
       ap-version: '0.6.3'
