@@ -16,7 +16,7 @@ from .data import PokemonData, TrainerData, MiscData, TMHMData, data as crystal_
 from .evolution import randomize_evolution, generate_evolution_data, evolution_in_logic
 from .items import PokemonCrystalItem, create_item_label_to_code_map, get_item_classification, ITEM_GROUPS, \
     item_const_name_to_id, item_const_name_to_label, adjust_item_classifications, get_random_filler_item, \
-    get_random_ball, place_x_items
+    get_random_ball, place_x_items, PokemonCrystalGlitchedToken
 from .level_scaling import perform_level_scaling
 from .locations import create_locations, PokemonCrystalLocation, create_location_label_to_id_map, LOCATION_GROUPS
 from .misc import randomize_mischief, get_misc_spoiler_log
@@ -71,8 +71,10 @@ class PokemonCrystalWorld(World):
     apworld_version = APWORLD_VERSION
 
     topology_present = True
-    ut_can_gen_without_yaml = True
     web = PokemonCrystalWebWorld()
+
+    ut_can_gen_without_yaml = True
+    glitches_item_name = PokemonCrystalGlitchedToken.TOKEN_NAME
 
     settings_key = "pokemon_crystal_settings"
     settings: ClassVar[PokemonCrystalSettings]
@@ -782,7 +784,8 @@ class PokemonCrystalWorld(World):
 
         hint_data[self.player] = player_hint_data
 
-    def create_item(self, name: str) -> PokemonCrystalItem:
+    def create_item(self, name: str) -> Item:
+        if name == self.glitches_item_name: return PokemonCrystalGlitchedToken(self.player)
         return self.create_item_by_code(self.item_name_to_id[name])
 
     def get_filler_item_name(self) -> str:

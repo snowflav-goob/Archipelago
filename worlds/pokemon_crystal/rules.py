@@ -6,6 +6,7 @@ from worlds.generic.Rules import add_rule, set_rule, CollectionRule
 from .data import data, EvolutionType, EvolutionData, FishingRodType, EncounterKey, \
     TreeRarity, LogicalAccess
 from .evolution import evolution_location_name, evolution_in_logic
+from .items import PokemonCrystalGlitchedToken
 from .options import Goal, JohtoOnly, Route32Condition, UndergroundsRequirePower, Route2Access, \
     BlackthornDarkCaveAccess, NationalParkAccess, KantoAccessRequirement, Route3Access, BreedingMethodsRequired, \
     MtSilverRequirement, FreeFlyLocation, HMBadgeRequirements, EliteFourRequirement, RedRequirement, \
@@ -56,6 +57,7 @@ class PokemonCrystalLogic:
 
         self.player = world.player
         self.options = world.options
+        self.is_universal_tracker = world.is_universal_tracker
 
         if self.options.randomize_badges == RandomizeBadges.option_vanilla:
             self.badge_items = {
@@ -266,7 +268,12 @@ class PokemonCrystalLogic:
         required_items = {"HM05 Flash"}
         if not self.options.field_moves_always_usable:
             required_items.add("Teach FLASH")
-        return lambda state: state.has_all(required_items, self.player) and badge_requirement(state)
+        if self.is_universal_tracker and self.options.require_flash == RequireFlash.option_logically_required:
+            return lambda state: (state.has_all(required_items, self.player) and badge_requirement(
+                state)) or state.has(PokemonCrystalGlitchedToken.TOKEN_NAME, self.player)
+        else:
+            return lambda state: (state.has_all(required_items, self.player) and badge_requirement(
+                state))
 
     def can_whirlpool(self, kanto: bool = False) -> CollectionRule:
         badge_requirement = self.has_hm_badge_requirement("WHIRLPOOL", kanto=kanto)
@@ -1101,6 +1108,11 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     if not world.options.randomize_fly_unlocks and world.options.fly_cheese == FlyCheese.option_in_logic:
         set_rule(get_entrance("REGION_ROUTE_44 -> REGION_MAHOGANY_TOWN"),
                  lambda state: has_route_44_access(state) or can_fly(state))
+    elif (not world.options.randomize_fly_unlocks
+          and world.options.fly_cheese == FlyCheese.option_out_of_logic and world.is_universal_tracker):
+        set_rule(get_entrance("REGION_ROUTE_44 -> REGION_MAHOGANY_TOWN"),
+                 lambda state: has_route_44_access(state) or state.has(PokemonCrystalGlitchedToken.TOKEN_NAME,
+                                                                       world.player))
     else:
         set_rule(get_entrance("REGION_ROUTE_44 -> REGION_MAHOGANY_TOWN"), has_route_44_access)
 
@@ -1438,6 +1450,12 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                      lambda state: has_expn(state) or can_fly(state))
             set_rule(get_entrance("REGION_ROUTE_11 -> REGION_VERMILION_CITY"),
                      lambda state: has_expn(state) or can_fly(state))
+        elif (not world.options.randomize_fly_unlocks
+              and world.options.fly_cheese == FlyCheese.option_out_of_logic and world.is_universal_tracker):
+            set_rule(get_entrance("REGION_DIGLETTS_CAVE -> REGION_VERMILION_CITY"),
+                     lambda state: has_expn(state) or state.has(PokemonCrystalGlitchedToken.TOKEN_NAME, world.player))
+            set_rule(get_entrance("REGION_ROUTE_11 -> REGION_VERMILION_CITY"),
+                     lambda state: has_expn(state) or state.has(PokemonCrystalGlitchedToken.TOKEN_NAME, world.player))
         else:
             set_rule(get_entrance("REGION_DIGLETTS_CAVE -> REGION_VERMILION_CITY"), has_expn)
             set_rule(get_entrance("REGION_ROUTE_11 -> REGION_VERMILION_CITY"), has_expn)
