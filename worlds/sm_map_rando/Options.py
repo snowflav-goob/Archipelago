@@ -362,7 +362,7 @@ class MapRandoOptions(OptionDict):
     Otherwise, you can use your preferred Map Rando Settings Presets on maprando.com, export its JSON and directly embed it under here like so:
 
     map_rando_options: {
-      "version": 118,
+      "version": 119,
       "name": my_custom_preset,
         ...
     }
@@ -375,7 +375,7 @@ class MapRandoOptions(OptionDict):
     display_name = "Map Rando Options"
     value: dict[str, dict[str, typing.Any]]
     default =   {
-                    "version": 118,
+                    "version": 119,
                     "skill_assumption_settings": {
                         "preset": "Basic"
                     },
