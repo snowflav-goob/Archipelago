@@ -75,6 +75,7 @@ class PokemonCrystalWorld(World):
 
     ut_can_gen_without_yaml = True
     glitches_item_name = PokemonCrystalGlitchedToken.TOKEN_NAME
+    is_universal_tracker: bool
 
     settings_key = "pokemon_crystal_settings"
     settings: ClassVar[PokemonCrystalSettings]
@@ -175,6 +176,8 @@ class PokemonCrystalWorld(World):
         self.pre_fill_items = []
 
         self.finished_level_scaling = Event()
+        
+        self.is_universal_tracker = hasattr(self.multiworld, "generation_is_fake")
 
     def generate_early(self) -> None:
         adjust_options(self)
@@ -851,10 +854,6 @@ class PokemonCrystalWorld(World):
             return False
 
     # UT Stuff
-
-    @property
-    def is_universal_tracker(self) -> bool:
-        return hasattr(self.multiworld, "generation_is_fake")
 
     @property
     def ut_slot_data(self) -> dict[str, Any]:

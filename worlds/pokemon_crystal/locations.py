@@ -2,8 +2,8 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
 from BaseClasses import Location, Region, LocationProgressType
-from .data import data, POKEDEX_OFFSET, POKEDEX_COUNT_OFFSET, FLY_UNLOCK_OFFSET
-from .evolution import evolution_location_name, evolution_in_logic
+from .data import data, POKEDEX_OFFSET, POKEDEX_COUNT_OFFSET, FLY_UNLOCK_OFFSET, LogicalAccess
+from .evolution import evolution_location_name
 from .items import item_const_name_to_id
 from .options import Goal, DexsanityStarters
 from .pokemon import get_priority_dexsanity, get_excluded_dexsanity
@@ -153,13 +153,14 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
         )
         pokedex_region.locations.append(new_location)
 
-    if world.options.evolution_methods_required:
+    if world.options.evolution_methods_required or world.is_universal_tracker:
         evolution_region = regions["Evolutions"]
         created_locations = set()
-        for pokemon_id in world.logic.available_pokemon:
-            for evolution in world.generated_pokemon[pokemon_id].evolutions:
+        for pokemon_id, evos_access in world.logic.evolution.items():
+            for evolution, access in evos_access:
+                if access is LogicalAccess.OutOfLogic and not world.is_universal_tracker: continue
                 location_name = evolution_location_name(world, pokemon_id, evolution.pokemon)
-                if not evolution_in_logic(world, evolution) or location_name in created_locations: continue
+                if location_name in created_locations: continue
                 new_location = PokemonCrystalLocation(
                     world.player,
                     location_name,
@@ -173,9 +174,11 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
                 evolution_region.locations.append(new_location)
                 created_locations.add(location_name)
 
-    if world.options.breeding_methods_required:
+    if world.options.breeding_methods_required or world.is_universal_tracker:
         breeding_region = regions["Breeding"]
-        for pokemon_id in world.logic.breeding.keys():
+        for pokemon_id, children_access in world.logic.breeding.items():
+            accesses = [access for _, access in children_access]
+            if LogicalAccess.InLogic not in accesses and not world.is_universal_tracker: continue
             new_location = PokemonCrystalLocation(
                 world.player,
                 f"Hatch {world.generated_pokemon[pokemon_id].friendly_name}",
