@@ -893,7 +893,7 @@ class LevelScaling(Choice):
 
 class LockKantoGyms(Choice):
     """
-    Logically lock entering all Kanto Gyms behind access to a high level Pokemon, included locations:
+    Logically lock entering all Kanto Gyms and Mt. Moon behind access to a high level Pokemon, included locations:
     - Snorlax
     - Ho-oh
     - Lugia
