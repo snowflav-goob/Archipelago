@@ -215,6 +215,8 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
                 create_wild_region(parent_region, encounter_key, [static_encounter])
             else:
                 world.logic.wild_regions[encounter_key] = LogicalAccess.OutOfLogic
+                if world.is_universal_tracker:
+                    create_wild_region(parent_region, encounter_key, [static_encounter])
 
     def setup_mart_regions(parent_region: Region, region_data: RegionData):
         for mart in region_data.marts:

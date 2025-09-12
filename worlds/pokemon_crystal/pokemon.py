@@ -262,7 +262,8 @@ def fill_wild_encounter_locations(world: "PokemonCrystalWorld"):
                 seen_pokemon.add(encounter.pokemon)
 
     for region_key, static in world.generated_static.items():
-        if world.logic.wild_regions[region_key] is LogicalAccess.InLogic:
+        access = world.logic.wild_regions[region_key]
+        if access is LogicalAccess.InLogic or (world.is_universal_tracker and access is LogicalAccess.OutOfLogic):
             location = world.get_location(f"{region_key.region_name()}_1")
             location.place_locked_item((world.create_event(static.pokemon)))
 

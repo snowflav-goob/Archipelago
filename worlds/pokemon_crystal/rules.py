@@ -1634,6 +1634,11 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
         elif encounter_key.encounter_type is EncounterType.RockSmash:
             rule = can_rock_smash
         elif encounter_key.encounter_type is EncounterType.Static:
+            if not world.is_universal_tracker: continue
+
+            location = get_location(f"{encounter_key.region_name()}_1")
+            if encounter_access is LogicalAccess.OutOfLogic:
+                add_rule(location, lambda state: state.has(PokemonCrystalGlitchedToken.TOKEN_NAME, world.player))
             continue
 
         region_name = encounter_key.region_name()
