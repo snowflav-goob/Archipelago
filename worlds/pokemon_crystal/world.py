@@ -176,7 +176,7 @@ class PokemonCrystalWorld(World):
         self.pre_fill_items = []
 
         self.finished_level_scaling = Event()
-        
+
         self.is_universal_tracker = hasattr(self.multiworld, "generation_is_fake")
 
     def generate_early(self) -> None:
@@ -510,6 +510,7 @@ class PokemonCrystalWorld(World):
             "kanto_trainersanity",
             "randomize_hidden_items",
             "require_itemfinder",
+            "skip_elite_four",
         )
         slot_data["apworld_version"] = self.apworld_version
         slot_data["tea_north"] = 1 if "North" in self.options.saffron_gatehouse_tea.value else 0
