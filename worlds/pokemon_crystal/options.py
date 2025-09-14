@@ -518,7 +518,7 @@ class WildEncounterMethodsRequired(EnhancedOptionSet):
     """
     display_name = "Wild Encounter Methods Required"
     valid_keys = ["Land", "Surfing", "Fishing", "Headbutt", "Rock Smash"]
-    default = valid_keys
+    default = ["Land", "Surfing", "Fishing", "Headbutt", "Rock Smash"]
 
 
 class EnforceWildEncounterMethodsLogic(Toggle):
@@ -540,7 +540,7 @@ class EvolutionMethodsRequired(EnhancedOptionSet):
     """
     display_name = "Evolution Methods Required"
     valid_keys = ["Level", "Level Tyrogue", "Use Item", "Happiness"]
-    default = valid_keys
+    default = ["Level", "Level Tyrogue", "Use Item", "Happiness"]
 
 
 class StaticPokemonRequired(DefaultOnToggle):
