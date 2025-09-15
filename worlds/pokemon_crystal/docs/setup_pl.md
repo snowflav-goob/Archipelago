@@ -39,9 +39,7 @@ Po zainstalowaniu mGBA otwórz `mGBA`, przejdź do Ustawienia/Preferencje i zmie
 
 ## Oprogramowanie opcjonalne
 
-[Pokémon Crystal AP Tracker](https://github.com/palex00/crystal-ap-tracker/releases/latest) do użytku
-
-z [PopTracker](https://github.com/black-sliver/PopTracker/releases)
+[Pokémon Crystal AP Tracker](https://github.com/palex00/crystal-ap-tracker/releases/latest) do użytku z [PopTracker](https://github.com/black-sliver/PopTracker/releases)
 
 ## Generowanie i łatka gry
 
@@ -98,4 +96,5 @@ Pokémon Crystal posiada w pełni funkcjonalny moduł śledzenia mapy, który ob
 3. Otwórz PopTracker i załaduj pakiet Pokémon Crystal.
 4. Aby włączyć automatyczne śledzenie, kliknij symbol `AP` u góry.
 5. Wprowadź adres serwera Archipelago (ten, z którym połączyłeś swojego klienta), nazwę slotu i hasło.
+
 
