@@ -51,7 +51,7 @@ Po zainstalowaniu mGBA otwórz `mGBA`, przejdź do Ustawienia/Preferencje i zmie
    dotyczącymi [generowania gry w lokalnej instalacji](https://archipelago.gg/tutorial/Archipelago/setup/en#on-your-local-installation).
    Spowoduje to wygenerowanie pliku wyjściowego. Plik poprawki będzie miał rozszerzenie `.apcrystal` i będzie znajdował się
    w pliku wyjściowym.
-4. Otwórz plik `ArchipelagoLauncher.exe`
+4. Otwórz plik `ArchipelagoLauncher.exe`.
 5. Wybierz opcję `Open Patch` (Otwórz poprawkę) po lewej stronie i wybierz plik poprawki.
 6. Jeśli jest to Twoja pierwsza poprawka, zostaniesz poproszony o zlokalizowanie oryginalnego pliku ROM.
 7. Plik `.gbc` z poprawką zostanie utworzony w tym samym miejscu, co plik poprawki.
@@ -72,7 +72,7 @@ wypadek, gdyby z jakiegoś powodu trzeba było zamknąć i ponownie otworzyć ok
 2. Upewnij się, że EmuHawk lub mGBA uruchamia załatany ROM.
 3. W EmuHawk:
     - Przejdź do `Tools > Lua Console`. To okno musi pozostać otwarte podczas gry.
-    - W oknie konsoli Lua przejdź do `Script > Open Script…`.
+    - W oknie konsoli Lua przejdź do `Script > Open Script...`.
     - Przejdź do folderu instalacyjnego Archipelago i otwórz plik `data/lua/connector_bizhawk_generic.lua`.
 4. W mGBA:
     - Przejdź do `Tools > Scripting…`. Okno to musi pozostać otwarte podczas gry.
@@ -80,8 +80,6 @@ wypadek, gdyby z jakiegoś powodu trzeba było zamknąć i ponownie otworzyć ok
     - Przejdź do folderu instalacyjnego Archipelago i otwórz plik `data/lua/connector_bizhawkclient_mgba.lua`.
 5. Emulator i klient ostatecznie połączą się ze sobą. Okno klienta BizHawk powinno wskazywać, że
    połączył się i rozpoznał Pokémon Crystal.
-6. Aby połączyć klienta z serwerem, wprowadź adres i port swojego pokoju (np. `archipelago.gg:38281`) w
-   górnym polu tekstowym klienta i kliknij Połącz.
 
 Teraz powinieneś móc odbierać i wysyłać przedmioty. Te czynności należy powtarzać za każdym razem, gdy chcesz ponownie nawiązać połączenie.
 Postępy w trybie offline są całkowicie bezpieczne; wszystko zostanie ponownie zsynchronizowane po ponownym nawiązaniu połączenia.
@@ -95,6 +93,7 @@ Pokémon Crystal posiada w pełni funkcjonalny moduł śledzenia mapy, który ob
 2. Umieść pakiet śledzenia w folderze `packs/` w instalacji PopTracker.
 3. Otwórz PopTracker i załaduj pakiet Pokémon Crystal.
 4. Aby włączyć automatyczne śledzenie, kliknij symbol `AP` u góry.
-5. Wprowadź adres serwera Archipelago (ten, z którym połączyłeś swojego klienta), nazwę slotu i hasło.
+5. Wprowadź adres serwera Archipelago (ten, z którym połączyłeś swojego klienta), nazwę slotu i hasło. Jeśli nie ustawiłeś hasła dla swojego pokoju, pozostaw to pole puste.
+
 
 
