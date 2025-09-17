@@ -4506,6 +4506,7 @@
     ],
     "events": [],
     "wild_encounters": {
+      "land": "ROUTE_36",
       "headbutt": "Route"
     }
   },
