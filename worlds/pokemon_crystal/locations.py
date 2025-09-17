@@ -211,7 +211,8 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
                         tags=frozenset({"shopsanity"}),
                         flag=item.flag,
                         rom_address=item.address,
-                        default_item_value=item_const_name_to_id(item.item)
+                        default_item_value=item_const_name_to_id(item.item),
+                        progress_type=progress_type
                     )
                     new_location.price = item.price
                     region.locations.append(new_location)
