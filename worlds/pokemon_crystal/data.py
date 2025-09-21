@@ -1270,7 +1270,7 @@ def _init() -> None:
     for region, tile_data in data_json["grasssanity"].items():
         region_name = region.split(":")[0][7:]  # delete REGION_
         region_name = region_name.lower().replace("_", " ").title()
-        region_name = f"Grass - {region_name}"
+        region_name = f"{region_name} - Grass"
         tiles = []
         for tile in tile_data:
             index = tile["index"]
