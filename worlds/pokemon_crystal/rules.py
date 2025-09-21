@@ -10,7 +10,7 @@ from .options import Goal, JohtoOnly, Route32Condition, UndergroundsRequirePower
     BlackthornDarkCaveAccess, NationalParkAccess, KantoAccessRequirement, Route3Access, BreedingMethodsRequired, \
     MtSilverRequirement, FreeFlyLocation, HMBadgeRequirements, EliteFourRequirement, RedRequirement, \
     Route44AccessRequirement, RandomizeBadges, RadioTowerRequirement, PokemonCrystalOptions, Shopsanity, FlyCheese, \
-    RequireFlash
+    RequireFlash, RequireItemfinder
 from .pokemon import add_hm_compatibility
 from .utils import get_fly_regions, get_mart_slot_location_name
 
@@ -1599,9 +1599,15 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                          lambda state, pokemon=required_pokemon: state.has_all(pokemon, world.player))
 
     if world.options.require_itemfinder:
+        if world.options.require_itemfinder == RequireItemfinder.option_logically_required and world.is_universal_tracker:
+            rule = lambda state: state.has("Itemfinder", world.player) or state.has(
+                PokemonCrystalGlitchedToken.TOKEN_NAME, world.player)
+        else:
+            rule = lambda state: state.has("Itemfinder", world.player)
+
         for location in world.multiworld.get_locations(world.player):
             if "Hidden" in location.tags:
-                add_rule(location, lambda state: state.has("Itemfinder", world.player))
+                add_rule(location, rule)
 
     for pokemon_id in world.generated_dexsanity:
         pokemon_data = world.generated_pokemon[pokemon_id]
