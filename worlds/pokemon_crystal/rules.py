@@ -10,7 +10,7 @@ from .options import Goal, JohtoOnly, Route32Condition, UndergroundsRequirePower
     BlackthornDarkCaveAccess, NationalParkAccess, KantoAccessRequirement, Route3Access, BreedingMethodsRequired, \
     MtSilverRequirement, FreeFlyLocation, HMBadgeRequirements, EliteFourRequirement, RedRequirement, \
     Route44AccessRequirement, RandomizeBadges, RadioTowerRequirement, PokemonCrystalOptions, Shopsanity, FlyCheese, \
-    RequireFlash
+    RequireFlash, RequireItemfinder
 from .pokemon import add_hm_compatibility
 from .utils import get_fly_regions, get_mart_slot_location_name
 
@@ -262,14 +262,14 @@ class PokemonCrystalLogic:
             required_items.add("Teach STRENGTH")
         return lambda state: state.has_all(required_items, self.player) and badge_requirement(state)
 
-    def can_flash(self, kanto: bool = False) -> CollectionRule:
+    def can_flash(self, kanto: bool = False, allow_ool: bool = True) -> CollectionRule:
         if self.options.require_flash == RequireFlash.option_not_required:
             return lambda _: True
         badge_requirement = self.has_hm_badge_requirement("FLASH", kanto=kanto)
         required_items = {"HM05 Flash"}
         if not self.options.field_moves_always_usable:
             required_items.add("Teach FLASH")
-        if self.is_universal_tracker and self.options.require_flash == RequireFlash.option_logically_required:
+        if self.is_universal_tracker and allow_ool and self.options.require_flash == RequireFlash.option_logically_required:
             return lambda state: (state.has_all(required_items, self.player) and badge_requirement(
                 state)) or state.has(PokemonCrystalGlitchedToken.TOKEN_NAME, self.player)
         else:
@@ -585,7 +585,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                                          world.player))
 
     set_rule(get_entrance("REGION_RUINS_OF_ALPH_AERODACTYL_CHAMBER -> REGION_RUINS_OF_ALPH_AERODACTYL_ITEM_ROOM"),
-             can_flash)
+             world.logic.can_flash(allow_ool=False))
 
     set_rule(get_entrance("REGION_RUINS_OF_ALPH_HO_OH_CHAMBER -> REGION_RUINS_OF_ALPH_HO_OH_ITEM_ROOM"),
              lambda state: state.has("Rainbow Wing", world.player))
@@ -1598,9 +1598,15 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                          lambda state, pokemon=required_pokemon: state.has_all(pokemon, world.player))
 
     if world.options.require_itemfinder:
+        if world.options.require_itemfinder == RequireItemfinder.option_logically_required and world.is_universal_tracker:
+            rule = lambda state: state.has("Itemfinder", world.player) or state.has(
+                PokemonCrystalGlitchedToken.TOKEN_NAME, world.player)
+        else:
+            rule = lambda state: state.has("Itemfinder", world.player)
+
         for location in world.multiworld.get_locations(world.player):
             if "Hidden" in location.tags:
-                add_rule(location, lambda state: state.has("Itemfinder", world.player))
+                add_rule(location, rule)
 
     if world.options.grasssanity:
         for region in world.get_regions():
