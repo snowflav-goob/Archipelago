@@ -388,7 +388,7 @@ class PokemonCrystalClient(BizHawkClient):
                     "key": f"pokemon_crystal_pokemon_{ctx.team}_{ctx.slot}",
                     "default": {},
                     "want_reply": False,
-                    "operations": [{"operation": "replace", "value": local_pokemon}, ]
+                    "operations": [{"operation": "or", "value": local_pokemon}, ]
                 }])
                 self.local_pokemon = local_pokemon
 
