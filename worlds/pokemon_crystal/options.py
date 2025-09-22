@@ -279,8 +279,8 @@ class DarkAreas(EnhancedOptionSet):
     """
     Sets which areas are dark until Flash is used
 
-    - "_All" includes all areas
-    - "_Random" has a 50% chance to include each area that is not already included
+- _All includes all areas
+- _Random has a 50% chance to include each area that is not already included
     """
     display_name = "Dark Areas"
     default = sorted(area for area, maps in FLASH_MAP_GROUPS.items() if data.maps[maps[0]].palette is MapPalette.Dark)
@@ -511,8 +511,8 @@ class WildEncounterMethodsRequired(EnhancedOptionSet):
     """
     Sets which wild encounter types may be logically required
 
-    "_Random" has a 50% chance to include types which are not already included
-    "_All" will include all types
+    _Random has a 50% chance to include types which are not already included
+    _All will include all types
 
     Swarms and roamers are NEVER in logic
     """
@@ -535,8 +535,8 @@ class EvolutionMethodsRequired(EnhancedOptionSet):
     """
     Sets which types of evolutions may be logically required
 
-    "_Random" has a 50% chance to include types which are not already included
-    "_All" will include all types
+    _Random has a 50% chance to include types which are not already included
+    _All will include all types
     """
     display_name = "Evolution Methods Required"
     valid_keys = ["Level", "Level Tyrogue", "Use Item", "Happiness"]
@@ -584,8 +584,8 @@ class Shopsanity(EnhancedOptionSet):
     points. Five Blue Card Points are added to the item pool. Points are not spent when purchasing.
     - Game Corners: The Game Corner TM shops are added.
     - Apricorns: Kurt's Apricorn Ball shop is added, each slot requires a different Apricorn. Apricorns are progression.
-    - "_All": Includes all valid options.
-    - "_Random": Each option that is not included has a 50% chance to be additionally included.
+    - _All: Includes all valid options.
+    - _Random: Each option that is not included has a 50% chance to be additionally included.
 
     IMPORTANT NOTE: There is a non-randomized shop on Pokecenter 2F, you can always buy Poke Balls, and Escape Ropes there.
     """
@@ -910,7 +910,7 @@ class LevelScaling(Choice):
 
 class LockKantoGyms(Choice):
     """
-    Logically lock entering all Kanto Gyms and Mt. Moon behind access to a high level Pokemon, included locations:
+    Logically lock entering all Kanto gyms and Mt. Moon behind access to a high level Pokemon, included locations:
     - Snorlax
     - Ho-oh
     - Lugia
@@ -918,7 +918,7 @@ class LockKantoGyms(Choice):
     - Silver Cave entrance
     - Victory Road
 
-    You can still enter gyms without access to any of these.
+    You can still enter gyms and Mt. Moon without access to any of these.
 
     NOTE: It's not recommended to use this option with Level Scaling, as the Gym and wild Pokemon levels will be scaled
     """
@@ -1241,14 +1241,6 @@ class RandomizeMusic(Choice):
     option_completely_random = 2
 
 
-# class RandomizeSFX(Toggle):
-#     """
-#     Randomize all sound effects
-#     """
-#     display_name = "Randomize SFX"
-#     default = 0
-
-
 class FreeFlyLocation(Choice):
     """
     - Free Fly: Unlocks a random Fly destination when Fly is obtained.
@@ -1311,8 +1303,8 @@ class RemoveBadgeRequirement(EnhancedOptionSet):
     """
     Specify which HMs do not require a badge to use. This overrides the HM Badge Requirements setting.
 
-    "_Random" has a 50% chance to include HMs which are not already included
-    "_All" will include all HMs
+    _Random has a 50% chance to include HMs which are not already included
+    _All will include all HMs
 
     HMs should be provided in the form: "Fly".
     """
@@ -1346,7 +1338,7 @@ class SaffronGatehouseTea(EnhancedOptionSet):
     """
     Sets which Saffron City gatehouses require Tea to pass. Obtaining the Tea will unlock them all.
     If any gatehouses are enabled, adds a new location in Celadon Mansion 1F and adds Tea to the item pool.
-    Valid options are: North, East, South, West, and _Random in any combination.
+    Valid options are: North, East, South and West in any combination.
     _Random gives each gate that is not already included a 50% chance to be included.
     _All is shorthand for all valid options except _Random of course.
     """
@@ -1781,7 +1773,6 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     breeding_blocklist: BreedingBlocklist
     randomize_palettes: RandomizePalettes
     randomize_music: RandomizeMusic
-    # randomize_sfx: RandomizeSFX
     move_blocklist: MoveBlocklist
     tm_blocklist: TMBlocklist
     free_fly_location: FreeFlyLocation
