@@ -136,6 +136,8 @@ class PokemonCrystalWorld(World):
     pre_fill_items: list[PokemonCrystalItem]
     logic: PokemonCrystalLogic
 
+    filler_pool: list[list[str]]
+
     finished_level_scaling: Event
 
     def __init__(self, multiworld: MultiWorld, player: int):
@@ -174,6 +176,7 @@ class PokemonCrystalWorld(World):
 
         self.itempool = []
         self.pre_fill_items = []
+        self.filler_pool = []
 
         self.finished_level_scaling = Event()
 
