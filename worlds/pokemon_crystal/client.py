@@ -14,6 +14,8 @@ if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext
 
 EVENT_BYTES = math.ceil(max(data.event_flags.values()) / 8)
+DEX_BYTES = math.ceil(len(data.pokemon) / 8)
+GRASS_BYTES = math.ceil(sum(len(tiles) for tiles in data.grass_tiles.values()) / 8)
 
 TRACKER_EVENT_FLAGS = [
     "EVENT_GOT_KENYA",
@@ -315,9 +317,9 @@ class PokemonCrystalClient(BizHawkClient):
             read_result = await bizhawk.guarded_read(
                 ctx.bizhawk_ctx,
                 [(data.ram_addresses["wEventFlags"], EVENT_BYTES, "WRAM"),  # Flags
-                 (data.ram_addresses["wArchipelagoPokedexCaught"], 0x20, "WRAM"),
-                 (data.ram_addresses["wArchipelagoPokedexSeen"], 0x20, "WRAM"),
-                 (data.ram_addresses["wArchipelagoGrassFlags"], 0x58, "WRAM")],
+                 (data.ram_addresses["wArchipelagoPokedexCaught"], DEX_BYTES, "WRAM"),
+                 (data.ram_addresses["wArchipelagoPokedexSeen"], DEX_BYTES, "WRAM"),
+                 (data.ram_addresses["wArchipelagoGrassFlags"], GRASS_BYTES, "WRAM")],
                 [overworld_guard]
             )
 

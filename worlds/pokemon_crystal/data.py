@@ -1281,18 +1281,24 @@ def _init() -> None:
     for region, tile_data in data_json["grasssanity"].items():
         region_name = region.split(":")[0][7:]  # delete REGION_
         region_name = region_name.lower().replace("_", " ").title()
-        region_name = f"{region_name} - Grass"
+        region_name_regular = f"{region_name} - Grass"
+        region_name_long = f"{region_name} - Long Grass"
         tiles = []
         for tile in tile_data:
             index = tile["index"]
             x = tile["x"]
             y = tile["y"]
+            rom_address = grass_base_rom_addr + (index * 5) + 4
+            grass_region_name = region_name_regular
+            if tile["long"]:
+                rom_address += 1  # account for regular grass terminator
+                grass_region_name = region_name_long
             tiles.append(
                 GrassTile(
-                    name=f"{region_name} ({x}, {y})",
+                    name=f"{grass_region_name} ({x}, {y})",
                     xcoord=x,
                     ycoord=y,
-                    rom_address=grass_base_rom_addr + (index * 5) + 4,
+                    rom_address=rom_address,
                     flag=GRASS_OFFSET + index,
                 )
             )
