@@ -26,7 +26,7 @@ from .music import randomize_music
 from .options import PokemonCrystalOptions, JohtoOnly, RandomizeBadges, HMBadgeRequirements, FreeFlyLocation, \
     EliteFourRequirement, MtSilverRequirement, RedRequirement, \
     Route44AccessRequirement, RadioTowerRequirement, RequireItemfinder, \
-    OPTION_GROUPS, RandomizeFlyUnlocks, Shopsanity
+    OPTION_GROUPS, RandomizeFlyUnlocks, Shopsanity, Grasssanity
 from .phone import generate_phone_traps
 from .phone_data import PhoneScript
 from .pokemon import randomize_pokemon_data, randomize_starters, randomize_traded_pokemon, \
@@ -137,6 +137,7 @@ class PokemonCrystalWorld(World):
     logic: PokemonCrystalLogic
 
     filler_pool: list[list[str]]
+    grass_location_mapping: dict[str, int]
 
     finished_level_scaling: Event
 
@@ -177,6 +178,7 @@ class PokemonCrystalWorld(World):
         self.itempool = []
         self.pre_fill_items = []
         self.filler_pool = []
+        self.grass_location_mapping = {}
 
         self.finished_level_scaling = Event()
 
@@ -636,6 +638,8 @@ class PokemonCrystalWorld(World):
             }
         slot_data["hm_compat"] = hm_compat
 
+        slot_data["grass_location_mapping"] = self.grass_location_mapping
+
         return slot_data
 
     def modify_multidata(self, multidata: dict[str, Any]):
@@ -726,6 +730,11 @@ class PokemonCrystalWorld(World):
             request_pokemon = ", ".join(
                 self.generated_pokemon[pokemon].friendly_name for pokemon in self.generated_request_pokemon)
             spoiler_handle.write(f"\nBill's Grandpa Pokemon: {request_pokemon}\n")
+
+        if self.options.grasssanity == Grasssanity.option_one_per_area:
+            spoiler_handle.write("\nGrass locations:\n")
+            for loc_id in self.grass_location_mapping.keys():
+                spoiler_handle.write(f"{self.location_id_to_name[int(loc_id)]}\n")
 
         if self.options.enable_mischief:
             spoiler_handle.write(f"\nMischief:\n")

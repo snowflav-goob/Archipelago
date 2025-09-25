@@ -1,4 +1,5 @@
 import pkgutil
+from collections import defaultdict
 from collections.abc import Sequence, Mapping
 from dataclasses import dataclass, field, replace
 from enum import Enum, StrEnum, IntEnum, auto
@@ -857,6 +858,7 @@ class PokemonCrystalData:
     request_pokemon: Sequence[str]
     adhoc_trainersanity: Mapping[int, int]
     grass_tiles: Mapping[str, list[GrassTile]]
+    grass_regions: Mapping[str, list[str]]
 
 
 def load_json_data(data_name: str) -> list[Any] | Mapping[str, Any]:
@@ -1274,6 +1276,7 @@ def _init() -> None:
         )
 
     grass_tiles = {}
+    grass_regions = defaultdict(list)
 
     grass_base_rom_addr = rom_address_data["AP_Setting_GrassTable"]
 
@@ -1283,6 +1286,7 @@ def _init() -> None:
         region_name_regular = f"{region_name} - Grass"
         region_name_long = f"{region_name} - Long Grass"
         tiles = []
+        grass_regions[region_name_regular].append(region)
         for tile in tile_data:
             index = tile["index"]
             x = tile["x"]
@@ -1339,7 +1343,8 @@ def _init() -> None:
         phone_scripts=phone_scripts,
         request_pokemon=REQUEST_POKEMON,
         adhoc_trainersanity=adhoc_trainersanity,
-        grass_tiles=grass_tiles
+        grass_tiles=grass_tiles,
+        grass_regions=grass_regions,
     )
 
 

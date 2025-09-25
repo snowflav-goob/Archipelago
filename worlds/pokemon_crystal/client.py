@@ -184,6 +184,7 @@ class PokemonCrystalClient(BizHawkClient):
     phone_trap_locations: list[int]
     current_map: list[int]
     last_death_link: float
+    grass_location_mapping: dict[str, int]
 
     def initialize_client(self) -> None:
         self.local_checked_locations = set()
@@ -198,6 +199,7 @@ class PokemonCrystalClient(BizHawkClient):
         self.phone_trap_locations = list()
         self.current_map = [0, 0]
         self.last_death_link = 0
+        self.grass_location_mapping = dict()
 
     async def validate_rom(self, ctx: "BizHawkClientContext") -> bool:
         from CommonClient import logger
@@ -274,6 +276,8 @@ class PokemonCrystalClient(BizHawkClient):
             self.goal_flag = data.event_flags["EVENT_BEAT_ELITE_FOUR"]
         else:
             self.goal_flag = data.event_flags["EVENT_BEAT_RED"]
+
+        self.grass_location_mapping = ctx.slot_data["grass_location_mapping"]
 
         try:
 
@@ -390,6 +394,8 @@ class PokemonCrystalClient(BizHawkClient):
                 for i in range(8):
                     if byte & (1 << i):
                         location_id = (byte_i * 8 + i) + GRASS_OFFSET
+                        if str(location_id) in self.grass_location_mapping:
+                            location_id = self.grass_location_mapping[str(location_id)]
                         if location_id in ctx.server_locations:
                             local_checked_locations.add(location_id)
 
