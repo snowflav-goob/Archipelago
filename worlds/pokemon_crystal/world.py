@@ -745,9 +745,8 @@ class PokemonCrystalWorld(World):
         def get_dexsanity_wild_hint_data(dexsanity_hint_data: dict[str, list[str]]):
             for key, encounters in self.generated_wild.items():
                 if (self.logic.wild_regions[key] is not LogicalAccess.InLogic) or \
-                        (key.encounter_type == EncounterType.Fish and \
-                         (key.region_id.startswith("Remoraid") or key.region_id.endswith("_Swarm"))
-                        ):
+                        (key.encounter_type == EncounterType.Fish and
+                         (key.region_id.startswith("Remoraid") or key.region_id.endswith("_Swarm"))):
                     continue
                 friendly_region_name = key.friendly_region_name()
                 if MiscOption.WhirlDexLocations in self.generated_misc.selected and friendly_region_name.startswith(

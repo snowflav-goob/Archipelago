@@ -273,6 +273,7 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
                 rom_address=region_tile.rom_address,
                 tags=frozenset({"grass"}),
             )
+            location.original_grass_flag = region_tile.flag
             grass_region.locations.append(location)
             location.item_rule = lambda item: item.name != "Grass"
 
