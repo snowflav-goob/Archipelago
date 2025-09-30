@@ -166,7 +166,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
             text_adr = item_name_bank2 + text_offset
         else:
             # bank 3
-            bank = 0x7a
+            bank = 0x7c
             text_offset = (i + 1 - (item_name_bank1_capacity + item_name_bank2_capacity)) * 34
             text_adr = item_name_bank3 + text_offset
         write_bytes(patch, player_text + item_text, text_adr)
