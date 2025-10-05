@@ -87,14 +87,15 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
 
     if world.options.dexsanity:
         if not world.is_universal_tracker:
-            pokemon_items = list(world.logic.available_pokemon)
-            priority_pokemon = get_priority_dexsanity(world)
+            pokemon_items = sorted(list(world.logic.available_pokemon))
+            priority_pokemon = sorted(list(get_priority_dexsanity(world)))
             excluded_pokemon = get_excluded_dexsanity(world)
 
             if world.options.dexsanity_starters.value == DexsanityStarters.option_block:
                 excluded_pokemon.update(starter[0] for starter in world.generated_starters)
             pokemon_items = [pokemon_id for pokemon_id in pokemon_items if pokemon_id not in excluded_pokemon]
             world.random.shuffle(pokemon_items)
+            world.random.shuffle(priority_pokemon)
             for _ in range(min(world.options.dexsanity.value, len(pokemon_items))):
                 if priority_pokemon:
                     pokemon = priority_pokemon.pop()
