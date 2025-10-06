@@ -546,6 +546,7 @@ class PokemonCrystalWorld(World):
         for hm in self.options.remove_badge_requirement.valid_keys:
             slot_data["free_" + hm.lower()] = 1 if hm in self.options.remove_badge_requirement.value else 0
 
+        slot_data["free_fly_location_option"] = self.options.free_fly_location.value
         slot_data["free_fly_location"] = 0
         slot_data["map_card_fly_location"] = 0
 
