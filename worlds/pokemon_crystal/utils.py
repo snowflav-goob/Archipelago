@@ -350,12 +350,17 @@ def _starting_town_valid(world: "PokemonCrystalWorld", starting_town: StartingTo
         return "South" not in world.options.saffron_gatehouse_tea or world.options.undergrounds_require_power not in (
             UndergroundsRequirePower.option_both, UndergroundsRequirePower.option_north_south) or kanto_shopsanity
     if starting_town.name == "Cerulean City":
-        return "North" not in world.options.saffron_gatehouse_tea or immediate_hiddens or kanto_shopsanity
+        return ("North" not in world.options.saffron_gatehouse_tea or immediate_hiddens or kanto_shopsanity
+                or full_kanto_trainersanity)
     if starting_town.name == "Celadon City":
         return "West" not in world.options.saffron_gatehouse_tea or immediate_hiddens or kanto_shopsanity
-    if starting_town.name in ("Lavender Town", "Fuchsia City"):
-        return "East" not in world.options.saffron_gatehouse_tea or (
-                immediate_hiddens and world.options.randomize_berry_trees) or kanto_shopsanity
+    if starting_town.name == "Lavender Town":
+        return "East" not in world.options.saffron_gatehouse_tea or full_kanto_trainersanity or kanto_shopsanity or (
+                not world.options.route_12_access and immediate_hiddens and world.options.randomize_berry_trees)
+    if starting_town.name == "Fuchsia City":
+        return ("East" not in world.options.saffron_gatehouse_tea and not world.options.route_12_access) or (
+                immediate_hiddens and world.options.randomize_berry_trees) or (
+                    not world.options.route_12_access and kanto_shopsanity) or full_kanto_trainersanity
 
     return True
 

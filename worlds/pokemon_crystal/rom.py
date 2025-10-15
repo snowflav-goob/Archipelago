@@ -1032,6 +1032,9 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         name_bytes = convert_to_ingame_text(world.options.trainer_name.value[:7])
         write_bytes(patch, name_bytes, data.rom_addresses["AP_Setting_DefaultTrainerName"])
 
+    if world.options.route_12_access:
+        write_bytes(patch, [0], data.rom_addresses["AP_Setting_Route12Sudowoodo"] + 2)
+
     # Set slot auth
     ap_version_text = convert_to_ingame_text(data.manifest.world_version)[:19]
     ap_version_text.append(0x50)

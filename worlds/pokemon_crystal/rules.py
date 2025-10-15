@@ -1406,6 +1406,12 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                 "EVENT_RESTORED_POWER_TO_KANTO", world.player))
 
         # Route 12
+        if world.options.route_12_access:
+            set_rule(get_entrance("REGION_ROUTE_12:NORTH -> REGION_ROUTE_12:SOUTH"),
+                     lambda state: state.has("Squirtbottle", world.player) or can_surf_kanto(state))
+            set_rule(get_entrance("REGION_ROUTE_12:SOUTH -> REGION_ROUTE_12:NORTH"),
+                     lambda state: state.has("Squirtbottle", world.player) or can_surf_kanto(state))
+
         set_rule(get_location("Route 12 - Item behind North Cut Tree"), can_cut_kanto)
 
         set_rule(get_location("Route 12 - Item behind South Cut Tree across Water"),

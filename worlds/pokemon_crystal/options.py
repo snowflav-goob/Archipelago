@@ -380,6 +380,20 @@ class VictoryRoadAccess(Choice):
     option_strength = 1
 
 
+class Route12Access(Choice):
+    """
+    Sets the requirement to pass between the north and south parts of Route 12
+    - Vanilla: No requirement
+    - Weird Tree: Requires Squirtbottle
+
+    The roadblock is north of the path to Route 11 and can be bypassed with Surf
+    """
+    display_name = "Route 12 Access"
+    default = 0
+    option_vanilla = 0
+    option_weird_tree = 1
+
+
 class JohtoTrainersanity(NamedRange):
     """
     Adds checks for defeating Johto trainers.
@@ -990,7 +1004,7 @@ class LearnsetTypeBias(NamedRange):
 class RandomizeMoveValues(Choice):
     """
     - Restricted: Generates values based on vanilla move values
-    Multiplies the power of each move with a random number between 0.5 and 1.5
+    Multiplies the power of each move by a random number between 0.5 and 1.5
     Adds or subtracts 0, 5 or 10 from original PP | Min 5, Max 40
 
     - Full Exclude Accuracy: Fully randomizes move Power and PP
@@ -1778,6 +1792,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     blackthorn_dark_cave_access: BlackthornDarkCaveAccess
     national_park_access: NationalParkAccess
     mount_mortar_access: MountMortarAccess
+    route_12_access: Route12Access
     johto_trainersanity: JohtoTrainersanity
     kanto_trainersanity: KantoTrainersanity
     rematchsanity: Rematchsanity
@@ -1909,7 +1924,8 @@ OPTION_GROUPS = [
          RemoveIlexCutTree,
          UndergroundsRequirePower,
          EastWestUnderground,
-         VanillaClair]
+         VanillaClair,
+         Route12Access]
     ),
     OptionGroup(
         "Items",
