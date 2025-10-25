@@ -1603,6 +1603,16 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                 set_rule(get_location(location),
                          lambda state, pokemon=required_pokemon: state.has_all(pokemon, world.player))
 
+        for trade_id, trade in world.generated_trades.items():
+            if world.options.trades_required and world.is_universal_tracker:
+                rule = lambda state: state.has(trade.requested_pokemon, world.player) or state.has(
+                    PokemonCrystalGlitchedToken.TOKEN_NAME, world.player)
+            elif world.is_universal_tracker:
+                rule = lambda state: state.has(PokemonCrystalGlitchedToken.TOKEN_NAME, world.player)
+            else:
+                rule = lambda state: state.has(trade.requested_pokemon, world.player)
+            safe_set_location_rule(trade_id, rule)
+
     if world.options.require_itemfinder:
         if world.options.require_itemfinder == RequireItemfinder.option_logically_required and world.is_universal_tracker:
             rule = lambda state: state.has("Itemfinder", world.player) or state.has(

@@ -558,6 +558,12 @@ class StaticPokemonRequired(DefaultOnToggle):
     display_name = "Static Pokemon Required"
 
 
+class TradesRequired(Toggle):
+    """
+    Specifies if in-game trades may be logically required
+    """
+
+
 class BreedingMethodsRequired(Choice):
     """
     Specifies which breeding methods may be logically required.
@@ -1804,6 +1810,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     dexcountsanity_leniency: DexcountsanityLeniency
     wild_encounter_methods_required: WildEncounterMethodsRequired
     enforce_wild_encounter_methods_logic: EnforceWildEncounterMethodsLogic
+    trades_required: TradesRequired
     static_pokemon_required: StaticPokemonRequired
     evolution_methods_required: EvolutionMethodsRequired
     evolution_gym_levels: EvolutionGymLevels
@@ -2029,6 +2036,7 @@ OPTION_GROUPS = [
         [WildEncounterMethodsRequired,
          EnforceWildEncounterMethodsLogic,
          StaticPokemonRequired,
+         TradesRequired,
          EvolutionMethodsRequired,
          EvolutionGymLevels,
          BreedingMethodsRequired]

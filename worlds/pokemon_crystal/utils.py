@@ -8,7 +8,7 @@ from .options import FreeFlyLocation, Route32Condition, JohtoOnly, RandomizeBadg
     Route3Access, EliteFourRequirement, Goal, Route44AccessRequirement, BlackthornDarkCaveAccess, RedRequirement, \
     MtSilverRequirement, HMBadgeRequirements, RedGyaradosAccess, EarlyFly, RadioTowerRequirement, \
     BreedingMethodsRequired, Shopsanity, KantoTrainersanity, JohtoTrainersanity, RandomizePokemonRequests, \
-    EnhancedOptionSet, RandomizeTypes, RandomizeEvolution
+    EnhancedOptionSet, RandomizeTypes, RandomizeEvolution, RandomizeTrades, TradesRequired
 from ..Files import APTokenTypes
 
 if TYPE_CHECKING:
@@ -39,6 +39,7 @@ def __adjust_option_problems(world: "PokemonCrystalWorld"):
     __adjust_options_encounters_and_breeding(world)
     __adjust_options_race_mode(world)
     __adjust_options_pokemon_requests(world)
+    __adjust_options_trades(world)
     __adjust_options_dark_areas(world)
     __adjust_options_randomize_types(world)
     __adjust_options_tm_plando(world)
@@ -249,6 +250,15 @@ def __adjust_options_pokemon_requests(world: "PokemonCrystalWorld"):
         world.options.randomize_pokemon_requests.value = RandomizePokemonRequests.option_off
 
 
+def __adjust_options_trades(world: "PokemonCrystalWorld"):
+    if (world.options.trades_required and world.options.randomize_trades.value in (RandomizeTrades.option_vanilla,
+                                                                                   RandomizeTrades.option_received)
+            and not world.options.randomize_wilds):
+        logging.warning("Pokemon Crystal: Requested trade Pokemon must be randomized for vanilla wilds. "
+                        "Disabling Trades Required for player %s (%s).", world.player, world.player_name)
+        world.options.trades_required.value = TradesRequired.option_false
+
+
 def __adjust_options_dark_areas(world: "PokemonCrystalWorld"):
     if (world.options.dark_areas != world.options.dark_areas.default
             and world.options.randomize_badges != RandomizeBadges.option_completely_random):
@@ -273,7 +283,7 @@ def __adjust_options_tm_plando(world: "PokemonCrystalWorld"):
         logging.warning(
             "Pokemon Crystal: A Sweet Scent TM must exist if Dexsanity or Dexcountsanity are enabled. "
             "Resetting TM12 to vanilla for Player %s (%s).", world.player, world.player_name)
-        world.options.tm_plando.value.pop(12)
+        world.options.tm_plando.value.pop("12")
 
 
 def pokemon_convert_friendly_to_ids(world: "PokemonCrystalWorld", pokemon: Iterable[str]) -> set[str]:
@@ -360,7 +370,7 @@ def _starting_town_valid(world: "PokemonCrystalWorld", starting_town: StartingTo
     if starting_town.name == "Fuchsia City":
         return ("East" not in world.options.saffron_gatehouse_tea and not world.options.route_12_access) or (
                 immediate_hiddens and world.options.randomize_berry_trees) or (
-                    not world.options.route_12_access and kanto_shopsanity) or full_kanto_trainersanity
+                not world.options.route_12_access and kanto_shopsanity) or full_kanto_trainersanity
 
     return True
 

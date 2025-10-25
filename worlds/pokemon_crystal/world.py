@@ -30,7 +30,7 @@ from .options import PokemonCrystalOptions, JohtoOnly, RandomizeBadges, HMBadgeR
 from .phone import generate_phone_traps
 from .phone_data import PhoneScript
 from .pokemon import randomize_pokemon_data, randomize_starters, randomize_traded_pokemon, \
-    fill_wild_encounter_locations, randomize_requested_pokemon
+    fill_wild_encounter_locations, randomize_requested_pokemon, fill_trade_locations
 from .regions import create_regions, setup_free_fly_regions
 from .rom import generate_output, PokemonCrystalProcedurePatch
 from .rules import set_rules, PokemonCrystalLogic, verify_hm_accessibility
@@ -106,7 +106,7 @@ class PokemonCrystalWorld(World):
     generated_tms: dict[str, TMHMData]
     generated_wild: dict[EncounterKey, list[EncounterMon]]
     generated_static: dict[EncounterKey, StaticPokemon]
-    generated_trades: list[TradeData]
+    generated_trades: dict[str, TradeData]
 
     generated_dexsanity: set[str]
     generated_dexcountsanity: list[int]
@@ -150,7 +150,7 @@ class PokemonCrystalWorld(World):
         self.generated_tms = dict(crystal_data.tmhm)
         self.generated_wild = {key: list(encounters) for key, encounters in crystal_data.wild.items()}
         self.generated_static = dict(crystal_data.static)
-        self.generated_trades = list(crystal_data.trades)
+        self.generated_trades = dict(crystal_data.trades)
         self.generated_dexsanity = set()
         self.generated_dexcountsanity = []
         self.generated_wooper = "WOOPER"
@@ -223,6 +223,7 @@ class PokemonCrystalWorld(World):
             generate_breeding_data(self)
 
         if not self.is_universal_tracker:
+            randomize_traded_pokemon(self)
             randomize_requested_pokemon(self)
 
         create_locations(self, regions)
@@ -358,6 +359,7 @@ class PokemonCrystalWorld(World):
 
     def generate_basic(self) -> None:
         fill_wild_encounter_locations(self)
+        fill_trade_locations(self)
 
         if self.is_universal_tracker: return
 
@@ -365,7 +367,6 @@ class PokemonCrystalWorld(World):
             verify_hm_accessibility(self)
         randomize_move_values(self)
         cap_hm_move_power(self)
-        randomize_traded_pokemon(self)
         randomize_music(self)
         randomize_mischief(self)
         randomize_tms(self)
@@ -525,6 +526,8 @@ class PokemonCrystalWorld(World):
             "field_moves_always_usable",
             "grasssanity",
             "enforce_wild_encounter_methods_logic",
+            "randomize_trades",
+            "trades_required",
         )
         slot_data["apworld_version"] = self.apworld_version
         slot_data["tea_north"] = 1 if "North" in self.options.saffron_gatehouse_tea.value else 0
@@ -642,6 +645,11 @@ class PokemonCrystalWorld(World):
 
         slot_data["grass_location_mapping"] = self.grass_location_mapping
 
+        slot_data["trades"] = {
+            trade_id: {"requested": str(self.generated_pokemon[trade.requested_pokemon].id), "received": str(
+                self.generated_pokemon[trade.received_pokemon].id)} for trade_id, trade in
+            self.generated_trades.items()}
+
         return slot_data
 
     def modify_multidata(self, multidata: dict[str, Any]):
@@ -739,6 +747,13 @@ class PokemonCrystalWorld(World):
                 self.generated_pokemon[pokemon].friendly_name for pokemon in self.generated_request_pokemon)
             spoiler_handle.write(f"\nBill's Grandpa Pokemon ({self.player_name}): {request_pokemon}\n")
 
+        if self.options.randomize_trades:
+            spoiler_handle.write(f"\nTrades ({self.player_name}):\n")
+            for trade in self.generated_trades.values():
+                requested = self.generated_pokemon[trade.requested_pokemon].friendly_name
+                received = self.generated_pokemon[trade.received_pokemon].friendly_name
+                spoiler_handle.write(f"{trade.friendly_name}: {requested} -> {received}\n")
+
         if self.options.grasssanity == Grasssanity.option_one_per_area:
             spoiler_handle.write(f"\nGrass locations ({self.player_name}):\n")
             for loc_id in self.grass_location_mapping.keys():
@@ -797,6 +812,11 @@ class PokemonCrystalWorld(World):
                 if child in self.generated_dexsanity:
                     dexsanity_hint_data[child].append(f"Breed {parent_name}")
 
+        def get_dexsanity_trade_hint_data(dexsanity_hint_data: dict[str, list[str]]):
+            for trade in self.generated_trades.values():
+                requested = self.generated_pokemon[trade.requested_pokemon].friendly_name
+                dexsanity_hint_data[trade.received_pokemon].append(f"{trade.friendly_name} - Trade for {requested}")
+
         player_hint_data = dict()
         if self.options.dexsanity:
             dexsanity_hint_data = defaultdict(list)
@@ -808,6 +828,8 @@ class PokemonCrystalWorld(World):
                 get_dexsanity_evolution_hint_data(dexsanity_hint_data)
             if self.options.breeding_methods_required and breeding_is_randomized(self):
                 get_dexsanity_breeding_hint_data(dexsanity_hint_data)
+            if self.options.trades_required:
+                get_dexsanity_trade_hint_data(dexsanity_hint_data)
             player_hint_data |= {
                 self.location_name_to_id[f"Pokedex - {self.generated_pokemon[pokemon_id].friendly_name}"]: ", ".join(
                     methods)

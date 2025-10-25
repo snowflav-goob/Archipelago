@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 EVENT_BYTES = math.ceil(max(data.event_flags.values()) / 8)
 DEX_BYTES = math.ceil(len(data.pokemon) / 8)
 GRASS_BYTES = math.ceil(sum(len(tiles) for tiles in data.grass_tiles.values()) / 8)
+TRADE_BYTES = math.ceil(len(data.trades) / 8)
 
 TRACKER_EVENT_FLAGS = [
     "EVENT_GOT_KENYA",
@@ -182,6 +183,7 @@ class PokemonCrystalClient(BizHawkClient):
     local_seen_pokemon: set[int]
     local_caught_pokemon: set[int]
     local_hints: list[str]
+    local_trades_completed: set[int]
     phone_trap_locations: list[int]
     current_map: list[int]
     last_death_link: float
@@ -198,6 +200,7 @@ class PokemonCrystalClient(BizHawkClient):
         self.local_seen_pokemon = set()
         self.local_caught_pokemon = set()
         self.local_hints = []
+        self.local_trades_completed = set()
         self.phone_trap_locations = list()
         self.current_map = [0, 0]
         self.last_death_link = 0
@@ -325,7 +328,8 @@ class PokemonCrystalClient(BizHawkClient):
                 [(data.ram_addresses["wEventFlags"], EVENT_BYTES, "WRAM"),  # Flags
                  (data.ram_addresses["wArchipelagoPokedexCaught"], DEX_BYTES, "WRAM"),
                  (data.ram_addresses["wArchipelagoPokedexSeen"], DEX_BYTES, "WRAM"),
-                 (data.ram_addresses["wArchipelagoGrassFlags"], GRASS_BYTES, "WRAM")],
+                 (data.ram_addresses["wArchipelagoGrassFlags"], GRASS_BYTES, "WRAM"),
+                 (data.ram_addresses["wArchipelagoTradeFlags"], TRADE_BYTES, "WRAM")],
                 [overworld_guard]
             )
 
@@ -335,6 +339,7 @@ class PokemonCrystalClient(BizHawkClient):
             pokedex_caught_bytes = read_result[1]
             pokedex_seen_bytes = read_result[2]
             grass_cut_bytes = read_result[3]
+            trade_bytes = read_result[4]
 
             game_clear = False
             local_checked_locations = set()
@@ -346,6 +351,7 @@ class PokemonCrystalClient(BizHawkClient):
             local_seen_pokemon = set()
             local_caught_pokemon = set()
             local_hints = {flag_name: False for flag_name in HINT_FLAGS.keys()}
+            local_trades_completed = set()
 
             if ctx.items_handling == 0b011:
                 if f"pokemon_crystal_seen_pokemon_{ctx.team}_{ctx.slot}" in ctx.stored_data:
@@ -408,6 +414,12 @@ class PokemonCrystalClient(BizHawkClient):
                             location_id = self.grass_location_mapping[str(location_id)]
                         if location_id in ctx.server_locations:
                             local_checked_locations.add(location_id)
+
+            for byte_i, byte in enumerate(trade_bytes):
+                for i in range(8):
+                    if byte & (1 << i):
+                        local_trades_completed.add(byte_i)
+
             packages = []
 
             if local_seen_pokemon != self.local_seen_pokemon:
@@ -430,21 +442,21 @@ class PokemonCrystalClient(BizHawkClient):
                                     "value": list(local_caught_pokemon)}, ]
                 })
 
-            if packages:
+            if local_trades_completed != self.local_trades_completed:
                 packages.append({
                     "cmd": "Set",
-                    "key": f"pokemon_crystal_pokemon_{ctx.team}_{ctx.slot}",
-                    "default": {},
+                    "key": f"pokemon_crystal_trades_{ctx.team}_{ctx.slot}",
+                    "default": [],
                     "want_reply": False,
-                    "operations": [
-                        {"operation": "replace",
-                         "value": {"caught": list(local_caught_pokemon), "seen": list(local_seen_pokemon)}, }
-                    ]
+                    "operations": [{"operation": "or", "value": list(local_trades_completed)}, ]
                 })
+
+            if packages:
                 await ctx.send_msgs(packages)
 
                 self.local_seen_pokemon = local_seen_pokemon
                 self.local_caught_pokemon = local_caught_pokemon
+                self.local_trades_completed = local_trades_completed
 
             if ctx.slot_data["dexcountsanity_counts"]:
                 dex_count = len(local_caught_pokemon)

@@ -678,11 +678,13 @@ class StaticPokemon:
 
 @dataclass(frozen=True)
 class TradeData:
+    id: str
     index: int
     requested_pokemon: str
     received_pokemon: str
     requested_gender: int
     held_item: str
+    friendly_name: str
 
 
 @dataclass(frozen=True)
@@ -707,6 +709,7 @@ class RegionData:
     events: list[EventData]
     wild_encounters: RegionWildEncounterData | None
     marts: list[str]
+    trades: list[str]
 
 
 @dataclass(frozen=True)
@@ -850,7 +853,7 @@ class PokemonCrystalData:
     misc: MiscData
     music: MusicData
     static: Mapping[EncounterKey, StaticPokemon]
-    trades: Sequence[TradeData]
+    trades: Mapping[str, TradeData]
     fly_regions: Sequence[FlyRegion]
     starting_towns: Sequence[StartingTown]
     game_settings: Mapping[str, PokemonCrystalGameSetting]
@@ -990,6 +993,7 @@ def _init() -> None:
                 region_json["wild_encounters"].get("rock_smash")
             ) if "wild_encounters" in region_json else None,
             marts=region_json["marts"] if "marts" in region_json else [],
+            trades=region_json["trades"] if "trades" in region_json else [],
         )
 
         regions[region_name] = new_region
@@ -1169,13 +1173,15 @@ def _init() -> None:
                       data_json["music"]["encounters"],
                       data_json["music"]["scripts"])
 
-    trades = [TradeData(
+    trades = {trade_data["id"]: TradeData(
+        trade_data["id"],
         trade_data["index"],
         trade_data["requested_pokemon"],
         trade_data["received_pokemon"],
         trade_data["requested_gender"],
-        trade_data["held_item"]
-    ) for trade_data in data_json["trade"]]
+        trade_data["held_item"],
+        trade_data["friendly_name"]
+    ) for trade_data in data_json["trade"]}
 
     starting_towns = [
         StartingTown(2, "Pallet Town", "REGION_PALLET_TOWN", False, restrictive_start=True),

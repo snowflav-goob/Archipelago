@@ -315,7 +315,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
 
     if world.options.randomize_trades:
         trade_table_address = data.rom_addresses["AP_Setting_TradeTable"]
-        for trade in world.generated_trades:
+        for trade in world.generated_trades.values():
             trade_address = trade_table_address + (trade.index * 32)  # each trade record is 32 bytes
             requested = data.pokemon[trade.requested_pokemon].id
             write_bytes(patch, [requested], trade_address + 1)

@@ -189,7 +189,10 @@
       "REGION_BLACKTHORN_CITY"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "trades": [
+      "TRADE_EMY"
+    ]
   },
   "REGION_BLACKTHORN_GYM_1F": {
     "johto": true,
@@ -1583,6 +1586,9 @@
     "events": [],
     "marts": [
       "MART_GOLDENROD_5F"
+    ],
+    "trades": [
+      "TRADE_MIKE"
     ]
   },
   "REGION_GOLDENROD_DEPT_STORE_6F": {
@@ -2986,7 +2992,10 @@
       "REGION_OLIVINE_CITY"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "trades": [
+      "TRADE_TIM"
+    ]
   },
   "REGION_PALLET_TOWN": {
     "johto": false,
@@ -3067,7 +3076,10 @@
       "REGION_POKECENTER_2F"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "trades": [
+      "TRADE_CHRIS"
+    ]
   },
   "REGION_PEWTER_SNOOZE_SPEECH_HOUSE": {
     "johto": false,
@@ -3156,6 +3168,9 @@
     ],
     "events": [
       "EVENT_RESTORED_POWER_TO_KANTO"
+    ],
+    "trades": [
+      "TRADE_FOREST"
     ]
   },
   "REGION_RADIO_TOWER_1F": {
@@ -3577,7 +3592,10 @@
     "events": [],
     "wild_encounters": {
       "grass": "ROUTE_14"
-    }
+    },
+    "trades": [
+      "TRADE_KIM"
+    ]
   },
   "REGION_ROUTE_15": {
     "johto": false,
@@ -6573,7 +6591,10 @@
       "REGION_VIOLET_CITY"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "trades": [
+      "TRADE_KYLE"
+    ]
   },
   "REGION_VIOLET_MART": {
     "johto": true,
