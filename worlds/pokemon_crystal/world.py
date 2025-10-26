@@ -713,25 +713,7 @@ class PokemonCrystalWorld(World):
                 for evo in pokemon_data.evolutions:
                     pokemon_name = self.generated_pokemon[pokemon_id].friendly_name
                     evo_name = self.generated_pokemon[evo.pokemon].friendly_name
-                    evo_type = evo.evo_type
-                    condition = evo.level if evo.evo_type is EvolutionType.Level else evo.condition
-                    if evo_type is EvolutionType.Level:
-                        method = f"Level {condition}"
-                    elif evo_type is EvolutionType.Item:
-                        method = item_const_name_to_label(condition)
-                    elif evo_type is EvolutionType.Happiness:
-                        method = "Happiness"
-                    elif evo_type is EvolutionType.Stats:
-                        if condition == "ATK_GT_DEF":
-                            method = "ATK > DEF"
-                        elif condition == "ATK_LT_DEF":
-                            method = "ATK < DEF"
-                        else:
-                            method = "ATK == DEF"
-                    else:
-                        method = "?"
-
-                    spoiler_handle.write(f"{pokemon_name} -> {method} -> {evo_name}\n")
+                    spoiler_handle.write(f"{pokemon_name} -> {evo.method} -> {evo_name}\n")
 
         if breeding_is_randomized(self):
             spoiler_handle.write(f"\nBreeding ({self.player_name}):\n")
@@ -793,9 +775,13 @@ class PokemonCrystalWorld(World):
         def get_dexsanity_evolution_hint_data(dexsanity_hint_data: dict[str, set[str]]):
             for pokemon_id, pokemon_data in self.generated_pokemon.items():
                 for evo in pokemon_data.evolutions:
-                    if evo.pokemon in self.generated_dexsanity and evolution_in_logic(self, evo):
-                        dexsanity_hint_data[evo.pokemon].add(
-                            f"Evolve {self.generated_pokemon[pokemon_id].friendly_name}")
+                    if not(evo.pokemon in self.generated_dexsanity and evolution_in_logic(self, evo)):
+                        continue
+                    hint_text = f"Evolve {self.generated_pokemon[pokemon_id].friendly_name}"
+                    divergent_evolutions = ("EEVEE", "GLOOM", "POLIWHIRL", "SLOWPOKE", "TYROGUE")
+                    if pokemon_id in divergent_evolutions:
+                        hint_text += f" ({evo.method})"
+                    dexsanity_hint_data[evo.pokemon].add(hint_text)
 
         def get_dexsanity_breeding_hint_data(dexsanity_hint_data: dict[str, set[str]]):
             for pokemon, data in self.generated_pokemon.items():

@@ -305,6 +305,23 @@ class EvolutionData:
     condition: str | None
     pokemon: str
 
+    @property
+    def method(self) -> str:
+        if self.evo_type is EvolutionType.Level:
+            return f"Level {self.level}"
+        if self.evo_type is EvolutionType.Item:
+            from .items import item_const_name_to_label
+            return item_const_name_to_label(self.condition)
+        if self.evo_type is EvolutionType.Happiness:
+            return "Happiness"
+        if self.evo_type is EvolutionType.Stats:
+            if self.condition == "ATK_GT_DEF":
+                return "ATK > DEF"
+            if self.condition == "ATK_LT_DEF":
+                return "ATK < DEF"
+            return "ATK == DEF"
+        return "?"
+
 
 class GrowthRate(IntEnum):
     MediumFast = 0
