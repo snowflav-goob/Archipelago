@@ -45,17 +45,20 @@ class JohtoOnly(Choice):
 
 class EliteFourRequirement(Choice):
     """
-    Sets the requirement to enter Victory Road
+    Sets the requirement to pass the Victory Road badge check
     """
     display_name = "Elite Four Requirement"
     default = 0
     option_badges = 0
     option_gyms = 1
+    option_johto_badges = 2
 
 
 class EliteFourCount(Range):
     """
     Sets the number of badges/gyms required to enter Victory Road
+
+    This will be limited to 8 if the requirement is Johto Badges
     """
     display_name = "Elite Four Count"
     default = 8

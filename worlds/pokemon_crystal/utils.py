@@ -33,6 +33,7 @@ def __adjust_meta_options(world: "PokemonCrystalWorld"):
 
 def __adjust_option_problems(world: "PokemonCrystalWorld"):
     __adjust_options_radio_tower_and_route_44(world)
+    __adjust_options_victory_road_badges(world)
     __adjust_options_johto_only(world)
     __adjust_options_gyarados(world)
     __adjust_options_early_fly(world)
@@ -85,6 +86,16 @@ def __adjust_options_radio_tower_and_route_44(world: "PokemonCrystalWorld"):
             "Changing Radio Tower Gyms to %d for player %s.",
             world.options.radio_tower_count.value,
             world.options.radio_tower_count.value,
+            world.player_name)
+
+
+def __adjust_options_victory_road_badges(world: "PokemonCrystalWorld"):
+    if (world.options.elite_four_requirement == EliteFourRequirement.option_johto_badges
+            and world.options.elite_four_count > 8):
+        world.options.elite_four_count.value = 8
+        logging.warning(
+            "Pokemon Crystal: Elite Four count cannot be greater than 8 if Elite Four requirement is Johto Badges. "
+            "Changing Elite Four Count to 8 for player %s.",
             world.player_name)
 
 

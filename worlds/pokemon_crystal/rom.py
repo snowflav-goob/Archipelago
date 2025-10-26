@@ -704,8 +704,10 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
                 data.rom_addresses["AP_Setting_VictoryRoadRequirement"] + 1)
     write_bytes(patch, elite_four_text, data.rom_addresses["AP_Setting_VictoryRoadBadges_Text"] + 1)
     write_bytes(patch, elite_four_text, data.rom_addresses["AP_Setting_VictoryRoadGyms_Text"] + 1)
+    write_bytes(patch, elite_four_text, data.rom_addresses["AP_Setting_VictoryRoadJohtoBadges_Text"] + 1)
     write_bytes(patch, [world.options.elite_four_count.value], data.rom_addresses["AP_Setting_VictoryRoadCount_1"] + 1)
     write_bytes(patch, [world.options.elite_four_count.value], data.rom_addresses["AP_Setting_VictoryRoadCount_2"] + 1)
+    write_bytes(patch, [world.options.elite_four_count.value], data.rom_addresses["AP_Setting_VictoryRoadCount_3"] + 1)
 
     write_bytes(patch, [world.options.radio_tower_requirement.value],
                 data.rom_addresses["AP_Setting_RocketsRequirement"] + 1)

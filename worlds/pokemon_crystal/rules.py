@@ -326,8 +326,12 @@ class PokemonCrystalLogic:
     def has_elite_four_requirement(self) -> CollectionRule:
         if self.options.elite_four_requirement == EliteFourRequirement.option_gyms:
             return lambda state: self.has_beaten_n_gyms(state, self.options.elite_four_count.value)
-        else:
+        elif self.options.elite_four_requirement == EliteFourRequirement.option_badges:
             return lambda state: self.has_n_badges(state, self.options.elite_four_count.value)
+        else:
+            johto_badges = list(self.badge_items.values())[:8]
+            return lambda state: state.has_from_list_unique(johto_badges, self.player,
+                                                            self.options.elite_four_count.value)
 
     def has_red_requirement(self) -> CollectionRule:
         if self.options.red_requirement == RedRequirement.option_gyms:
