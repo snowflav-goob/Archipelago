@@ -350,6 +350,23 @@ class NationalParkAccess(Choice):
     option_bicycle = 1
 
 
+class Route42Access(Choice):
+    """
+    Sets the requirement to traverse the water on Route 42
+    - Vanilla: Route 42 can be traversed with Surf
+    - Whirlpool: Access to Central Route 42 is blocked by a whirlpool
+    - Blocked: Access to Central Route 42 is completely blocked, requiring going through Mount Mortar instead.
+    Mount Mortar 1F gets an extra map connection between the Inside and Central Outside
+    - Whirlpool Open Mortar: Route 42 has whirlpools and Mount Mortar 1F has the extra map connection.
+    """
+    display_name = "Route 42 Access"
+    default = 0
+    option_vanilla = 0
+    option_whirlpool = 1
+    option_blocked = 2
+    option_whirlpool_open_mortar = 3
+
+
 class MountMortarAccess(Choice):
     """
     Sets the requirement to pass through Mount Mortar east <> west
@@ -1716,6 +1733,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     route_3_access: Route3Access
     blackthorn_dark_cave_access: BlackthornDarkCaveAccess
     national_park_access: NationalParkAccess
+    route_42_access: Route42Access
     mount_mortar_access: MountMortarAccess
     johto_trainersanity: JohtoTrainersanity
     kanto_trainersanity: KantoTrainersanity
@@ -1838,6 +1856,7 @@ OPTION_GROUPS = [
          Route32Condition,
          Route2Access,
          Route3Access,
+         Route42Access,
          MountMortarAccess,
          RedGyaradosAccess,
          BlackthornDarkCaveAccess,
