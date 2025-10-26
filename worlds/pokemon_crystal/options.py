@@ -143,6 +143,19 @@ class Route44AccessCount(Range):
     range_end = 16
 
 
+class MagnetTrainAccess(Choice):
+    """
+    Sets the requirement to ride the Magnet Train
+
+    - Pass requires only the Pass
+    - Pass and Power requires the Pass and restoring power to Kanto by returning the Machine Part
+    """
+    display_name = "Magnet Train Access"
+    default = 0
+    option_pass = 0
+    option_pass_and_power = 1
+
+
 class RandomizeStartingTown(Toggle):
     """
     Randomly chooses a town to start in.
@@ -1780,6 +1793,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     radio_tower_count: RadioTowerCount
     route_44_access_requirement: Route44AccessRequirement
     route_44_access_count: Route44AccessCount
+    magnet_train_access: MagnetTrainAccess
     vanilla_clair: VanillaClair
     randomize_starting_town: RandomizeStartingTown
     starting_town_blocklist: StartingTownBlocklist
@@ -1932,7 +1946,8 @@ OPTION_GROUPS = [
          UndergroundsRequirePower,
          EastWestUnderground,
          VanillaClair,
-         Route12Access]
+         Route12Access,
+         MagnetTrainAccess]
     ),
     OptionGroup(
         "Items",

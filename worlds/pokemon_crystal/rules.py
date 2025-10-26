@@ -754,8 +754,13 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
                  lambda state: state.has("EVENT_BEAT_ELITE_FOUR", world.player))
 
     if not johto_only():
+        if world.options.magnet_train_access:
+            rule = lambda state: (state.has("Pass", world.player)
+                                  and state.has("EVENT_RESTORED_POWER_TO_KANTO", world.player))
+        else:
+            rule = lambda state: state.has("Pass", world.player)
         set_rule(get_entrance("REGION_GOLDENROD_MAGNET_TRAIN_STATION -> REGION_SAFFRON_MAGNET_TRAIN_STATION"),
-                 lambda state: state.has("Pass", world.player))
+                 rule)
 
     set_rule(get_location("Goldenrod City - Exchange Eon Mail in Pokecenter"),
              lambda state: state.has("EVENT_GOT_EON_MAIL_FROM_EUSINE", world.player))
