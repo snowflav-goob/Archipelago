@@ -189,7 +189,10 @@
       "REGION_BLACKTHORN_CITY"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "trades": [
+      "TRADE_EMY"
+    ]
   },
   "REGION_BLACKTHORN_GYM_1F": {
     "johto": true,
@@ -1583,6 +1586,9 @@
     "events": [],
     "marts": [
       "MART_GOLDENROD_5F"
+    ],
+    "trades": [
+      "TRADE_MIKE"
     ]
   },
   "REGION_GOLDENROD_DEPT_STORE_6F": {
@@ -2270,7 +2276,7 @@
     "johto": false,
     "exits": [
       "REGION_ROUTE_10_SOUTH",
-      "REGION_ROUTE_12",
+      "REGION_ROUTE_12:NORTH",
       "REGION_ROUTE_8",
       "REGION_LAVENDER_POKECENTER_1F",
       "REGION_MR_FUJIS_HOUSE",
@@ -2999,7 +3005,10 @@
       "REGION_OLIVINE_CITY"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "trades": [
+      "TRADE_TIM"
+    ]
   },
   "REGION_PALLET_TOWN": {
     "johto": false,
@@ -3080,7 +3089,10 @@
       "REGION_POKECENTER_2F"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "trades": [
+      "TRADE_CHRIS"
+    ]
   },
   "REGION_PEWTER_SNOOZE_SPEECH_HOUSE": {
     "johto": false,
@@ -3169,6 +3181,9 @@
     ],
     "events": [
       "EVENT_RESTORED_POWER_TO_KANTO"
+    ],
+    "trades": [
+      "TRADE_FOREST"
     ]
   },
   "REGION_RADIO_TOWER_1F": {
@@ -3447,7 +3462,7 @@
     "johto": false,
     "exits": [
       "REGION_VERMILION_CITY",
-      "REGION_ROUTE_12"
+      "REGION_ROUTE_12:SOUTH"
     ],
     "trainers": [
       "YOUNGSTER_OWEN",
@@ -3468,27 +3483,43 @@
       "grass": "ROUTE_11"
     }
   },
-  "REGION_ROUTE_12": {
+  "REGION_ROUTE_12:NORTH": {
     "johto": false,
     "exits": [
       "REGION_LAVENDER_TOWN",
-      "REGION_ROUTE_13",
-      "REGION_ROUTE_11",
-      "REGION_ROUTE_12_SUPER_ROD_HOUSE"
+      "REGION_ROUTE_12:SOUTH"
     ],
     "trainers": [
       "FISHER_KYLE",
       "FISHER_MARTIN",
-      "FISHER_STEPHEN",
+      "FISHER_STEPHEN"
+    ],
+    "locations": [
+      "ROUTE_12_HIDDEN_ELIXER",
+      "ITEM_FROM_FISHER_KYLE",
+      "ITEM_FROM_FISHER_MARTIN",
+      "ITEM_FROM_FISHER_STEPHEN"
+    ],
+    "events": [],
+    "wild_encounters": {
+      "surfing": "ROUTE_12",
+      "fishing": "Qwilfish"
+    }
+  },
+  "REGION_ROUTE_12:SOUTH": {
+    "johto": false,
+    "exits": [
+      "REGION_ROUTE_11",
+      "REGION_ROUTE_12:NORTH",
+      "REGION_ROUTE_13",
+      "REGION_ROUTE_12_SUPER_ROD_HOUSE"
+    ],
+    "trainers": [
       "FISHER_BARNEY"
     ],
     "locations": [
       "ROUTE_12_CALCIUM",
-      "ROUTE_12_HIDDEN_ELIXER",
       "ROUTE_12_NUGGET",
-      "ITEM_FROM_FISHER_KYLE",
-      "ITEM_FROM_FISHER_MARTIN",
-      "ITEM_FROM_FISHER_STEPHEN",
       "ITEM_FROM_FISHER_BARNEY"
     ],
     "events": [],
@@ -3500,7 +3531,7 @@
   "REGION_ROUTE_12_SUPER_ROD_HOUSE": {
     "johto": false,
     "exits": [
-      "REGION_ROUTE_12"
+      "REGION_ROUTE_12:SOUTH"
     ],
     "locations": [
       "SUPER_ROD"
@@ -3510,7 +3541,7 @@
   "REGION_ROUTE_13": {
     "johto": false,
     "exits": [
-      "REGION_ROUTE_12",
+      "REGION_ROUTE_12:SOUTH",
       "REGION_ROUTE_13:CUT",
       "REGION_ROUTE_14"
     ],
@@ -3574,7 +3605,10 @@
     "events": [],
     "wild_encounters": {
       "grass": "ROUTE_14"
-    }
+    },
+    "trades": [
+      "TRADE_KIM"
+    ]
   },
   "REGION_ROUTE_15": {
     "johto": false,
@@ -4715,7 +4749,8 @@
       "REGION_ROUTE_39"
     ],
     "locations": [
-      "TM13_SNORE_FROM_MOOMOO_FARM"
+      "TM13_SNORE_FROM_MOOMOO_FARM",
+      "MOOMOO_MILK_FROM_MOOMOO_FARM"
     ],
     "events": []
   },
@@ -6565,7 +6600,10 @@
       "REGION_VIOLET_CITY"
     ],
     "locations": [],
-    "events": []
+    "events": [],
+    "trades": [
+      "TRADE_KYLE"
+    ]
   },
   "REGION_VIOLET_MART": {
     "johto": true,
