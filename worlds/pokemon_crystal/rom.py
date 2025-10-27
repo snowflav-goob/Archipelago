@@ -11,7 +11,7 @@ from .data import data, MiscOption, POKEDEX_COUNT_OFFSET, POKEDEX_OFFSET, Encoun
     FishingRodType, TreeRarity, FLY_UNLOCK_OFFSET, BETTER_MART_MARTS, MapPalette, GRASS_OFFSET
 from .items import item_const_name_to_id
 from .maps import FLASH_MAP_GROUPS
-from .options import UndergroundsRequirePower, RequireItemfinder, Goal, Route2Access, \
+from .options import UndergroundsRequirePower, RequireItemfinder, Goal, Route2Access, Route42Access, \
     BlackthornDarkCaveAccess, NationalParkAccess, Route3Access, EncounterSlotDistribution, KantoAccessRequirement, \
     FreeFlyLocation, HMBadgeRequirements, ShopsanityPrices, WildEncounterMethodsRequired, FlyCheese, Shopsanity, \
     RequireFlash
@@ -885,6 +885,35 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
 
     if tiles:
         replace_map_tiles(patch, "Route2", 5, 1, tiles)
+
+    if world.options.route_42_access.value in \
+            (Route42Access.option_blocked, Route42Access.option_whirlpool_open_mortar):
+        map_name = "MountMortar1FOutside"
+        replace_map_tiles(patch, map_name, 9, 8, [0x1D]) # rocks above waterfall
+        replace_map_tiles(patch, map_name, 9, 11, [0x37]) # cave entrance
+        replace_map_tiles(patch, map_name, 8, 12, [0x25, 0x02, 0x26]) # shore
+        replace_map_tiles(patch, map_name, 8, 13, [0x32, 0x27, 0x33]) # shore edge
+
+        map_name = "MountMortar1FInside"
+        replace_map_tiles(patch, map_name, 9, 23, [0x02]) # remove rocks
+        replace_map_tiles(patch, map_name, 8, 24, [0x06, 0x24, 0x04]) # entrance corridor + warp tile
+        replace_map_tiles(patch, map_name, 9, 25, [0x23]) # exit
+
+    if world.options.route_42_access.value != Route42Access.option_vanilla:
+        map_name = "Route42"
+        replace_map_tiles(patch, map_name, 7, 3, [0x0A]) # west rock
+        replace_map_tiles(patch, map_name, 8, 6, [0x3A]) # west buoys
+        replace_map_tiles(patch, map_name, 8, 7, [0x34]) # west buoys
+        replace_map_tiles(patch, map_name, 16, 3, [0x0A, 0x0A]) # east rocks
+        if world.options.route_42_access.value == Route42Access.option_blocked:
+            replace_map_tiles(patch, map_name, 8, 3, [0x38]) # west buoys
+            replace_map_tiles(patch, map_name, 8, 4, [0x36]) # west buoys
+            replace_map_tiles(patch, map_name, 18, 4, [0x0A]) # east rock
+            replace_map_tiles(patch, map_name, 18, 3, [0x54]) # prettier shore edge
+            replace_map_tiles(patch, map_name, 17, 4, [0x54]) # prettier shore edge
+        else:
+            replace_map_tiles(patch, map_name, 8, 4, [0x07]) # west whirlpool
+            replace_map_tiles(patch, map_name, 18, 4, [0x07]) # east whirlpool
 
     if world.options.red_gyarados_access:
         whirlpool_tile = 0x07
