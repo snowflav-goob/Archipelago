@@ -24,7 +24,9 @@ class Goal(Choice):
     Elite Four: Defeat the Champion and enter the Hall of Fame
     Red: Defeat Red at Mt. Silver
     Diploma: Catch all logically available Pokemon and receive the diploma in Celadon City
-    Rival: Defeat all possible rival battles
+    Rival: Win all possible rival battles
+    Defeat Team Rocket: Vanquish Team Rocket in Slowpoke Well, Mahogany Town, Radio Tower and defeat the grunt
+    on route 24 (if Kanto is accessible)
     """
     display_name = "Goal"
     default = 0
@@ -32,6 +34,7 @@ class Goal(Choice):
     option_red = 1
     option_diploma = 2
     option_rival = 3
+    option_defeat_team_rocket = 4
 
 
 class JohtoOnly(Choice):

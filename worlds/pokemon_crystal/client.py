@@ -301,6 +301,15 @@ class PokemonCrystalClient(BizHawkClient):
                     data.event_flags["EVENT_BEAT_RIVAL_IN_MT_MOON"],
                     data.event_flags["EVENT_BEAT_RIVAL_IN_INDIGO_PLATEAU"],
                 ])
+        elif ctx.slot_data["goal"] == Goal.option_defeat_team_rocket:
+            self.goal_flags = [
+                data.event_flags["EVENT_CLEARED_SLOWPOKE_WELL"],
+                data.event_flags["EVENT_CLEARED_ROCKET_HIDEOUT"],
+                data.event_flags["EVENT_BEAT_ROCKET_EXECUTIVEM_3"],
+                data.event_flags["EVENT_CLEARED_RADIO_TOWER"],
+            ]
+            if ctx.slot_data["johto_only"] == JohtoOnly.option_off:
+                self.goal_flags.append(data.event_flags["EVENT_ROUTE_24_ROCKET"])
         else:
             self.goal_flags = [data.event_flags["EVENT_BEAT_RED"]]
 

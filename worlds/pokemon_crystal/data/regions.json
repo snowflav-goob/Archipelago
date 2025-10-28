@@ -3938,7 +3938,9 @@
     "locations": [
       "ITEM_FROM_ROCKET_GRUNTM_31"
     ],
-    "events": [],
+    "events": [
+      "EVENT_ROUTE_24_ROCKET"
+    ],
     "wild_encounters": {
       "grass": "ROUTE_24",
       "surfing": "ROUTE_24",
