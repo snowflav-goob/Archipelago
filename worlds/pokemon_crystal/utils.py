@@ -504,3 +504,6 @@ def write_bytes(patch, byte_array, address):
         address,
         bytes(byte_array)
     )
+
+def write_rom_bytes(rom, byte_array, address):
+    rom[address:address+len(byte_array)] = bytes(byte_array)

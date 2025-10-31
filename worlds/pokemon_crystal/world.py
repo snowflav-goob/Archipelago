@@ -47,7 +47,24 @@ class PokemonCrystalSettings(settings.Group):
         copy_to = "Pokemon - Crystal Version (UE) [C][!].gbc"
         md5s = PokemonCrystalProcedurePatch.hash
 
+    class OptionOverrides(dict):
+        """
+        Provided options will be used as overrides when patching.
+        Pass the options as you would in an options yaml. (Option weights and triggers are not supported)
+        Always available option overrides: trainer_name, game_options, field_move_menu_order, default_pokedex_mode
+        Option overrides available when race mode is off: shopsanity_restrict_rare_candies, encounter_slot_distribution, reusable_tms, minimum_catch_rate, skip_elite_four, better_marts, build_a_mart, experience_modifier, starting_money, all_pokemon_seen
+
+        example:
+        option_overrides:
+          experience_modifier: triple
+          trainer_name: CHRIS
+          game_options:
+            turbo_button: a
+            low_hp_beep: off
+        """
+
     rom_file: RomFile = RomFile(RomFile.copy_to)
+    option_overrides = {}
 
 
 class PokemonCrystalWebWorld(WebWorld):

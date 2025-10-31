@@ -1,5 +1,6 @@
 import logging
 import os
+import random
 from collections import defaultdict
 from typing import TYPE_CHECKING
 
@@ -14,8 +15,9 @@ from .maps import FLASH_MAP_GROUPS
 from .options import UndergroundsRequirePower, RequireItemfinder, Goal, Route2Access, Route42Access, \
     BlackthornDarkCaveAccess, NationalParkAccess, Route3Access, EncounterSlotDistribution, KantoAccessRequirement, \
     FreeFlyLocation, HMBadgeRequirements, ShopsanityPrices, WildEncounterMethodsRequired, FlyCheese, Shopsanity, \
-    RequireFlash, FieldMoveMenuOrder, RedGyaradosAccess
-from .utils import convert_to_ingame_text, write_bytes, replace_map_tiles
+    RequireFlash, FieldMoveMenuOrder, RedGyaradosAccess, MinimumCatchRate, BuildAMart, ExpModifier, StartingMoney, \
+    DefaultPokedexMode
+from .utils import convert_to_ingame_text, write_bytes, write_rom_bytes, replace_map_tiles
 
 if TYPE_CHECKING:
     from .world import PokemonCrystalWorld
@@ -38,6 +40,131 @@ class PokemonCrystalAPPatchExtension(APPatchExtension):
             return bsdiff4.patch(rom, caller.get_file("basepatch11.bsdiff4"))
         return bsdiff4.patch(rom, caller.get_file(patch))
 
+    @staticmethod
+    def apply_overrides(caller: APProcedurePatch, rom: bytes) -> bytes:
+        option_overrides = get_settings().pokemon_crystal_settings.option_overrides
+        if not option_overrides:
+            return rom
+        overridden_rom = bytearray(rom)
+        game_option_overrides = option_overrides.get("game_options", None)
+        if game_option_overrides:
+            game_options_address = data.rom_addresses["AP_Setting_DefaultOptions"]
+            num_option_bytes = max([item.option_byte_index for item in data.game_settings.values()]) + 1
+            option_bytes = overridden_rom[game_options_address:game_options_address+num_option_bytes]
+
+            for setting_name, setting in data.game_settings.items():
+                option_selection = game_option_overrides.get(setting_name, None)
+                if option_selection is None:
+                    continue
+                if setting_name == "text_frame" and option_selection == "random":
+                    option_selection = random.randint(1, 8)
+                if setting_name == "time_of_day" and option_selection == "random":
+                    option_selection = random.choice(("morn", "day", "nite"))
+                if setting_name == "_death_link":
+                    option_selection = "on" if game_option_overrides.get("death_link", False) else "off"
+                elif setting_name == "_trap_link":
+                    option_selection = "on" if game_option_overrides.get("trap_link", False) else "off"
+                setting.set_option_byte(option_selection, option_bytes)
+
+            write_rom_bytes(overridden_rom, option_bytes, game_options_address)
+
+        field_moves_override = option_overrides.get("field_move_menu_order", None)
+        if field_moves_override is not None:
+            parsed_menu_order = FieldMoveMenuOrder(field_moves_override)
+            write_rom_bytes(overridden_rom,
+                    [FieldMoveMenuOrder.default.index(val) for val in parsed_menu_order.value],
+                    data.rom_addresses["AP_Setting_Field_Move_Order"])
+
+        trainer_name_override = option_overrides.get("trainer_name", None)
+        if trainer_name_override:
+            name_bytes = convert_to_ingame_text(trainer_name_override[:7])
+            write_rom_bytes(overridden_rom, name_bytes, data.rom_addresses["AP_Setting_DefaultTrainerName"])
+
+        dex_mode_override = option_overrides.get("default_pokedex_mode", None)
+        if dex_mode_override is not None:
+            write_rom_bytes(overridden_rom, [DefaultPokedexMode.from_any(dex_mode_override).value],
+                    data.rom_addresses["AP_Setting_DefaultDexMode"] + 1)
+
+        race_options_locked = False
+        if race_options_locked:
+            return overridden_rom
+
+        reusable_tms_override = option_overrides.get("reusable_tms", None)
+        if reusable_tms_override is not None:
+            patched_value = 1 if reusable_tms_override else 0
+            address = data.rom_addresses["AP_Setting_ReusableTMs"] + 1
+            write_rom_bytes(overridden_rom, [patched_value], address)
+
+        min_catch_rate_override = option_overrides.get("minimum_catch_rate", None)
+        if min_catch_rate_override is not None:
+            address = data.rom_addresses["AP_Setting_MinCatchrate"] + 1
+            write_rom_bytes(overridden_rom, [MinimumCatchRate(min_catch_rate_override).value], address)
+
+        exp_modifier_override = option_overrides.get("experience_modifier", None)
+        if exp_modifier_override is not None:
+            exp_modifier_address = data.rom_addresses["AP_Setting_ExpModifier"] + 1
+            write_rom_bytes(overridden_rom, [ExpModifier.from_any(exp_modifier_override).value], exp_modifier_address)
+
+        skip_e4_override = option_overrides.get("skip_elite_four", None)
+        if skip_e4_override is not None:
+            # Set warp to Lance's room or set it back to Will's
+            e4_warp = 0x07 if skip_e4_override else 0x03
+            write_rom_bytes(overridden_rom, [e4_warp], data.rom_addresses["AP_Setting_IndigoPlateauPokecenter1F_E4Warp"] + 4)
+
+        rare_candy_override = option_overrides.get("shopsanity_restrict_rare_candies", None)
+        if rare_candy_override is not None:
+            patched_value = 1 if rare_candy_override else 0
+            address = data.rom_addresses["AP_Setting_ShopsanityRestrictRareCandies"] + 1
+            write_rom_bytes(overridden_rom, [patched_value], address)
+
+        mons_seen_override = option_overrides.get("all_pokemon_seen", None)
+        if mons_seen_override is not None:
+            patched_value = 1 if mons_seen_override else 0
+            write_rom_bytes(overridden_rom, [patched_value], data.rom_addresses["AP_Setting_AllPokemonSeen_1"] + 1)
+            write_rom_bytes(overridden_rom, [patched_value], data.rom_addresses["AP_Setting_AllPokemonSeen_2"] + 1)
+
+        start_money_override = option_overrides.get("starting_money", None)
+        if start_money_override is not None:
+            start_money = StartingMoney(start_money_override).value.to_bytes(3, "big")
+            for i, byte in enumerate(start_money):
+                write_rom_bytes(overridden_rom, [byte], data.rom_addresses[f"AP_Setting_StartMoney_{i + 1}"] + 1)
+
+        better_marts_override = option_overrides.get("better_marts", None)
+        if better_marts_override is not None:
+            patched_value = 1 if better_marts_override else 0
+            write_rom_bytes(overridden_rom, [patched_value], data.rom_addresses["AP_Setting_BetterMarts"] + 1)
+
+        build_a_mart_override = option_overrides.get("build_a_mart", None)
+        if build_a_mart_override is not None:
+            build_a_mart = BuildAMart(build_a_mart_override)
+            custom_mart_base = data.rom_addresses["AP_Setting_CustomBetterMart"]
+
+            available_items = {item.label: item.item_const for item in data.items.values()
+                               if "CustomShop" in item.tags}
+
+            selected_items = []
+            for item_name in build_a_mart:
+                if item_name in available_items:
+                    selected_items.append(available_items[item_name])
+
+            if len(selected_items) > 14:
+                selected_items = selected_items[:14]
+
+            total_items = len(selected_items) + 2
+            write_rom_bytes(overridden_rom, [total_items], custom_mart_base)
+
+            current_address = custom_mart_base + 11
+            for item_const in selected_items:
+                item_id = item_const_name_to_id(item_const)
+                item_data = data.items[item_id]
+                price_bytes = item_data.price.to_bytes(2, "little")
+                write_rom_bytes(overridden_rom, [item_id, *price_bytes, 0xFF, 0xFF], current_address)
+                current_address += 5
+
+            write_rom_bytes(overridden_rom, [0xFF], current_address)
+
+        return overridden_rom
+
 
 class PokemonCrystalProcedurePatch(APProcedurePatch, APTokenMixin):
     game = data.manifest.game
@@ -47,7 +174,8 @@ class PokemonCrystalProcedurePatch(APProcedurePatch, APTokenMixin):
 
     procedure = [
         ("apply_bsdiff4", ["basepatch.bsdiff4"]),
-        ("apply_tokens", ["token_data.bin"])
+        ("apply_tokens", ["token_data.bin"]),
+        ("apply_overrides", [])
     ]
 
     @classmethod
