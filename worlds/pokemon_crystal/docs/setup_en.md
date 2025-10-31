@@ -63,7 +63,7 @@ To do that, open the `host.yaml` file in your Archipelago folder and locate the 
 In it, add an `option_overrides` setting like so:
 ```yaml
 pokemon_crystal_settings:
-  rom_file = "Pokemon - Crystal Version (UE) [C][!].gbc"
+  rom_file: "Pokemon - Crystal Version (UE) [C][!].gbc"
   option_overrides:
     # Enter your overrides here
 ```
