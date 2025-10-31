@@ -54,6 +54,32 @@ with [PopTracker](https://github.com/black-sliver/PopTracker/releases)
 8. On your first time opening a patch with BizHawk Client, you will also be asked to locate `EmuHawk.exe` in your
    BizHawk install. For mGBA users, you can select `Cancel` and manually open mGBA.
 
+### Option Overrides
+
+Pokemon Crystal has several options which do not affect Archipelago's logic, and as such can be changed after
+generation without significantly changing the randomizer experience.
+
+To do that, open the `host.yaml` file in your Archipelago folder and locate the `pokemon_crystal_settings` section.
+In it, add an `option_overrides` setting like so:
+```yaml
+pokemon_crystal_settings:
+  rom_file = "Pokemon - Crystal Version (UE) [C][!].gbc"
+  option_overrides:
+    # Enter your overrides here
+```
+You can then type in the options you would like to override as you would in a player YAML, *after removing option
+weights*.
+
+The following options can always be overridden: `trainer_name`, `game_options`, `field_move_menu_order`,
+`default_pokedex_mode`.
+If the seed you're playing was generated without Archipelago's race mode, the following options are also overridable:
+`shopsanity_restrict_rare_candies`, `encounter_slot_distribution`, `reusable_tms`, `minimum_catch_rate`,
+`skip_elite_four`, `better_marts`, `build_a_mart`, `experience_modifier`, `starting_money`, `all_pokemon_seen`
+
+You can change these settings at any time after patching the ROM and re-apply them by patching the ROM again. Your
+save data will be preserved.
+
+
 If you're playing a single-player seed, and you don't care about autotracking or hints, you can stop here, close the
 client, and load the patched ROM in any emulator. However, for multiworlds and other Archipelago features, continue
 below using BizHawk or mGBA as your emulator.
