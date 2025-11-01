@@ -632,6 +632,23 @@ class PokemonCrystalClient(BizHawkClient):
                                 "data": {"mapGroup": current_map[0], "mapNumber": current_map[1]}}]
                     await ctx.send_msgs(message)
 
+            if ctx.items_handling & 0b010:
+
+                seen_bytes = bytearray(DEX_BYTES)
+                caught_bytes = bytearray(DEX_BYTES)
+
+                for i in range(len(data.pokemon)):
+                    byte_index = math.floor(i / 8)
+                    if i in local_seen_pokemon:
+                        seen_bytes[byte_index] = seen_bytes[byte_index] | (i % 8)
+                    if i in local_caught_pokemon:
+                        caught_bytes[byte_index] = caught_bytes[byte_index] | (i % 8)
+
+                await bizhawk.write(ctx.bizhawk_ctx,
+                                    [(data.ram_addresses["wArchipelagoPokedexSeen"], seen_bytes, "WRAM"),
+                                     (data.ram_addresses["wArchipelagoPokedexCaught"], caught_bytes, "WRAM")])
+
+
         except bizhawk.RequestFailedError:
             # Exit handler and return to main loop to reconnect
             pass
