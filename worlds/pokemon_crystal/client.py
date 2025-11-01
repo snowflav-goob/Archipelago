@@ -645,9 +645,14 @@ class PokemonCrystalClient(BizHawkClient):
                     if i in local_caught_pokemon:
                         caught_bytes[byte_index] = caught_bytes[byte_index] | (1 << (poke_index % 8))
 
-                await bizhawk.write(ctx.bizhawk_ctx,
-                                    [(data.ram_addresses["wArchipelagoPokedexSeen"], seen_bytes, "WRAM"),
-                                     (data.ram_addresses["wArchipelagoPokedexCaught"], caught_bytes, "WRAM")])
+                await bizhawk.guarded_write(ctx.bizhawk_ctx,
+                                            [(data.ram_addresses["wArchipelagoPokedexSeen"], seen_bytes, "WRAM"),
+                                             (data.ram_addresses["wArchipelagoPokedexCaught"], caught_bytes, "WRAM")],
+                                            [(data.ram_addresses["wArchipelagoPokedexSeen"], pokedex_seen_bytes,
+                                              "WRAM"),
+                                             (data.ram_addresses["wArchipelagoPokedexCaught"], pokedex_caught_bytes,
+                                              "WRAM")]
+                                            )
 
 
         except bizhawk.RequestFailedError:
