@@ -637,12 +637,13 @@ class PokemonCrystalClient(BizHawkClient):
                 seen_bytes = bytearray(DEX_BYTES)
                 caught_bytes = bytearray(DEX_BYTES)
 
-                for i in range(len(data.pokemon)):
-                    byte_index = math.floor(i / 8)
+                for i in range(1, len(data.pokemon) + 1):
+                    poke_index = i - 1
+                    byte_index = math.floor(poke_index / 8)
                     if i in local_seen_pokemon:
-                        seen_bytes[byte_index] = seen_bytes[byte_index] | (i % 8)
+                        seen_bytes[byte_index] = seen_bytes[byte_index] | (1 << (poke_index % 8))
                     if i in local_caught_pokemon:
-                        caught_bytes[byte_index] = caught_bytes[byte_index] | (i % 8)
+                        caught_bytes[byte_index] = caught_bytes[byte_index] | (1 << (poke_index % 8))
 
                 await bizhawk.write(ctx.bizhawk_ctx,
                                     [(data.ram_addresses["wArchipelagoPokedexSeen"], seen_bytes, "WRAM"),
