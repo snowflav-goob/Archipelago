@@ -23,8 +23,7 @@ from worlds.generic.Rules import set_rule, add_rule, add_item_rule
 
 logger = logging.getLogger("Super Metroid Map Rando")
 
-from .Rom import make_ips_patches, patch_rom, get_base_rom_path, get_sm_symbols, SMMR_ROM_MAX_PLAYERID, \
-        SMMR_ROM_PLAYERDATA_COUNT, SMMapRandoDeltaPatch
+from .Rom import make_ips_patches, SMMapRandoProcedurePatch
 from .ips import IPS_Patch
 from .Client import SMMRSNIClient
 from importlib.metadata import version, PackageNotFoundError
@@ -37,7 +36,7 @@ class WrongVersionError(Exception):
 try:
     if version("pysmmaprando") != required_pysmmaprando_version:
         raise WrongVersionError
-    from pysmmaprando import build_app_data, validate_settings_ap, randomize_ap, customize_seed_ap, CustomizeRequest, Item as MapRandoItem
+    from pysmmaprando import build_app_data, validate_settings_ap, randomize_ap, customize_seed_ap, randomization_to_json, CustomizeRequest, Item as MapRandoItem
 
 # required for APWorld distribution outside official AP releases as stated at https://docs.python.org/3/library/zipimport.html:
 # ZIP import of dynamic modules (.pyd, .so) is disallowed.
@@ -72,7 +71,7 @@ except (ImportError, WrongVersionError, PackageNotFoundError) as e:
             z = zipfile.ZipFile(io.BytesIO(r.content))
             z.extractall(f"{os.path.dirname(sys.executable)}/lib")
             
-    from pysmmaprando import build_app_data, validate_settings_ap, randomize_ap, customize_seed_ap, CustomizeRequest, Item as MapRandoItem
+    from pysmmaprando import build_app_data, validate_settings_ap, randomize_ap, customize_seed_ap, randomization_to_json, CustomizeRequest, Item as MapRandoItem
 
 def GetAPWorldPath():
     filename = sys.modules[__name__].__file__
@@ -86,11 +85,6 @@ def GetAPWorldPath():
 map_rando_app_data = build_app_data(GetAPWorldPath())
 
 from .Options import SMMROptions
-
-class ByteEdit(TypedDict):
-    sym: Dict[str, Any]
-    offset: int
-    values: Iterable[int]
 
 class SMMapRandoWeb(WebWorld):
     tutorials = [Tutorial(
@@ -145,12 +139,6 @@ class SMMapRandoWorld(World):
         self.rom_name_available_event = threading.Event()
         self.locations = {}
         self.region_area_name = {}
-
-    @classmethod
-    def stage_assert_generate(cls, multiworld: MultiWorld):
-        rom_file = get_base_rom_path()
-        if not os.path.exists(rom_file):
-            raise FileNotFoundError(rom_file)
         
     @classmethod
     def validate_settings(cls, settings_string: str) -> bool:
@@ -338,9 +326,9 @@ class SMMapRandoWorld(World):
         return self.multiworld.random.choice(['Missile', 'Missile', 'Missile', 'Missile', 'Missile', 'Super', 'PowerBomb'])
 
     def generate_output(self, output_directory: str):
-        outfilebase = self.multiworld.get_out_file_name_base(self.player)
-        outputFilename = os.path.join(output_directory, f"{outfilebase}.sfc")
         try:
+            randomization = self.randomizer_ap.randomization
+
             sorted_item_locs = list(self.locations.values())
             items = []
             for itemLoc in sorted_item_locs:
@@ -359,6 +347,7 @@ class SMMapRandoWorld(World):
                         else:
                             item_code = self.item_name_to_id['ArchipelagoItem']
                     items.append(MapRandoItem(item_code - items_start_id))
+            randomization.item_placement = items
 
             # if start location isnt Escape
             if (len(self.randomizer_ap.spoiler_log.summary) > 0):
@@ -380,32 +369,53 @@ class SMMapRandoWorld(World):
                                 item_spoiler_info.area = location
                             break
                     item_spoiler_infos.append(item_spoiler_info)
-            else:
-                item_spoiler_infos = None
 
-            patches = make_ips_patches(self)
+                # pyo3 is stupid and the process must be broken down into these steps to actually replace data
+                esd = randomization.essential_spoiler_data
+                esd.item_spoiler_info = item_spoiler_infos
+                randomization.essential_spoiler_data = esd
+
+            self.randomizer_ap.randomization = randomization
+
+            ips_patches = make_ips_patches(self)
+
+            customize_settings = self.options.as_dict(
+                "etank_color_red", "etank_color_green", "etank_color_blue",
+                "item_dot_change",
+                "transition_letters",
+                "reserve_hud_style",
+                "room_palettes",
+                "tile_theme",
+                "door_colors",
+                "music",
+                "disable_beeping",
+                "screen_shaking", "screen_flashing",
+                "screw_attack_animation",
+                "room_names",
+                "shot", "jump", "dash",
+                "item_select", "item_cancel",
+                "angle_up", "angle_down",
+                "spin_lock_buttons", "quick_reload_buttons",
+                "moonwalk"
+            )
 
             randomizer_data = {
-                "customize_settings": self.options,
-                "app_data": map_rando_app_data,
-                "map_rando_settings": self.map_rando_settings,
-                "randomization": self.randomizer_ap.randomization,
-                "new_item_placement": items,
-                "item_spoiler_infos": item_spoiler_infos
+                "customize_settings": customize_settings,
+                "map_rando_settings": self.options.map_rando_options.value,
+                "randomization": randomization_to_json(self.randomizer_ap.randomization),
             }
-            patched_rom_bytes = patch_rom(randomizer_data, patches.values())
 
-            with open(outputFilename, "wb") as binary_file:
-                binary_file.write(bytes(patched_rom_bytes))
+            patch = SMMapRandoProcedurePatch(player=self.player, player_name=self.player_name)
+            patch.write_file("rando_data.json", json.dumps(randomizer_data).encode("utf-8"))
+            for ips_patch_name, ips in ips_patches.items():
+                patch.procedure[1][1].append(ips_patch_name)
+                patch.write_file(f"{ips_patch_name}.ips", ips.encode())
+
+            outfilebase = self.multiworld.get_out_file_name_base(self.player)
+            patch.write(os.path.join(output_directory, f"{outfilebase}{patch.patch_file_ending}"))
         except:
             raise
-        else:
-            patch = SMMapRandoDeltaPatch(os.path.splitext(outputFilename)[0] + SMMapRandoDeltaPatch.patch_file_ending, player=self.player,
-                                            player_name=self.multiworld.player_name[self.player], patched_path=outputFilename)
-            patch.write()
         finally:
-            if os.path.exists(outputFilename):
-                os.unlink(outputFilename)
             self.rom_name_available_event.set()  # make sure threading continues and errors are collected
 
     def modify_multidata(self, multidata: dict):

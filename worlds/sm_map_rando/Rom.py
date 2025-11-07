@@ -9,7 +9,7 @@ import pkgutil
 import settings
 import Utils
 from Utils import read_snes_rom, snes_to_pc
-from worlds.Files import APDeltaPatch
+from worlds.Files import APProcedurePatch, APPatchExtension
 
 from .ips import IPS_Patch
 if TYPE_CHECKING:
@@ -19,113 +19,135 @@ SMJUHASH = '21f3e98df4780ee1c667b84e57d88675'
 SMMR_ROM_MAX_PLAYERID = 65535
 SMMR_ROM_PLAYERDATA_COUNT = 202
 
-class SMMapRandoDeltaPatch(APDeltaPatch):
+class SMMapRandoProcedurePatch(APProcedurePatch):
     hash = SMJUHASH
     game = "Super Metroid Map Rando"
     patch_file_ending = ".apsmmr"
+    result_file_ending = ".sfc"
+
+    procedure = [
+        ("patch_rom", ["rando_data.json"]),
+        ("apply_ips", []),
+        ("write_crc", [])
+    ]
 
     @classmethod
     def get_source_data(cls) -> bytes:
         return get_base_rom_bytes()
 
-def patch_rom(randomizer_data: dict[str, Any], ips_patches: list[IPS_Patch]) -> bytes:
-    from pysmmaprando import CustomizeRequest, customize_seed_ap
-    rom = get_base_rom_bytes()
-    customize_settings = randomizer_data["customize_settings"]
-    customize_request = CustomizeRequest(
-        rom,
-        "",
-        f"{customize_settings.etank_color_red.value:02X}{customize_settings.etank_color_green.value:02X}{customize_settings.etank_color_blue.value:02X}",
-        current_key_pascal(customize_settings.item_dot_change),
-        customize_settings.transition_letters == 1,
-        bool(customize_settings.reserve_hud_style.value),
-        customize_settings.room_palettes.current_key,
-        current_key_pascal(customize_settings.tile_theme),
-        customize_settings.door_colors.current_key,
-        customize_settings.music.current_key,
-        bool(customize_settings.disable_beeping.value),
-        customize_settings.screen_shaking.current_key.title(),
-        customize_settings.screen_flashing.current_key.title(),
-        bool(customize_settings.screw_attack_animation.value),
-        bool(customize_settings.room_names.value),
-        customize_settings.shot.current_key.title(),
-        customize_settings.jump.current_key.title(),
-        customize_settings.dash.current_key.title(),
-        customize_settings.item_select.current_key.title(),
-        customize_settings.item_cancel.current_key.title(),
-        customize_settings.angle_up.current_key.title(),
-        customize_settings.angle_down.current_key.title(),
-        "on" if "Left" in customize_settings.spin_lock_buttons.value else "off",
-        "on" if "Right" in customize_settings.spin_lock_buttons.value else "off",
-        "on" if "Up" in customize_settings.spin_lock_buttons.value else "off",
-        "on" if "Down" in customize_settings.spin_lock_buttons.value else "off",
-        "on" if "X" in customize_settings.spin_lock_buttons.value else "off",
-        "on" if "Y" in customize_settings.spin_lock_buttons.value else "off",
-        "on" if "A" in customize_settings.spin_lock_buttons.value else "off",
-        "on" if "B" in customize_settings.spin_lock_buttons.value else "off",
-        "on" if "L" in customize_settings.spin_lock_buttons.value else "off",
-        "on" if "R" in customize_settings.spin_lock_buttons.value else "off",
-        "on" if "Select" in customize_settings.spin_lock_buttons.value else "off",
-        "on" if "Start" in customize_settings.spin_lock_buttons.value else "off",
-        "on" if "Left" in customize_settings.quick_reload_buttons.value else "off",
-        "on" if "Right" in customize_settings.quick_reload_buttons.value else "off",
-        "on" if "Up" in customize_settings.quick_reload_buttons.value else "off",
-        "on" if "Down" in customize_settings.quick_reload_buttons.value else "off",
-        "on" if "X" in customize_settings.quick_reload_buttons.value else "off",
-        "on" if "Y" in customize_settings.quick_reload_buttons.value else "off",
-        "on" if "A" in customize_settings.quick_reload_buttons.value else "off",
-        "on" if "B" in customize_settings.quick_reload_buttons.value else "off",
-        "on" if "L" in customize_settings.quick_reload_buttons.value else "off",
-        "on" if "R" in customize_settings.quick_reload_buttons.value else "off",
-        "on" if "Select" in customize_settings.quick_reload_buttons.value else "off",
-        "on" if "Start" in customize_settings.quick_reload_buttons.value else "off",
-        bool(customize_settings.moonwalk.value)
-    )
+class SMMapRandoPatchExtensions(APPatchExtension):
+    game = "Super Metroid Map Rando"
 
-    patched_rom_bytes = customize_seed_ap(
-        customize_request,
-        randomizer_data["app_data"],
-        randomizer_data["map_rando_settings"],
-        randomizer_data["randomization"],
-        False,
-        randomizer_data["new_item_placement"],
-        randomizer_data["item_spoiler_infos"]
-    )
+    @staticmethod
+    def patch_rom(caller: SMMapRandoProcedurePatch, rom: bytes, rando_data_file: str) -> bytes:
+        from Generate import roll_settings
+        from pysmmaprando import CustomizeRequest, customize_seed_ap, validate_settings_ap
+        from . import map_rando_app_data
 
-    # Directly grabbing the basepatch here as it won't be included in a procedure patch
-    basepatch_ips = IPS_Patch.load("/".join(("data", "SMBasepatch_prebuilt", "multiworld-basepatch.ips")))
-    patched_rom_bytes = basepatch_ips.apply(patched_rom_bytes)
+        randomizer_data = json.loads(caller.get_file(rando_data_file).decode("utf-8"))
 
-    # commit all the changes we've made here to the ROM
-    for ips in ips_patches:
-        patched_rom_bytes = ips.apply(patched_rom_bytes)
+        wrapped_options = {
+            "name": caller.player_name,
+            "game": "Super Metroid Map Rando",
+            "Super Metroid Map Rando": randomizer_data["customize_settings"]
+        }
 
-    patched_rom_bytes = write_crc(patched_rom_bytes)
-    return patched_rom_bytes
+        customize_settings = roll_settings(wrapped_options)
+        customize_request = CustomizeRequest(
+            rom,
+            "",
+            f"{customize_settings.etank_color_red.value:02X}{customize_settings.etank_color_green.value:02X}{customize_settings.etank_color_blue.value:02X}",
+            current_key_pascal(customize_settings.item_dot_change),
+            customize_settings.transition_letters == 1,
+            bool(customize_settings.reserve_hud_style.value),
+            customize_settings.room_palettes.current_key,
+            current_key_pascal(customize_settings.tile_theme),
+            customize_settings.door_colors.current_key,
+            customize_settings.music.current_key,
+            bool(customize_settings.disable_beeping.value),
+            customize_settings.screen_shaking.current_key.title(),
+            customize_settings.screen_flashing.current_key.title(),
+            bool(customize_settings.screw_attack_animation.value),
+            bool(customize_settings.room_names.value),
+            customize_settings.shot.current_key.title(),
+            customize_settings.jump.current_key.title(),
+            customize_settings.dash.current_key.title(),
+            customize_settings.item_select.current_key.title(),
+            customize_settings.item_cancel.current_key.title(),
+            customize_settings.angle_up.current_key.title(),
+            customize_settings.angle_down.current_key.title(),
+            "on" if "Left" in customize_settings.spin_lock_buttons.value else "off",
+            "on" if "Right" in customize_settings.spin_lock_buttons.value else "off",
+            "on" if "Up" in customize_settings.spin_lock_buttons.value else "off",
+            "on" if "Down" in customize_settings.spin_lock_buttons.value else "off",
+            "on" if "X" in customize_settings.spin_lock_buttons.value else "off",
+            "on" if "Y" in customize_settings.spin_lock_buttons.value else "off",
+            "on" if "A" in customize_settings.spin_lock_buttons.value else "off",
+            "on" if "B" in customize_settings.spin_lock_buttons.value else "off",
+            "on" if "L" in customize_settings.spin_lock_buttons.value else "off",
+            "on" if "R" in customize_settings.spin_lock_buttons.value else "off",
+            "on" if "Select" in customize_settings.spin_lock_buttons.value else "off",
+            "on" if "Start" in customize_settings.spin_lock_buttons.value else "off",
+            "on" if "Left" in customize_settings.quick_reload_buttons.value else "off",
+            "on" if "Right" in customize_settings.quick_reload_buttons.value else "off",
+            "on" if "Up" in customize_settings.quick_reload_buttons.value else "off",
+            "on" if "Down" in customize_settings.quick_reload_buttons.value else "off",
+            "on" if "X" in customize_settings.quick_reload_buttons.value else "off",
+            "on" if "Y" in customize_settings.quick_reload_buttons.value else "off",
+            "on" if "A" in customize_settings.quick_reload_buttons.value else "off",
+            "on" if "B" in customize_settings.quick_reload_buttons.value else "off",
+            "on" if "L" in customize_settings.quick_reload_buttons.value else "off",
+            "on" if "R" in customize_settings.quick_reload_buttons.value else "off",
+            "on" if "Select" in customize_settings.quick_reload_buttons.value else "off",
+            "on" if "Start" in customize_settings.quick_reload_buttons.value else "off",
+            bool(customize_settings.moonwalk.value)
+        )
 
-def checksum_mirror_sum(start, length, mask = 0x800000):
-    while not(length & mask) and mask:
-        mask >>= 1
+        patched_rom_bytes = customize_seed_ap(
+            customize_request,
+            map_rando_app_data,
+            validate_settings_ap(json.dumps(randomizer_data["map_rando_settings"]), map_rando_app_data),
+            randomizer_data["randomization"]
+        )
+        return patched_rom_bytes
 
-    part1 = sum(start[:mask]) & 0xFFFF
-    part2 = 0
+    @staticmethod
+    def apply_ips(caller: SMMapRandoProcedurePatch, rom: bytes, *ips_patches: str) -> bytes:
+        basepatch_ips = IPS_Patch.load("/".join(("data", "SMBasepatch_prebuilt", "multiworld-basepatch.ips")))
+        patched_rom_bytes = basepatch_ips.apply(rom)
 
-    next_length = length - mask
-    if next_length:
-        part2 = checksum_mirror_sum(start[mask:], next_length, mask >> 1)
+        for ips in [IPS_Patch.decode(io.BytesIO(caller.get_file(f"{patch}.ips"))) for patch in ips_patches]:
+            patched_rom_bytes = ips.apply(patched_rom_bytes)
 
-        while (next_length < mask):
-            next_length += next_length
-            part2 += part2
+        return patched_rom_bytes
 
-    return (part1 + part2) & 0xFFFF
+    @staticmethod
+    def write_crc(caller: SMMapRandoProcedurePatch, rom: bytes) -> bytes:
+        def checksum_mirror_sum(start, length, mask = 0x800000):
+            while not(length & mask) and mask:
+                mask >>= 1
 
-def write_crc(rom):
-    buffer = bytearray(rom)
-    crc = checksum_mirror_sum(buffer, len(buffer))
-    inv = crc ^ 0xFFFF
-    write_bytes(buffer, 0x7FDC, [inv & 0xFF, (inv >> 8) & 0xFF, crc & 0xFF, (crc >> 8) & 0xFF])
-    return buffer
+            part1 = sum(start[:mask]) & 0xFFFF
+            part2 = 0
+
+            next_length = length - mask
+            if next_length:
+                part2 = checksum_mirror_sum(start[mask:], next_length, mask >> 1)
+
+                while (next_length < mask):
+                    next_length += next_length
+                    part2 += part2
+
+            return (part1 + part2) & 0xFFFF
+
+        def write_bytes(buffer, startaddress: int, values):
+            buffer[startaddress:startaddress + len(values)] = values
+
+        buffer = bytearray(rom)
+        crc = checksum_mirror_sum(buffer, len(buffer))
+        inv = crc ^ 0xFFFF
+        write_bytes(buffer, 0x7FDC, [inv & 0xFF, (inv >> 8) & 0xFF, crc & 0xFF, (crc >> 8) & 0xFF])
+        return bytes(buffer)
 
 class ByteEdit(TypedDict):
     sym: Dict[str, Any]
@@ -507,6 +529,3 @@ def current_key_pascal(option):
     # Remove spaces to form PascalCase
     pascal_case_string = titled_string.replace(" ", "")
     return pascal_case_string
-
-def write_bytes(buffer, startaddress: int, values):
-    buffer[startaddress:startaddress + len(values)] = values
