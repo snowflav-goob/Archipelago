@@ -29,7 +29,7 @@ from .Client import SMMRSNIClient
 from .ItemMatching import match_item_metroid, match_item_generic
 from importlib.metadata import version, PackageNotFoundError
 
-required_pysmmaprando_version = "0.119.1"
+required_pysmmaprando_version = "0.119.2+experimental2"
 
 class WrongVersionError(Exception):
     pass
@@ -53,7 +53,7 @@ except (ImportError, WrongVersionError, PackageNotFoundError) as e:
     elif sys.platform.startswith('darwin'):
         mac_ver = platform.mac_ver()[0].split('.')
         abi_version = f"{python_version}-macosx_10_12_x86_64.macosx_11_0_arm64.macosx_10_12_universal2"
-    map_rando_lib_file = f'https://github.com/lordlou/MapRandomizer/releases/download/v{required_pysmmaprando_version}/pysmmaprando-{required_pysmmaprando_version}-{python_version}-{abi_version}.whl'
+    map_rando_lib_file = f'https://github.com/snowflav-goob/MapRandomizer/releases/download/v{required_pysmmaprando_version}/pysmmaprando-{required_pysmmaprando_version}-{python_version}-{abi_version}.whl'
     import Utils
     if not Utils.is_frozen():
         import subprocess

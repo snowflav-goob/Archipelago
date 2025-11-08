@@ -314,7 +314,7 @@ def make_ips_patches(world: "SMMapRandoWorld", match_item: Callable) -> dict[str
     # set rom name
     # 21 bytes
     from Main import __version__
-    world.romName = bytearray(f'SMMR{__version__.replace(".", "")[0:3]}{required_pysmmaprando_version.replace(".", "")}{world.player}{world.multiworld.seed:8}', 'utf8')[:21]
+    world.romName = bytearray(f'SMMR{__version__.replace(".", "")[0:3]}{required_pysmmaprando_version.replace(".", "").split("+")[0]}{world.player}{world.multiworld.seed:8}', 'utf8')[:21]
     world.romName.extend([0] * (21 - len(world.romName)))
     world.rom_name = world.romName
     # clients should read from 0x7FC0, the location of the rom title in the SNES header.
