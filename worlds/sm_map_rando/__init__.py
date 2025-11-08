@@ -25,6 +25,7 @@ logger = logging.getLogger("Super Metroid Map Rando")
 from .Rom import get_base_rom_path, get_sm_symbols, openFile, SMMR_ROM_MAX_PLAYERID, SMMR_ROM_PLAYERDATA_COUNT, SMMapRandoDeltaPatch 
 from .ips import IPS_Patch
 from .Client import SMMRSNIClient
+from .ItemMatching import match_item_metroid, match_item_generic
 from importlib.metadata import version, PackageNotFoundError
 
 required_pysmmaprando_version = "0.119.1"
@@ -465,22 +466,18 @@ class SMMapRandoWorld(World):
         )
         sorted_item_locs = list(self.locations.values())
         items = []
+        if self.options.item_matching.value == 0: # ItemMatching.option_metroid:
+            match_item = match_item_metroid
+        else:
+            match_item = match_item_generic
         for itemLoc in sorted_item_locs:
-            if itemLoc.address is not None:
-                item_code = items_start_id
-                if isinstance(itemLoc.item, SMMRItem):
-                    item_code = itemLoc.item.code if itemLoc.item.code - items_start_id < SMMapRandoWorld.prog_missile_item_id else itemLoc.item.code - SMMapRandoWorld.prog_missile_item_id + SMMapRandoWorld.missile_item_id
-                elif itemLoc.item.advancement:
-                    if itemLoc.item.useful:
-                        item_code = self.item_name_to_id['ArchipelagoUsefulProgItem']
-                    else:
-                        item_code = self.item_name_to_id['ArchipelagoProgItem']
-                else:
-                    if itemLoc.item.useful:
-                        item_code = self.item_name_to_id['ArchipelagoUsefulItem']
-                    else:
-                        item_code = self.item_name_to_id['ArchipelagoItem']
-                items.append(MapRandoItem(item_code - items_start_id))
+            if itemLoc.address is None:
+                continue
+            if itemLoc.item.player == self.player:
+                item_code = itemLoc.item.code if itemLoc.item.code - items_start_id < SMMapRandoWorld.prog_missile_item_id else itemLoc.item.code - SMMapRandoWorld.prog_missile_item_id + SMMapRandoWorld.missile_item_id
+            else:
+                item_code = match_item(self, itemLoc.item)
+            items.append(MapRandoItem(item_code - items_start_id))
         
         # if start location isnt Escape
         if (len(self.randomizer_ap.spoiler_log.summary) > 0):
@@ -573,37 +570,45 @@ class SMMapRandoWorld(World):
         vanillaItemTypesCount = 23
         locations_nothing = bytearray(20)
         for itemLoc in self.multiworld.get_locations():
-            if itemLoc.player == self.player:
-                # item to place in this SMMR world: write full item data to tables
-                if isinstance(itemLoc.item, SMMRItem) and itemLoc.item.code < items_start_id + vanillaItemTypesCount:
-                    if itemLoc.item.code == items_start_id + self.nothing_item_id:
-                        locations_nothing[(itemLoc.address - locations_start_id)//8] |= 1 << (itemLoc.address % 8)
-                    itemId = itemLoc.item.code - items_start_id
-                else:
-                    itemId = self.item_name_to_id['ArchipelagoItem'] - items_start_id + idx
-                    multiWorldItems.append({"sym": symbols["message_item_names"],
-                                            "offset": (vanillaItemTypesCount + idx)*64,
-                                            "values": self.convertToROMItemName(itemLoc.item.name)})
-                    idx += 1
+            if itemLoc.player != self.player:
+                continue
 
-                if itemLoc.item.player == self.player:
-                    itemDestinationType = 0  # dest type 0 means 'regular old SM item' per itemtable.asm
-                elif itemLoc.item.player in self.multiworld.groups and \
-                        self.player in self.multiworld.groups[itemLoc.item.player]['players']:
-                    # dest type 2 means 'SM item link item that sends to the current player and others'
-                    # per itemtable.asm (groups are synonymous with item_links, currently)
-                    itemDestinationType = 2
-                else:
-                    itemDestinationType = 1  # dest type 1 means 'item for entirely someone else' per itemtable.asm
+            # item to place in this SMMR world: write full item data to tables
+            if itemLoc.item.player == self.player:
+                matched_item_code = itemLoc.item.code
+            else:
+                matched_item_code = match_item(self, itemLoc.item)
+            matched_item_code -= items_start_id
 
-                [w0, w1] = self.getWordArray(itemDestinationType)
-                [w2, w3] = self.getWordArray(itemId)
-                [w4, w5] = self.getWordArray(otherPlayerIndex[itemLoc.item.player] if itemLoc.item.player in
-                                             otherPlayerIndex else 0)
-                [w6, w7] = self.getWordArray(0 if itemLoc.item.advancement else 1)
-                multiWorldLocations.append({"sym": symbols["rando_item_table"],
-                                            "offset": (itemLoc.address - locations_start_id)*8,
-                                            "values": [w0, w1, w2, w3, w4, w5, w6, w7]})
+            if matched_item_code < vanillaItemTypesCount:
+                if matched_item_code == self.nothing_item_id:
+                    locations_nothing[(itemLoc.address - locations_start_id)//8] |= 1 << (itemLoc.address % 8)
+                itemId = matched_item_code
+            else:
+                itemId = self.item_name_to_id['ArchipelagoItem'] - items_start_id + idx
+                multiWorldItems.append({"sym": symbols["message_item_names"],
+                                        "offset": (vanillaItemTypesCount + idx)*64,
+                                        "values": self.convertToROMItemName(itemLoc.item.name)})
+                idx += 1
+
+            if itemLoc.item.player == self.player:
+                itemDestinationType = 0  # dest type 0 means 'regular old SM item' per itemtable.asm
+            elif itemLoc.item.player in self.multiworld.groups and \
+                    self.player in self.multiworld.groups[itemLoc.item.player]['players']:
+                # dest type 2 means 'SM item link item that sends to the current player and others'
+                # per itemtable.asm (groups are synonymous with item_links, currently)
+                itemDestinationType = 2
+            else:
+                itemDestinationType = 1  # dest type 1 means 'item for entirely someone else' per itemtable.asm
+
+            [w0, w1] = self.getWordArray(itemDestinationType)
+            [w2, w3] = self.getWordArray(itemId)
+            [w4, w5] = self.getWordArray(otherPlayerIndex[itemLoc.item.player] if itemLoc.item.player in
+                                         otherPlayerIndex else 0)
+            [w6, w7] = self.getWordArray(0 if itemLoc.item.advancement else 1)
+            multiWorldLocations.append({"sym": symbols["rando_item_table"],
+                                        "offset": (itemLoc.address - locations_start_id)*8,
+                                        "values": [w0, w1, w2, w3, w4, w5, w6, w7]})
 
         itemSprites = [{"fileName":          "off_world_prog_item.bin",
                         "paletteSymbolName": "prog_item_eight_palette_indices",
