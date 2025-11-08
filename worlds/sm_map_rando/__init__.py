@@ -26,6 +26,7 @@ logger = logging.getLogger("Super Metroid Map Rando")
 from .Rom import make_ips_patches, SMMapRandoProcedurePatch
 from .ips import IPS_Patch
 from .Client import SMMRSNIClient
+from .ItemMatching import match_item_metroid, match_item_generic
 from importlib.metadata import version, PackageNotFoundError
 
 required_pysmmaprando_version = "0.119.1"
@@ -328,25 +329,22 @@ class SMMapRandoWorld(World):
     def generate_output(self, output_directory: str):
         try:
             randomization = self.randomizer_ap.randomization
-
             sorted_item_locs = list(self.locations.values())
             items = []
+            if self.options.item_matching.value == 0: # ItemMatching.option_metroid:
+                match_item = match_item_metroid
+            else:
+                match_item = match_item_generic
+
             for itemLoc in sorted_item_locs:
-                if itemLoc.address is not None:
-                    item_code = items_start_id
-                    if isinstance(itemLoc.item, SMMRItem):
-                        item_code = itemLoc.item.code if itemLoc.item.code - items_start_id < SMMapRandoWorld.prog_missile_item_id else itemLoc.item.code - SMMapRandoWorld.prog_missile_item_id + SMMapRandoWorld.missile_item_id
-                    elif itemLoc.item.advancement:
-                        if itemLoc.item.useful:
-                            item_code = self.item_name_to_id['ArchipelagoUsefulProgItem']
-                        else:
-                            item_code = self.item_name_to_id['ArchipelagoProgItem']
-                    else:
-                        if itemLoc.item.useful:
-                            item_code = self.item_name_to_id['ArchipelagoUsefulItem']
-                        else:
-                            item_code = self.item_name_to_id['ArchipelagoItem']
-                    items.append(MapRandoItem(item_code - items_start_id))
+                if itemLoc.address is None:
+                    continue
+                if itemLoc.item.player == self.player:
+                    item_code = itemLoc.item.code if itemLoc.item.code - items_start_id < SMMapRandoWorld.prog_missile_item_id else itemLoc.item.code - SMMapRandoWorld.prog_missile_item_id + SMMapRandoWorld.missile_item_id
+                else:
+                    item_code = match_item(self, itemLoc.item)
+                items.append(MapRandoItem(item_code - items_start_id))
+
             randomization.item_placement = items
 
             # if start location isnt Escape
@@ -377,7 +375,7 @@ class SMMapRandoWorld(World):
 
             self.randomizer_ap.randomization = randomization
 
-            ips_patches = make_ips_patches(self)
+            ips_patches = make_ips_patches(self, match_item)
 
             customize_settings = self.options.as_dict(
                 "etank_color_red", "etank_color_green", "etank_color_blue",
