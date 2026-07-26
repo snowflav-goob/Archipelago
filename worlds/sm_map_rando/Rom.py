@@ -1,13 +1,14 @@
 import hashlib
 import io
 import os
-from typing import TYPE_CHECKING, Any, Dict, List, Iterable, TypedDict, Callable
+from typing import TYPE_CHECKING, Any, Dict, List, Iterable, Set, TypedDict, Callable
 
 import json
 import pathlib
 import pkgutil
 import settings
 import Utils
+import logging
 from Utils import read_snes_rom, snes_to_pc
 from worlds.Files import APProcedurePatch, APPatchExtension
 
@@ -156,6 +157,7 @@ class ByteEdit(TypedDict):
 
 def make_ips_patches(world: "SMMapRandoWorld", match_item: Callable) -> dict[str, IPS_Patch]:
     from . import SMMapRandoWorld, required_pysmmaprando_version
+    logger = logging.getLogger("Super Metroid Map Rando")
     patches = dict()
     symbols = get_sm_symbols("/".join(("data", "SMBasepatch_prebuilt", "sm-basepatch-symbols.json")))
 
