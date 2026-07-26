@@ -30,7 +30,7 @@ from .ItemMatching import match_item_metroid, match_item_generic
 from .Options import ItemMatching
 from importlib.metadata import version, PackageNotFoundError
 
-required_pysmmaprando_version = "0.119.2"
+required_pysmmaprando_version = "0.119.3"
 
 class WrongVersionError(Exception):
     pass
